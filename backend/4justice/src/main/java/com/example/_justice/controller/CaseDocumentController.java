@@ -4,16 +4,14 @@ package com.example._justice.controller;
 import com.example._justice.dto.CustomerDocumentResponse;
 import com.example._justice.entity.Case;
 import com.example._justice.entity.CaseDocument;
-import com.example._justice.security.CustomerSession;
-import com.example._justice.security.UserSession;
 import com.example._justice.service.CaseDocumentService;
 import com.example._justice.service.CaseService;
-
-import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,14 +33,13 @@ public class CaseDocumentController {
         this.caseService = caseService;
     }
 
-    // Upload a document
     @PostMapping("/{caseId}/documents")
     public ResponseEntity<?> uploadDocument(
             @PathVariable String caseId,
             @RequestParam("file") MultipartFile file,
-            HttpSession session) {
+            @AuthenticationPrincipal Jwt jwt) {
 
-        if (!canAccessCase(caseId, session)) {
+        if (!canAccessCase(caseId, jwt)) {
             return ResponseEntity.notFound().build();
         }
 
@@ -63,13 +60,12 @@ public class CaseDocumentController {
         }
     }
 
-    // Get documents for a case
     @GetMapping("/{caseId}/documents")
     public ResponseEntity<?> getDocuments(
             @PathVariable String caseId,
-            HttpSession session) {
+            @AuthenticationPrincipal Jwt jwt) {
 
-        if (!canAccessCase(caseId, session)) {
+        if (!canAccessCase(caseId, jwt)) {
             return ResponseEntity.notFound().build();
         }
 
@@ -82,18 +78,17 @@ public class CaseDocumentController {
         return ResponseEntity.ok(documents);
     }
 
-    // Download a document
     @GetMapping("/documents/{documentId}/download")
     public ResponseEntity<?> downloadDocument(
             @PathVariable Long documentId,
-            HttpSession session) {
+            @AuthenticationPrincipal Jwt jwt) {
 
         try {
             CaseDocument document =
                     caseDocumentService.getDocumentById(documentId);
 
             if (document == null
-                    || !canAccessCase(document.getCaseId(), session)) {
+                    || !canAccessCase(document.getCaseId(), jwt)) {
                 return ResponseEntity.notFound().build();
             }
 
@@ -131,12 +126,11 @@ public class CaseDocumentController {
         }
     }
 
-    // Check whether the current user can access this case
-    private boolean canAccessCase(
-            String caseId,
-            HttpSession session) {
+    private boolean canAccessCase(String caseId, Jwt jwt) {
 
-        String role = UserSession.getRole(session);
+        if (jwt == null) {
+            return false;
+        }
 
         Case customerCase = caseService.getCaseByCaseId(caseId);
 
@@ -144,28 +138,27 @@ public class CaseDocumentController {
             return false;
         }
 
-        // Admin can access any existing case
-        if (UserSession.ADMIN.equals(role)) {
+        String role = jwt.getClaimAsString("role");
+        Long userId = jwt.getClaim("userId");
+
+        if ("ADMIN".equals(role)) {
             return true;
         }
 
-        // Customer can access their own case
-        Long customerId = CustomerSession.getCustomerId(session);
-
-        if (customerId != null
-                && customerCase.getCustomer() != null
-                && customerId.equals(
-                        customerCase.getCustomer().getId())) {
-            return true;
+        if ("CUSTOMER".equals(role)) {
+            return customerCase.getCustomer() != null
+                    && userId != null
+                    && userId.equals(
+                            customerCase.getCustomer().getId());
         }
 
-        // Lawyer can access their assigned cases
-        Long lawyerId = UserSession.getLawyerId(session);
+        if ("LAWYER".equals(role)) {
+            return customerCase.getLawyer() != null
+                    && userId != null
+                    && userId.equals(
+                            customerCase.getLawyer().getId());
+        }
 
-        return UserSession.LAWYER.equals(role)
-                && lawyerId != null
-                && customerCase.getLawyer() != null
-                && lawyerId.equals(
-                        customerCase.getLawyer().getId());
+        return false;
     }
 }

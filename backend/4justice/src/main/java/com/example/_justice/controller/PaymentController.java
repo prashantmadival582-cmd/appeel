@@ -1,8 +1,10 @@
+
 package com.example._justice.controller;
 
 import com.example._justice.dto.PaymentRequest;
-import com.example._justice.entity.Payment;
+import com.example._justice.dto.PayPalCaptureRequest;
 import com.example._justice.service.PaymentService;
+
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,18 +22,14 @@ public class PaymentController {
     @PostMapping("/create")
     public ResponseEntity<?> createPayment(
             @Valid @RequestBody PaymentRequest request) {
+        return ResponseEntity.ok(
+                paymentService.createPayment(request));
+    }
 
-        try {
-            Payment payment =
-                    paymentService.createPayment(request);
-
-            return ResponseEntity.ok(payment);
-
-        } catch (RuntimeException e) {
-
-            return ResponseEntity
-                    .badRequest()
-                    .body(e.getMessage());
-        }
+    @PostMapping("/capture")
+    public ResponseEntity<?> capturePayment(
+            @Valid @RequestBody PayPalCaptureRequest request) {
+        return ResponseEntity.ok(
+                paymentService.capturePayPalPayment(request));
     }
 }

@@ -1,9 +1,15 @@
+
 package com.example._justice.controller;
 
 import com.example._justice.entity.Case;
 import com.example._justice.service.CaseService;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import com.example._justice.dto.AdminCustomerUpdateRequest;
+import jakarta.validation.Valid;
+import java.util.Map;
 
 import java.util.List;
 
@@ -20,7 +26,6 @@ public class CaseController {
     // Get All Cases
     @GetMapping
     public ResponseEntity<List<Case>> getAllCases() {
-
         return ResponseEntity.ok(
                 caseService.getAllCases()
         );
@@ -67,7 +72,6 @@ public class CaseController {
             @PathVariable Long lawyerId) {
 
         try {
-
             Case updatedCase =
                     caseService.assignLawyer(
                             caseId,
@@ -75,18 +79,43 @@ public class CaseController {
                     );
 
             if (updatedCase == null) {
-                return ResponseEntity
-                        .notFound()
-                        .build();
+                return ResponseEntity.notFound().build();
             }
 
             return ResponseEntity.ok(updatedCase);
 
         } catch (RuntimeException e) {
-
             return ResponseEntity
                     .badRequest()
                     .body(e.getMessage());
         }
     }
+
+
+    
+@PutMapping("/{caseId}/customer")
+public ResponseEntity<?> updateCustomerDetails(
+        @PathVariable String caseId,
+        @Valid @RequestBody AdminCustomerUpdateRequest request) {
+
+    try {
+        Case updatedCase = caseService.updateCustomerDetails(
+                caseId, request);
+
+        if (updatedCase == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(updatedCase);
+
+    } catch (IllegalArgumentException e) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("message", e.getMessage()));
+
+    } catch (IllegalStateException e) {
+        return ResponseEntity.badRequest()
+                .body(Map.of("message", e.getMessage()));
+    }
+}
+
 }

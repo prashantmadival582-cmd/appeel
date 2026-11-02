@@ -6,6 +6,8 @@ import com.example._justice.repository.LawyerRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Locale;
 
@@ -129,6 +131,21 @@ public Lawyer loginLawyer(String email, String password) {
     }
 
     return lawyer;
+}
+
+
+// Reset Lawyer Password
+@Transactional
+public void resetLawyerPassword(String email, String newPassword) {
+
+    Lawyer lawyer = lawyerRepository
+            .findByEmailIgnoreCase(email.trim())
+            .orElseThrow(() ->
+                    new RuntimeException("Lawyer account not found"));
+
+    lawyer.setPassword(passwordEncoder.encode(newPassword));
+
+    lawyerRepository.save(lawyer);
 }
 
 

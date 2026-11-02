@@ -1,15 +1,17 @@
+
 package com.example._justice.controller;
 
 import com.example._justice.dto.CustomerDocumentResponse;
 import com.example._justice.entity.CaseDocument;
-import com.example._justice.security.CustomerSession;
 import com.example._justice.service.CaseDocumentService;
 import com.example._justice.service.CaseService;
-import jakarta.servlet.http.HttpSession;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -32,8 +34,10 @@ public class CustomerDocumentController {
     }
 
     @GetMapping("/documents")
-    public ResponseEntity<?> getMyDocuments(HttpSession session) {
-        Long customerId = CustomerSession.getCustomerId(session);
+    public ResponseEntity<?> getMyDocuments(
+            @AuthenticationPrincipal Jwt jwt) {
+
+        Long customerId = getCustomerId(jwt);
         if (customerId == null) {
             return unauthorized();
         }
@@ -53,11 +57,13 @@ public class CustomerDocumentController {
     @GetMapping("/cases/{caseId}/documents")
     public ResponseEntity<?> getCaseDocuments(
             @PathVariable String caseId,
-            HttpSession session) {
-        Long customerId = CustomerSession.getCustomerId(session);
+            @AuthenticationPrincipal Jwt jwt) {
+
+        Long customerId = getCustomerId(jwt);
         if (customerId == null) {
             return unauthorized();
         }
+
         if (caseService.getCaseForCustomer(caseId, customerId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
@@ -75,45 +81,57 @@ public class CustomerDocumentController {
     public ResponseEntity<?> uploadDocument(
             @PathVariable String caseId,
             @RequestParam("file") MultipartFile file,
-            HttpSession session) {
-        Long customerId = CustomerSession.getCustomerId(session);
+            @AuthenticationPrincipal Jwt jwt) {
+
+        Long customerId = getCustomerId(jwt);
         if (customerId == null) {
             return unauthorized();
         }
+
         if (caseService.getCaseForCustomer(caseId, customerId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         try {
             CaseDocument document = documentService.uploadDocument(caseId, file);
+
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(CustomerDocumentResponse.from(document));
+
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest()
                     .body(Map.of("message", e.getMessage()));
+
         } catch (IOException e) {
             return ResponseEntity.internalServerError()
-                    .body(Map.of("message", "File upload failed. Please try again."));
+                    .body(Map.of(
+                            "message",
+                            "File upload failed. Please try again."
+                    ));
         }
     }
 
     @GetMapping("/documents/{documentId}/download")
     public ResponseEntity<?> downloadDocument(
             @PathVariable Long documentId,
-            HttpSession session) {
-        Long customerId = CustomerSession.getCustomerId(session);
+            @AuthenticationPrincipal Jwt jwt) {
+
+        Long customerId = getCustomerId(jwt);
         if (customerId == null) {
             return unauthorized();
         }
 
         CaseDocument document = documentService.getDocumentById(documentId);
+
         if (document == null
-                || caseService.getCaseForCustomer(document.getCaseId(), customerId).isEmpty()) {
+                || caseService.getCaseForCustomer(
+                        document.getCaseId(), customerId).isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
         try {
             byte[] content = documentService.downloadDocument(documentId);
+
             if (content == null) {
                 return ResponseEntity.notFound().build();
             }
@@ -121,13 +139,42 @@ public class CustomerDocumentController {
             return ResponseEntity.ok()
                     .header(
                             HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + document.getFileName() + "\"")
-                    .contentType(MediaType.parseMediaType(document.getFileType()))
+                            "attachment; filename=\"" + document.getFileName() + "\""
+                    )
+                    .contentType(
+                            MediaType.parseMediaType(document.getFileType())
+                    )
                     .body(content);
+
         } catch (IOException e) {
             return ResponseEntity.internalServerError()
-                    .body(Map.of("message", "File download failed. Please try again."));
+                    .body(Map.of(
+                            "message",
+                            "File download failed. Please try again."
+                    ));
         }
+    }
+
+    private Long getCustomerId(Jwt jwt) {
+        if (jwt == null) {
+            return null;
+        }
+
+        Object userId = jwt.getClaim("userId");
+
+        if (userId instanceof Number number) {
+            return number.longValue();
+        }
+
+        if (userId instanceof String value) {
+            try {
+                return Long.parseLong(value);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        return null;
     }
 
     private static ResponseEntity<?> unauthorized() {

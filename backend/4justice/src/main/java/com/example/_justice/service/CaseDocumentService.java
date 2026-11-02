@@ -21,7 +21,9 @@ public class CaseDocumentService {
     private final CaseDocumentRepository caseDocumentRepository;
 
     private final Path uploadDirectory =
-            Paths.get("uploads", "cases").toAbsolutePath().normalize();
+        Paths.get(System.getenv().getOrDefault(
+                "UPLOAD_DIR", "uploads"
+        ), "cases").toAbsolutePath().normalize();
 
     private static final long MAX_FILE_SIZE = 10 * 1024 * 1024;
 
@@ -97,7 +99,7 @@ public class CaseDocumentService {
         document.setCaseId(caseId);
         document.setFileName(safeOriginalName);
         document.setFileType(resolveContentType(file, extension));
-        document.setFilePath(storedPath.toString());
+        document.setFilePath(storedName);
 
         try {
             return caseDocumentRepository.save(document);
@@ -120,24 +122,29 @@ public class CaseDocumentService {
     }
 
     public byte[] downloadDocument(Long documentId) throws IOException {
-        CaseDocument document = getDocumentById(documentId);
+    CaseDocument document = getDocumentById(documentId);
 
-        if (document == null || document.getFilePath() == null) {
-            return null;
-        }
-
-        Path filePath = Paths.get(document.getFilePath())
-                .toAbsolutePath()
-                .normalize();
-
-        // Only allow downloads from the configured upload directory.
-        if (!filePath.startsWith(uploadDirectory)
-                || !Files.isRegularFile(filePath)) {
-            return null;
-        }
-
-        return Files.readAllBytes(filePath);
+    if (document == null || document.getFilePath() == null) {
+        return null;
     }
+
+    // Support both new filename-only records and old Windows paths.
+    String storedPath = document.getFilePath().replace("\\", "/");
+    String storedName = Paths.get(storedPath).getFileName().toString();
+
+    Path filePath = uploadDirectory.resolve(storedName)
+            .toAbsolutePath()
+            .normalize();
+
+    // Only allow downloads from the configured upload directory.
+    if (!filePath.startsWith(uploadDirectory)
+            || !Files.isRegularFile(filePath)) {
+        return null;
+    }
+
+    return Files.readAllBytes(filePath);
+}
+    
 
     private String resolveContentType(
             MultipartFile file,

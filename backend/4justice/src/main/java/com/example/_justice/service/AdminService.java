@@ -6,6 +6,8 @@ import com.example._justice.repository.AdminRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 public class AdminService {
 
@@ -20,19 +22,44 @@ public class AdminService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public boolean login(AdminLoginRequest request) {
+   
+public boolean login(AdminLoginRequest request) {
 
-        Admin admin = adminRepository
-                .findByEmail(request.getEmail())
-                .orElse(null);
+    String email = request.getEmail().trim().toLowerCase();
 
-        if (admin == null) {
-            return false;
-        }
+    System.out.println("Admin login attempted for: " + email);
 
-        return passwordEncoder.matches(
-                request.getPassword(),
-                admin.getPassword()
-        );
+    Admin admin = adminRepository
+            .findByEmail(email)
+            .orElse(null);
+
+    if (admin == null) {
+        System.out.println("Admin record not found.");
+        return false;
     }
+
+    boolean passwordMatches = passwordEncoder.matches(
+            request.getPassword(),
+            admin.getPassword()
+    );
+
+    System.out.println("Password matches stored hash: " + passwordMatches);
+
+    return passwordMatches;
+}
+
+// Reset Admin Password
+@Transactional
+public void resetAdminPassword(String email, String newPassword) {
+
+    Admin admin = adminRepository
+            .findByEmailIgnoreCase(email.trim())
+            .orElseThrow(() ->
+                    new RuntimeException("Admin account not found"));
+
+    admin.setPassword(passwordEncoder.encode(newPassword));
+
+    adminRepository.save(admin);
+}
+
 }

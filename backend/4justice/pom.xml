@@ -81,6 +81,20 @@
         <optional>true</optional>
     </dependency>
 
+    
+    <!-- JWT Authentication and Token Validation -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-security-oauth2-resource-server</artifactId>
+    </dependency>
+
+        <!-- Gmail Email Support -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-mail</artifactId>
+    </dependency>
+
+
     <!-- Testing -->
     <dependency>
         <groupId>org.springframework.boot</groupId>

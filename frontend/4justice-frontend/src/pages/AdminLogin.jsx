@@ -8,6 +8,7 @@ function AdminLogin() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -18,98 +19,122 @@ function AdminLogin() {
     setLoading(true);
 
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/admin/login`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            email,
-            password,
-          }),
-        }
-      );
+      const response = await fetch(`${API_BASE_URL}/api/admin/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Invalid email or password.");
-        return;
+        throw new Error(data.message || data.error || "Invalid admin credentials.");
       }
+
+      if (!data.token) {
+        throw new Error("Login succeeded, but the server did not return a token.");
+      }
+
+      // Store the JWT for protected admin API requests.
+      localStorage.setItem("adminToken", data.token);
 
       navigate("/admin/dashboard");
     } catch (err) {
       console.error("Admin login error:", err);
-      setError("Unable to connect to the server.");
+      setError(err.message || "Unable to connect to the server. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="admin-login-page">
-      <div className="admin-login-card">
-        <div className="admin-login-logo">⚖️</div>
+    <div className="auth-page admin-auth">
+      <div className="auth-card">
+        <div className="auth-header">
+          <NavLink to="/" className="auth-brand" aria-label="APPEEL Home">
+            <span className="auth-brand-icon">⚖️</span>
+            <span className="auth-brand-text">APPEEL</span>
+          </NavLink>
 
-        <h1>4Justice</h1>
+          <span className="auth-badge admin-badge">
+            Administration Portal
+          </span>
 
-        <p className="admin-login-subtitle">
-          Admin Portal
-        </p>
+          <h1>Admin Sign In</h1>
 
-        <div className="admin-login-heading">
-          <h2>Welcome Back</h2>
-          <p>Login to manage your cases and system.</p>
+          <p className="auth-subtitle">
+            Secure administrative control for lawyer assignment, case
+            management, and system metrics.
+          </p>
         </div>
 
-        <form onSubmit={handleLogin}>
-          <div className="login-field">
-            <label htmlFor="admin-email">Email Address</label>
+        {error && (
+          <div className="alert-banner alert-error" role="alert">
+            <span className="alert-icon">⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
+
+        <form onSubmit={handleLogin} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="admin-email">Admin Email Address</label>
             <input
               id="admin-email"
               type="email"
               autoComplete="username"
-              placeholder="Enter admin email"
+              placeholder="admin@appeel.se"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
 
-          <div className="login-field">
-            <label htmlFor="admin-password">Password</label>
-            <input
-              id="admin-password"
-              type="password"
-              autoComplete="current-password"
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+          <div className="form-group">
+            <div className="form-label-row">
+              <label htmlFor="admin-password">Password</label>
 
-          {error && (
-            <p className="login-error" role="alert">
-              {error}
-            </p>
-          )}
+              <button
+                type="button"
+                className="btn-toggle-pw"
+                onClick={() => setShowPassword(!showPassword)}
+                tabIndex={-1}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
+
+            <div className="input-pw-wrapper">
+              <input
+                id="admin-password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="Enter admin password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+          </div>
 
           <button
             type="submit"
-            className="admin-login-button"
+            className="btn-primary-block"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Login"}
+            {loading ? "Authenticating..." : "Sign In to Admin Portal"}
           </button>
         </form>
 
-        <NavLink to="/" className="back-home-link">
-          ← Back to Home
-        </NavLink>
+        <div className="auth-footer">
+          <NavLink to="/" className="auth-link">
+            ← Back to APPEEL Home
+          </NavLink>
+        </div>
       </div>
     </div>
   );

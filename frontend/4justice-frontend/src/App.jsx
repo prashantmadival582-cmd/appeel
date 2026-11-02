@@ -1,40 +1,58 @@
-
+import { useEffect, useState } from "react";
 import {
   BrowserRouter,
-  Routes,
-  Route,
+  Link,
   NavLink,
   Navigate,
+  Outlet,
+  Route,
+  Routes,
   useNavigate,
 } from "react-router-dom";
 
-import { useEffect, useState } from "react";
 
-import Home from "./pages/Home";
+
+
+import DataTable from "./components/Table/DataTable";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
+
+import AdminSidebar from "./components/Admin/AdminSidebar";
+
+import LandingPage from "./components/home/LandingPage";
+import ContactPage from "./components/home/contactpage";
+import ScrollTop from "./components/ScrollTop";
+
 import AdminCases from "./pages/AdminCases";
 import AdminLogin from "./pages/AdminLogin";
 import CaseDetails from "./pages/CaseDetails";
 import LawyerRegister from "./pages/LawyerRegister";
 import LawyerLogin from "./pages/LawyerLogin";
 import LawyerDashboard from "./pages/LawyerDashboard";
+import LoginSelection from "./pages/LoginSelection";
+import AdminLawyerDetails from "./pages/AdminLawyerDetails";
 
 import CustomerRegister from "./pages/CustomerRegister";
 import CustomerLogin from "./pages/CustomerLogin";
 import StartCase from "./pages/StartCase";
+import Payment from "./pages/Payment";
 import {
   CustomerCaseDetails,
   CustomerCases,
+  CustomerPageHeader,
 } from "./pages/CustomerCases";
 import CustomerDocuments from "./pages/CustomerDocuments";
 import CustomerUpdates from "./pages/CustomerUpdates";
 
+
 import API_BASE_URL from "./api/api";
 import {
-  customerRequest,
   getCustomerJson,
 } from "./api/customerApi";
 
 import "./App.css";
+
 
 // ===============================
 // Admin Dashboard
@@ -55,7 +73,12 @@ function Dashboard() {
       try {
         const response = await fetch(
           `${API_BASE_URL}/api/admin/dashboard`,
-          { credentials: "include" }
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
 
         if (!response.ok) {
@@ -75,62 +98,95 @@ function Dashboard() {
   }, []);
 
   return (
-    <section className="dashboard-page">
-      <div className="page-header">
+    <section className="admin-page-content">
+      <div className="admin-page-header">
         <div>
-          <h1>Dashboard</h1>
-          <p>Welcome back, Admin.</p>
+          <span className="admin-eyebrow"><b>SYSTEM OVERVIEW</b></span>
+          <p>Real-time statistics across active legal matters, lawyer's, and customer workflows.</p>
         </div>
       </div>
 
-      <div className="stats-grid">
-        <div className="stat-card">
-          <div className="stat-icon">📁</div>
-          <div>
-            <span>Total Cases</span>
-            <h2>{loading ? "..." : dashboardData.totalCases}</h2>
+      <div className="stats-metric-grid">
+        <div className="metric-card">
+          <div className="metric-icon total">📁</div>
+          <div className="metric-info">
+            <span className="metric-label">Total Cases</span>
+            <strong className="metric-value">{loading ? "..." : dashboardData.totalCases}</strong>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon">⏳</div>
-          <div>
-            <span>Pending Cases</span>
-            <h2>{loading ? "..." : dashboardData.pendingCases}</h2>
+        <div className="metric-card">
+          <div className="metric-icon active">⏳</div>
+          <div className="metric-info">
+            <span className="metric-label">Pending / Unallocated</span>
+            <strong className="metric-value">{loading ? "..." : dashboardData.pendingCases}</strong>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon">⚖️</div>
-          <div>
-            <span>Total Lawyers</span>
-            <h2>{loading ? "..." : dashboardData.totalLawyers}</h2>
+        <div className="metric-card">
+          <div className="metric-icon completed">👥</div>
+          <div className="metric-info">
+            <span className="metric-label"> Lawyer's</span>
+            <strong className="metric-value">{loading ? "..." : dashboardData.totalLawyers}</strong>
           </div>
         </div>
 
-        <div className="stat-card">
-          <div className="stat-icon">💳</div>
-          <div>
-            <span>Total Payments</span>
-            <h2>{loading ? "..." : dashboardData.totalPayments}</h2>
+        <div className="metric-card">
+          <div className="metric-icon status-icon">💳</div>
+          <div className="metric-info">
+            <span className="metric-label">Payments</span>
+            <strong className="metric-value">{loading ? "..." : dashboardData.totalPayments}</strong>
           </div>
         </div>
       </div>
 
-      <div className="dashboard-card">
-        <div className="card-header">
-          <div>
-            <h2>Recent Cases</h2>
-            <p>Recently created customer cases.</p>
+      <div className="admin-card">
+        <div className="card-header-simple">
+          <div className="header-icon-title">
+            <span className="header-icon">⚡</span>
+            <div>
+              <h3>Fast Navigation &amp; Allocation</h3>
+              <p>Quick access to operational queues</p>
+            </div>
           </div>
-
-          <NavLink to="/admin/cases" className="view-all">
-            View All
+          <NavLink to="/admin/cases" className="btn-primary-navy">
+            Manage All Cases →
           </NavLink>
         </div>
+        <div className="admin-quick-actions-grid">
 
-        <div className="recent-case-list">
-          <p>Recent cases will be connected to the database next.</p>
+          {/* 1. Cases */}
+          <NavLink to="/admin/cases" className="admin-quick-card">
+            <span className="quick-icon">📁</span>
+            <h4>Review Incoming Cases</h4>
+            <p>Allocate pending submissions to vetted attorneys.</p>
+            <span className="quick-card-link">Manage Cases →</span>
+          </NavLink>
+
+          {/* 2. Lawyers */}
+          <NavLink to="/admin/lawyers" className="admin-quick-card">
+            <span className="quick-icon">👥</span>
+            <h4>Lawyer Availability</h4>
+            <p>Inspect lawyer specialties and availability statuses.</p>
+            <span className="quick-card-link">Manage Lawyers →</span>
+          </NavLink>
+
+          {/* 3. Documents */}
+          <NavLink to="/admin/documents" className="admin-quick-card">
+            <span className="quick-icon">📄</span>
+            <h4>Document Repository</h4>
+            <p>Verify customer evidence and manage uploaded legal documents.</p>
+            <span className="quick-card-link">Manage Documents →</span>
+          </NavLink>
+
+          {/* 4. Payments */}
+          <NavLink to="/admin/payments" className="admin-quick-card">
+            <span className="quick-icon">💳</span>
+            <h4>Payment Management</h4>
+            <p>Monitor payment references, gateway transactions and payment statuses.</p>
+            <span className="quick-card-link">View Payments →</span>
+          </NavLink>
+
         </div>
       </div>
     </section>
@@ -146,88 +202,148 @@ function Lawyers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    const fetchLawyers = async () => {
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/lawyers`,
-          { credentials: "include" }
-        );
+  async function fetchLawyers() {
+    setLoading(true);
+    setError("");
 
-        if (!response.ok) {
-          throw new Error("Failed to load lawyers.");
-        }
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/lawyers`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-        const data = await response.json();
-        setLawyers(Array.isArray(data) ? data : []);
-      } catch (err) {
-        setError(err.message || "Unable to connect to the server.");
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to load lawyers.");
       }
-    };
 
+      const data = await response.json();
+      setLawyers(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.message || "Unable to connect to the server.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
     fetchLawyers();
   }, []);
 
-  return (
-    <section className="dashboard-page">
-      <div className="page-header">
-        <div>
-          <h1>Lawyer Management</h1>
-          <p>View registered lawyers and their availability.</p>
+  const availableCount = lawyers.filter(
+    (lawyer) => lawyer.availability?.toUpperCase() === "AVAILABLE"
+  ).length;
+
+  const lawyerColumns = [
+    {
+      key: "name",
+      header: "Lawyer Name",
+      accessor: "name",
+      render: (lawyer) => (
+        <div className="admin-lawyer-name-cell">
+          <span className="admin-lawyer-avatar">
+            {lawyer.name?.charAt(0).toUpperCase() || "L"}
+          </span>
+          <span className="admin-lawyer-name">{lawyer.name || "—"}</span>
         </div>
+      ),
+    },
+    { key: "email", header: "Email", accessor: "email" },
+    {
+      key: "specialization",
+      header: "Specialization",
+      accessor: "specialization",
+      render: (lawyer) => (
+        <span className="table-type-badge">
+          {lawyer.specialization || "Not specified"}
+        </span>
+      ),
+    },
+    {
+      key: "availability",
+      header: "Availability",
+      accessor: "availability",
+      render: (lawyer) => (
+        <span
+          className={`admin-lawyer-availability ${lawyer.availability?.toUpperCase() === "AVAILABLE"
+              ? "is-available"
+              : "is-busy"
+            }`}
+        >
+          {lawyer.availability || "BUSY"}
+        </span>
+      ),
+    },
+    {
+      key: "action",
+      header: "Action",
+      sortable: false,
+      render: (lawyer) => (
+        <Link
+          to={`/admin/lawyers/${lawyer.id}`}
+          className="admin-view-case-button"
+        >
+          View Details
+        </Link>
+      ),
+    },
+  ];
+
+  const lawyerFilters = [
+    {
+      key: "availability",
+      label: "Availability",
+      options: [
+        { label: "Available", value: "AVAILABLE" },
+        { label: "Busy", value: "BUSY" },
+      ],
+    },
+  ];
+
+  return (
+    <section className="admin-page-content">
+      <div className="admin-page-header">
+        <div>
+          <span className="admin-eyebrow">LAWYERS NETWORK</span>
+
+        </div>
+
+
       </div>
 
-      <div className="dashboard-card">
-        {loading && <p>Loading lawyers...</p>}
-
-        {error && <p role="alert">{error}</p>}
-
-        {!loading && !error && lawyers.length === 0 && (
-          <p>No lawyers registered yet.</p>
-        )}
-
-        {!loading && !error && lawyers.length > 0 && (
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
-              <thead>
-                <tr>
-                  <th style={{ textAlign: "left", padding: "12px" }}>
-                    Name
-                  </th>
-                  <th style={{ textAlign: "left", padding: "12px" }}>
-                    Email
-                  </th>
-                  <th style={{ textAlign: "left", padding: "12px" }}>
-                    Specialization
-                  </th>
-                  <th style={{ textAlign: "left", padding: "12px" }}>
-                    Phone
-                  </th>
-                  <th style={{ textAlign: "left", padding: "12px" }}>
-                    Availability
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {lawyers.map((lawyer) => (
-                  <tr key={lawyer.id}>
-                    <td style={{ padding: "12px" }}>{lawyer.name}</td>
-                    <td style={{ padding: "12px" }}>{lawyer.email}</td>
-                    <td style={{ padding: "12px" }}>
-                      {lawyer.specialization}
-                    </td>
-                    <td style={{ padding: "12px" }}>{lawyer.phone}</td>
-                    <td style={{ padding: "12px" }}>
-                      {lawyer.availability || "UNKNOWN"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      <div className="admin-card">
+        {error ? (
+          <div className="alert-banner alert-error" role="alert">
+            <span className="alert-icon">⚠️</span>
+            <span>{error}</span>
+            <button
+              type="button"
+              className="btn-download-sm"
+              onClick={fetchLawyers}
+              disabled={loading}
+            >
+              {loading ? "Refreshing..." : "Try Again"}
+            </button>
           </div>
+        ) : (
+          <DataTable
+            title="Lawyer Management"
+            showHeading={false}
+            columns={lawyerColumns}
+            data={lawyers}
+            rowKey="id"
+            searchFields={["name", "email", "specialization", "availability"]}
+            filters={lawyerFilters}
+            searchable={true}
+            exportable={true}
+            pagination={true}
+            pageSize={10}
+            loading={loading}
+            onRefresh={fetchLawyers}
+            refreshing={loading}
+            emptyMessage="No lawyers registered yet."
+          />
         )}
       </div>
     </section>
@@ -242,52 +358,40 @@ function Documents() {
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
   const [downloadingId, setDownloadingId] = useState(null);
 
-  useEffect(() => {
-    let active = true;
+  async function fetchDocuments() {
+    setLoading(true);
+    setError("");
 
-    async function fetchDocuments() {
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/api/admin/documents`,
-          { credentials: "include" }
-        );
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/admin/documents`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-        if (!response.ok) {
-          if (response.status === 403 || response.status === 401) {
-            throw new Error(
-              "Admin session required. Please log in as admin."
-            );
-          }
-
-          throw new Error("Failed to load documents.");
-        }
-
-        const data = await response.json();
-
-        if (active) {
-          setDocuments(Array.isArray(data) ? data : []);
-        }
-      } catch (err) {
-        if (active) {
-          setError(
-            err.message || "Unable to connect to the backend."
+      if (!response.ok) {
+        if (response.status === 403 || response.status === 401) {
+          throw new Error(
+            "Admin session required. Please log in as admin."
           );
         }
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
+        throw new Error("Failed to load documents.");
       }
+
+      const data = await response.json();
+      setDocuments(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setError(err.message || "Unable to connect to the backend.");
+    } finally {
+      setLoading(false);
     }
+  }
 
+  useEffect(() => {
     fetchDocuments();
-
-    return () => {
-      active = false;
-    };
   }, []);
 
   async function downloadDocument(documentId, fileName) {
@@ -296,7 +400,12 @@ function Documents() {
 
       const response = await fetch(
         `${API_BASE_URL}/api/cases/documents/${documentId}/download`,
-        { credentials: "include" }
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (!response.ok) {
@@ -305,7 +414,6 @@ function Documents() {
             "You are not authorized to download this document."
           );
         }
-
         throw new Error("Unable to download document.");
       }
 
@@ -329,164 +437,205 @@ function Documents() {
     }
   }
 
-  const filteredDocuments = documents.filter((doc) => {
-    const query = searchTerm.trim().toLowerCase();
 
-    return (
-      String(doc.caseId || "").toLowerCase().includes(query) ||
-      String(doc.fileName || "").toLowerCase().includes(query) ||
-      String(doc.fileType || "").toLowerCase().includes(query) ||
-      String(doc.id || "").includes(query)
-    );
-  });
+ 
+  async function viewDocument(documentId) {
+    // Open a blank tab immediately to avoid popup blocking.
+    const newTab = window.open("about:blank", "_blank");
 
-  if (loading) {
-    return (
-      <section className="documents-page">
-        <div className="documents-loading">Loading documents...</div>
-      </section>
-    );
+    if (!newTab) {
+      window.alert("Please allow pop-ups to view this document.");
+      return;
+    }
+
+    try {
+      setDownloadingId(documentId);
+
+      const response = await fetch(
+        `${API_BASE_URL}/api/cases/documents/${documentId}/download`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+          },
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Unable to view document.");
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      newTab.location.href = url;
+
+      window.setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+      }, 60000);
+    } catch (err) {
+      if (!newTab.closed) {
+        newTab.close();
+      }
+
+      window.alert(err.message || "Unable to view document.");
+    } finally {
+      setDownloadingId(null);
+    }
   }
 
-  if (error) {
-    return (
-      <section className="documents-page">
-        <div className="documents-header">
-          <div>
-            <span className="documents-eyebrow">CASE MANAGEMENT</span>
-            <h1>Documents</h1>
-            <p>Manage uploaded case documents.</p>
-          </div>
-        </div>
 
-        <div className="documents-message documents-error">
-          <h3>Unable to load documents</h3>
-          <p>{error}</p>
+
+
+
+  const documentColumns = [
+    {
+      key: "caseId",
+      header: "Case ID",
+      accessor: "caseId",
+      render: (doc) => (
+        <span className="case-id-tag">
+          {doc.caseId || "—"}
+        </span>
+      ),
+    },
+    {
+      key: "action",
+      header: "Action",
+      sortable: false,
+      render: (doc) => (
+        <div className="document-actions">
+          <button
+            type="button"
+            className="btn-table-action"
+            disabled={downloadingId === doc.id}
+            onClick={() => viewDocument(doc.id)}
+          >
+            {downloadingId === doc.id ? "Opening..." : "View"}
+          </button>
+
+          <button
+            type="button"
+            className="btn-download-sm"
+            disabled={downloadingId === doc.id}
+            onClick={() => downloadDocument(doc.id, doc.fileName)}
+          >
+            {downloadingId === doc.id ? "Processing..." : "↓ Download"}
+          </button>
         </div>
-      </section>
-    );
-  }
+      ),
+    },
+  ];
+  // Get the document file format
+  const getDocumentFormat = (doc) => {
+    const fileType = doc.fileType || "";
+    const fileName = doc.fileName || "";
+
+    // Use fileType if it contains a recognizable extension
+    const normalizedType = fileType
+      .split("/")
+      .pop()
+      .split(".")
+      .pop()
+      .toUpperCase();
+
+    if (["PDF", "DOC", "DOCX", "JPG", "JPEG", "PNG"].includes(normalizedType)) {
+      return normalizedType;
+    }
+
+    // Otherwise, extract the extension from the file name
+    const extension = fileName.split(".").pop().toUpperCase();
+
+    return extension && extension !== fileName.toUpperCase()
+      ? extension
+      : "UNKNOWN";
+  };
+
+  // Document filters
+  const documentFilters = [
+    {
+      key: "fileFormat",
+      label: "File Format",
+      options: [
+        { label: "All Formats", value: "ALL" },
+        ...[
+          ...new Set(documents.map((doc) => getDocumentFormat(doc))),
+        ]
+          .sort()
+          .map((format) => ({
+            label: format,
+            value: format,
+          })),
+      ],
+      predicate: (doc, selectedValue) =>
+        selectedValue === "ALL" ||
+        getDocumentFormat(doc) === selectedValue,
+    },
+    {
+      key: "caseReference",
+      label: "Case Reference",
+      options: [
+        { label: "All Cases", value: "ALL" },
+        ...[
+          ...new Set(
+            documents.map((doc) => doc.caseId).filter(Boolean)
+          ),
+        ]
+          .sort()
+          .map((caseId) => ({
+            label: caseId,
+            value: caseId,
+          })),
+      ],
+      predicate: (doc, selectedValue) =>
+        selectedValue === "ALL" || doc.caseId === selectedValue,
+    },
+  ];
 
   return (
-    <section className="documents-page">
-      <div className="documents-header">
+    <section className="admin-page-content">
+      <div className="admin-page-header">
         <div>
-          <span className="documents-eyebrow">CASE MANAGEMENT</span>
-          <h1>Documents</h1>
-          <p>View and download documents uploaded for customer cases.</p>
+          <span className="admin-eyebrow">Document Vault Repository</span>
+
         </div>
 
-        <div className="documents-total">
-          <span>Total Documents</span>
-          <strong>{documents.length}</strong>
-        </div>
+
       </div>
 
-      <div className="documents-toolbar">
-        <div className="documents-search">
-          <span aria-hidden="true">⌕</span>
-
-          <input
-            type="search"
-            placeholder="Search by case ID, file name or type..."
-            value={searchTerm}
-            onChange={(event) => setSearchTerm(event.target.value)}
-            aria-label="Search documents"
-          />
-        </div>
-
-        <span className="documents-results">
-          {filteredDocuments.length}{" "}
-          {filteredDocuments.length === 1 ? "document" : "documents"}
-        </span>
-      </div>
-
-      <div className="documents-card">
-        {filteredDocuments.length === 0 ? (
-          <div className="documents-message">
-            <div className="documents-empty-icon">▤</div>
-
-            <h3>
-              {documents.length === 0
-                ? "No documents yet"
-                : "No matching documents"}
-            </h3>
-
-            <p>
-              {documents.length === 0
-                ? "Uploaded case documents will appear here."
-                : "Try searching with a different case ID or file name."}
-            </p>
+      <div className="admin-card">
+        {error ? (
+          <div className="alert-banner alert-error" role="alert">
+            <span className="alert-icon">⚠️</span>
+            <span>{error}</span>
+            <button
+              type="button"
+              className="btn-download-sm"
+              onClick={fetchDocuments}
+              disabled={loading}
+            >
+              {loading ? "Refreshing..." : "Try Again"}
+            </button>
           </div>
         ) : (
-          <div className="documents-table-wrapper">
-            <table className="documents-table">
-              <thead>
-                <tr>
-                  <th>DOCUMENT</th>
-                  <th>CASE ID</th>
-                  <th>DOCUMENT ID</th>
-                  <th>FILE TYPE</th>
-                  <th>ACTION</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredDocuments.map((doc) => (
-                  <tr key={doc.id}>
-                    <td>
-                      <div className="document-file">
-                        <div className="document-file-icon">FILE</div>
-
-                        <div className="document-file-info">
-                          <strong>
-                            {doc.fileName || "Untitled document"}
-                          </strong>
-                          <span>Uploaded case file</span>
-                        </div>
-                      </div>
-                    </td>
-
-                    <td>
-                      <span className="document-case-id">
-                        {doc.caseId || "—"}
-                      </span>
-                    </td>
-
-                    <td>#{doc.id}</td>
-
-                    <td>
-                      <span className="document-type">
-                        {doc.fileType || "Unknown"}
-                      </span>
-                    </td>
-
-                    <td>
-                      <button
-                        className="document-download-btn"
-                        type="button"
-                        disabled={downloadingId === doc.id}
-                        onClick={() =>
-                          downloadDocument(doc.id, doc.fileName)
-                        }
-                      >
-                        {downloadingId === doc.id
-                          ? "Downloading..."
-                          : "↓ Download"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <DataTable
+            title="Document Vault"
+            showHeading={false}
+            columns={documentColumns}
+            data={documents}
+            rowKey="id"
+            searchFields={["id", "caseId", "fileName", "fileType"]}
+            filters={documentFilters}
+            searchable={true}
+            exportable={true}
+            pagination={true}
+            pageSize={10}
+            loading={loading}
+            onRefresh={fetchDocuments}
+            refreshing={loading}
+            emptyMessage="No case documents uploaded to the repository yet."
+          />
         )}
       </div>
-
-      <p className="documents-footer-note">
-        <span aria-hidden="true">🔒</span>
-        Case documents are intended for authorized users only.
-      </p>
     </section>
   );
 }
@@ -496,139 +645,269 @@ function Documents() {
 // ===============================
 
 function Payments() {
+  const [payments, setPayments] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  async function fetchPayments() {
+    setLoading(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("adminToken");
+
+      if (!token) {
+        throw new Error("Admin session missing. Please log in again.");
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/admin/payments`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        throw new Error(
+          "Admin authorization failed. Please sign in again."
+        );
+      }
+
+      if (!response.ok) {
+        throw new Error("Unable to load payment records.");
+      }
+
+      const data = await response.json();
+
+      const sortedPayments = (Array.isArray(data) ? [...data] : []).sort(
+        (a, b) => Number(b.id ?? 0) - Number(a.id ?? 0)
+      );
+
+      setPayments(sortedPayments);
+    } catch (err) {
+      setError(err.message || "Unable to connect to the server.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchPayments();
+  }, []);
+
+  function formatAmount(payment) {
+    const amount = Number(payment.amount);
+
+    if (!Number.isFinite(amount)) return "—";
+
+    const currency = String(payment.currency || "").trim();
+
+    return `${amount.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })} ${currency || "Currency not set"}`;
+  }
+
+  function getStatusClass(status) {
+    const value = String(status || "").toUpperCase();
+
+    if (value === "SUCCESS") return "available";
+    if (value === "PENDING") return "pending";
+
+    return "busy";
+  }
+
+  // Payment table columns
+  const paymentColumns = [
+    {
+      key: "paymentId",
+      header: "Payment Reference",
+      accessor: "paymentId",
+      render: (payment) => (
+        <div className="file-text-meta">
+          <strong>{payment.paymentId || "—"}</strong>
+
+        </div>
+      ),
+    },
+    {
+      key: "caseId",
+      header: "Case ID",
+      accessor: "caseId",
+      render: (payment) => (
+        <span className="case-id-tag">
+          {payment.caseId || "—"}
+        </span>
+      ),
+    },
+    {
+      key: "amount",
+      header: "Amount",
+      accessor: "amount",
+      render: (payment) => (
+        <strong>{formatAmount(payment)}</strong>
+      ),
+    },
+    {
+      key: "provider",
+      header: "Provider",
+      accessor: "provider",
+      render: (payment) => (
+        <span className="table-type-badge">
+          {payment.provider ||
+            (payment.paypalOrderId
+              ? "PAYPAL"
+              : payment.razorpayOrderId
+                ? "RAZORPAY"
+                : "Not recorded")}
+        </span>
+      ),
+    },
+    {
+      key: "gatewayOrderId",
+      header: "Gateway Order ID",
+      sortable: false,
+      accessor: (payment) =>
+        payment.paypalOrderId || payment.razorpayOrderId || "—",
+    },
+    {
+      key: "status",
+      header: "Status",
+      accessor: "status",
+      render: (payment) => (
+        <span className={`status-badge ${getStatusClass(payment.status)}`}>
+          ● {payment.status || "UNKNOWN"}
+        </span>
+      ),
+    },
+  ];
+
+  // Payment status filter
+  const paymentFilters = [
+    {
+      key: "status",
+      label: "Payment Status",
+      options: [
+        { label: "Successful", value: "SUCCESS" },
+        { label: "Pending", value: "PENDING" },
+        { label: "Failed", value: "FAILED" },
+      ],
+    },
+  ];
+
   return (
-    <section className="placeholder-page">
-      <h1>Payments</h1>
-      <p>Payment information will be available here.</p>
+    <section className="admin-page-content">
+      <div className="admin-page-header">
+        <div>
+          <span className="admin-eyebrow">Payments &amp; Billing</span>
+        </div>
+      </div>
+
+      <div className="admin-card">
+        {error && (
+          <div className="alert-banner alert-error" role="alert">
+            <span className="alert-icon">⚠️</span>
+            <span>{error}</span>
+            <button
+              type="button"
+              className="btn-download-sm"
+              onClick={fetchPayments}
+              disabled={loading}
+            >
+              {loading ? "Refreshing..." : "Try Again"}
+            </button>
+          </div>
+        )}
+
+        {!error && (
+          <DataTable
+            title="Payments & Billing"
+            showHeading={false}
+            columns={paymentColumns}
+            data={payments}
+            rowKey="id"
+            searchFields={[
+              "paymentId",
+              "caseId",
+              "provider",
+              "paypalOrderId",
+              "razorpayOrderId",
+            ]}
+            filters={paymentFilters}
+            searchable={true}
+            exportable={true}
+            pagination={true}
+            pageSize={10}
+            loading={loading}
+            onRefresh={fetchPayments}
+            refreshing={loading}
+            emptyMessage="No payment records found."
+          />
+        )}
+      </div>
     </section>
   );
 }
+
 
 // ===============================
 // Admin Layout
 // ===============================
 
 function AdminLayout() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
-    <div className="admin-layout">
-      <aside className="sidebar">
-        <div className="sidebar-logo">
-          <div className="logo-icon">⚖</div>
-          <div>
-            <h2>4Justice</h2>
-            <span>Admin Panel</span>
-          </div>
-        </div>
-
-        <nav className="sidebar-nav">
-          <NavLink
-            to="/admin/dashboard"
-            className={({ isActive }) =>
-              isActive ? "nav-item active" : "nav-item"
-            }
-          >
-            <span>▦</span>
-            Dashboard
-          </NavLink>
-
-          <NavLink
-            to="/admin/cases"
-            className={({ isActive }) =>
-              isActive ? "nav-item active" : "nav-item"
-            }
-          >
-            <span>📁</span>
-            Cases
-          </NavLink>
-
-          <NavLink
-            to="/admin/lawyers"
-            className={({ isActive }) =>
-              isActive ? "nav-item active" : "nav-item"
-            }
-          >
-            <span>⚖</span>
-            Lawyers
-          </NavLink>
-
-          <NavLink
-            to="/admin/documents"
-            className={({ isActive }) =>
-              isActive ? "nav-item active" : "nav-item"
-            }
-          >
-            <span>📄</span>
-            Documents
-          </NavLink>
-
-          <NavLink
-            to="/admin/payments"
-            className={({ isActive }) =>
-              isActive ? "nav-item active" : "nav-item"
-            }
-          >
-            <span>💳</span>
-            Payments
-          </NavLink>
-        </nav>
-
-        <div className="sidebar-bottom">
-          <div className="admin-profile">
-            <div className="admin-avatar">A</div>
-            <div>
-              <strong>Admin</strong>
-              <span>Administrator</span>
-            </div>
-          </div>
-
-          <button
-            className="logout-button"
-            onClick={() => {
-              window.location.href = "/admin/login";
-            }}
-          >
-            ↪ Logout
-          </button>
-        </div>
+    <div className="admin-shell">
+      <aside className={`admin-sidebar ${mobileMenuOpen ? "open" : ""}`}>
+        <AdminSidebar
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
       </aside>
 
-      <main className="main-content">
-        <header className="topbar">
-          <div>
-            <h3>Admin Portal</h3>
-            <span>4Justice Case Management System</span>
+      <div className="admin-main-wrap">
+        <header className="admin-topbar">
+          <div className="topbar-left">
+            <button
+              type="button"
+              className="admin-hamburger"
+              aria-label="Toggle admin sidebar"
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            >
+              ☰
+            </button>
+            <div className="topbar-badge">Administration Portal</div>
           </div>
 
           <div className="topbar-right">
-            <button className="notification-button" type="button">
-              🔔
-            </button>
-
-            <div className="topbar-admin">
-              <div className="topbar-avatar">A</div>
-              <div>
-                <strong>Admin</strong>
-                <span>Administrator</span>
-              </div>
+            <div className="admin-user-compact">
+              <div className="admin-avatar-circle sm">A</div>
+              <span>Administrator</span>
             </div>
           </div>
         </header>
 
-        <div className="content-area">
+        <main className="admin-body-content">
           <Routes>
+            <Route index element={<Navigate to="dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="cases" element={<AdminCases />} />
+            <Route path="cases/:caseId" element={<CaseDetails />} />
+            <Route path="lawyers" element={<Lawyers />} />
+            <Route path="documents" element={<Documents />} />
+            <Route path="payments" element={<Payments />} />
             <Route
-              path="/"
-              element={<Navigate to="/admin/dashboard" replace />}
+              path="lawyers/:lawyerId"
+              element={<AdminLawyerDetails />}
             />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/cases" element={<AdminCases />} />
-            <Route path="/cases/:caseId" element={<CaseDetails />} />
-            <Route path="/lawyers" element={<Lawyers />} />
-            <Route path="/documents" element={<Documents />} />
-            <Route path="/payments" element={<Payments />} />
+
+
+
           </Routes>
-        </div>
-      </main>
+        </main>
+      </div>
     </div>
   );
 }
@@ -636,6 +915,7 @@ function AdminLayout() {
 // ===============================
 // Customer Dashboard
 // ===============================
+
 
 function CustomerDashboard() {
   const navigate = useNavigate();
@@ -664,6 +944,12 @@ function CustomerDashboard() {
         if (!active) return;
 
         if (error.status === 401) {
+          localStorage.removeItem("customerToken");
+          localStorage.removeItem("customerId");
+          localStorage.removeItem("customerName");
+          localStorage.removeItem("customerEmail");
+          localStorage.removeItem("customerPhone");
+
           navigate("/customer/login", { replace: true });
           return;
         }
@@ -679,178 +965,214 @@ function CustomerDashboard() {
     };
   }, [navigate]);
 
-  const handleLogout = async () => {
-    try {
-      await customerRequest("/api/customers/logout", {
-        method: "POST",
-      });
-    } catch (error) {
-      console.error("Customer logout failed:", error);
-    } finally {
-      [
-        "customerId",
-        "customerName",
-        "customerEmail",
-        "customerPhone",
-      ].forEach((key) => localStorage.removeItem(key));
-
-      navigate("/customer/login", { replace: true });
-    }
-  };
-
   if (checkingSession) {
     return (
-      <main className="customer-dashboard">
-        <p className="customer-page-message">
-          Loading your customer portal...
-        </p>
+      <main className="portal-page">
+        <div className="portal-container">
+          <div className="loading-card">
+            <div className="loading-spinner" />
+            <p>Loading your customer portal...</p>
+          </div>
+        </div>
       </main>
     );
   }
 
   return (
-    <main className="customer-dashboard">
-      <header className="customer-dashboard-header">
-        <NavLink to="/" className="customer-dashboard-brand">
-          <span aria-hidden="true">⚖️</span> 4Justice
-        </NavLink>
+    <main className="portal-page">
+      <CustomerPageHeader
+        title="Customer Dashboard"
+        activeTab="dashboard"
+      />
 
-        <div className="customer-header-actions">
-          <span className="customer-header-label">
-            Customer Portal
-          </span>
+      <div className="portal-container">
 
-          <button
-            type="button"
-            className="customer-logout-button"
-            onClick={handleLogout}
-          >
-            Logout
-          </button>
-        </div>
-      </header>
+        {/* Welcome Section */}
+        <section className="customer-welcome-banner">
+          <div className="welcome-content">
+            <span className="auth-badge">YOUR LEGAL SPACE</span>
 
-      <section className="customer-dashboard-content">
-        <div className="customer-welcome">
-          <span className="customer-dashboard-badge">
-            YOUR LEGAL SPACE
-          </span>
+            <h1>Welcome, {customerName}</h1>
 
-          <h1>Welcome, {customerName}</h1>
-
-          <p>
-            Manage your legal cases, documents, and progress
-            from one convenient place.
-          </p>
-
-          <button
-            type="button"
-            className="customer-primary-action"
-            onClick={() => navigate("/customer/start-case")}
-          >
-            + Start a New Case
-          </button>
-        </div>
-
-        <div className="customer-overview-heading">
-          <div>
-            <h2>Your Workspace</h2>
             <p>
-              Everything you need to manage your legal matters.
+              Manage your legal matters, securely share documents,
+              and follow the progress of your cases from one place.
             </p>
+
+            <div className="welcome-cta-group">
+              <button
+                type="button"
+                className="btn-primary-navy"
+                onClick={() => navigate("/customer/start-case")}
+              >
+                + Start a New Case
+              </button>
+
+              <button
+                type="button"
+                className="btn-outline-navy"
+                onClick={() => navigate("/customer/my-cases")}
+              >
+                View My Cases →
+              </button>
+            </div>
           </div>
+        </section>
+
+        {/* Workspace Section */}
+        <div className="customer-hub-heading">
+          <h2>Your Legal Workspace</h2>
+          <p>
+            Everything you need to manage your legal matters.
+          </p>
         </div>
 
-        <div className="customer-dashboard-cards">
-          <article className="customer-dashboard-card">
-            <div className="customer-card-icon">📁</div>
-            <h2>My Cases</h2>
+        <div className="customer-hub-grid">
+
+          {/* My Cases */}
+          <article className="hub-card">
+            <div className="hub-card-icon">📁</div>
+
+            <h3>My Cases</h3>
+
             <p>
-              View your submitted cases and follow their progress.
+              View your submitted cases, assigned lawyers,
+              and case progress.
             </p>
+
             <button
               type="button"
+              className="hub-card-btn"
               onClick={() => navigate("/customer/my-cases")}
             >
-              View My Cases →
+              View Cases →
             </button>
           </article>
 
-          <article className="customer-dashboard-card">
-            <div className="customer-card-icon">➕</div>
-            <h2>Start a Case</h2>
-            <p>
-              Submit a new legal matter to the 4Justice team.
-            </p>
-            <button
-              type="button"
-              onClick={() => navigate("/customer/start-case")}
-            >
-              Start My Case →
-            </button>
-          </article>
+          {/* Document Vault */}
+          <article className="hub-card">
+            <div className="hub-card-icon">📄</div>
 
-          <article className="customer-dashboard-card">
-            <div className="customer-card-icon">📄</div>
-            <h2>Documents</h2>
+            <h3>Document Vault</h3>
+
             <p>
-              Access documents associated with your legal cases.
+              Access your uploaded contracts, evidence,
+              and other legal documents.
             </p>
+
             <button
               type="button"
+              className="hub-card-btn"
               onClick={() => navigate("/customer/documents")}
             >
               View Documents →
             </button>
           </article>
 
-          <article className="customer-dashboard-card">
-            <div className="customer-card-icon">🔔</div>
-            <h2>Case Updates</h2>
+          {/* Activity Updates */}
+          <article className="hub-card">
+            <div className="hub-card-icon">🔔</div>
+
+            <h3>Activity Updates</h3>
+
             <p>
-              Stay informed about case progress and important updates.
+              Check the latest updates about your cases
+              and legal representation.
             </p>
+
             <button
               type="button"
+              className="hub-card-btn"
               onClick={() => navigate("/customer/updates")}
             >
-              View Updates →
+              Check Updates →
             </button>
           </article>
+
         </div>
 
-        <div className="customer-payment-note">
-          <span className="customer-payment-icon">💳</span>
+        {/* Billing Information */}
+        <div className="portal-card customer-payment-banner">
+          <div className="payment-banner-content">
+            <div className="banner-icon-title">
+              <span className="banner-icon">💳</span>
 
+              <div>
+                <h3>Transparent Legal Billing</h3>
+                <p>
+                  Review your case-related fees and payment
+                  information through a clear billing process.
+                </p>
+              </div>
+            </div>
+
+            <span className="status-badge available">
+              Secured Account
+            </span>
+          </div>
+        </div>
+
+        {/* Support Section */}
+        <div className="support-banner">
           <div>
-            <h2>Payments</h2>
+            <h3>Need Assistance with Your Case?</h3>
+
             <p>
-              Payment history and invoices will be available here
-              in a future update.
+              Our client services team is ready to help
+              with your questions and filing requirements.
             </p>
           </div>
 
-          <span className="customer-coming-soon">
-            Coming later
-          </span>
+          <Link to="/" className="btn-outline-navy">
+            Visit APPEEL Home →
+          </Link>
         </div>
 
-        <div className="customer-help-section">
-          <div>
-            <h2>Need assistance?</h2>
-            <p>
-              Contact the 4Justice team if you need help with
-              your legal case.
-            </p>
-          </div>
-
-          <NavLink to="/" className="customer-help-link">
-            Visit Home →
-          </NavLink>
-        </div>
-      </section>
+      </div>
     </main>
   );
+}
+
+
+
+function getLoggedInRole() {
+  if (localStorage.getItem("adminToken")) return "admin";
+  if (localStorage.getItem("lawyerToken")) return "lawyer";
+  if (localStorage.getItem("customerToken")) return "customer";
+  return null;
+}
+
+function getDashboardForRole(role) {
+  if (role === "admin") return "/admin/dashboard";
+  if (role === "lawyer") return "/lawyer/dashboard";
+  if (role === "customer") return "/customer/dashboard";
+  return "/login";
+}
+
+// Redirect logged-in users away from public pages.
+function PublicOnlyRoute() {
+  const role = getLoggedInRole();
+
+  if (role) {
+    return <Navigate to={getDashboardForRole(role)} replace />;
+  }
+
+  return <Outlet />;
+}
+
+// Allow access only to the matching role.
+function ProtectedRoleRoute({ role }) {
+  const loggedInRole = getLoggedInRole();
+
+  if (!loggedInRole) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (loggedInRole !== role) {
+    return <Navigate to={getDashboardForRole(loggedInRole)} replace />;
+  }
+
+  return <Outlet />;
 }
 
 // ===============================
@@ -860,57 +1182,101 @@ function CustomerDashboard() {
 function App() {
   return (
     <BrowserRouter>
+      <ScrollTop />
       <Routes>
-        <Route path="/" element={<Home />} />
 
-        {/* Admin */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/*" element={<AdminLayout />} />
 
-        {/* Lawyer */}
-        <Route path="/lawyer/register" element={<LawyerRegister />} />
-        <Route path="/lawyer/login" element={<LawyerLogin />} />
-        <Route
-          path="/lawyer/dashboard"
-          element={<LawyerDashboard />}
-        />
+        {/* Home page: accessible to everyone, including logged-in users */}
+        <Route path="/" element={<LandingPage />} />
 
-        {/* Customer */}
+        {/* Authentication pages: available only when logged out */}
+        <Route element={<PublicOnlyRoute />}>
+          <Route path="/login" element={<LoginSelection />} />
+
+          <Route path="/admin/login" element={<AdminLogin />} />
+
+          <Route path="/lawyer/register" element={<LawyerRegister />} />
+          <Route path="/lawyer/login" element={<LawyerLogin />} />
+
+          <Route
+            path="/customer/register"
+            element={<CustomerRegister />}
+          />
+
+          <Route
+            path="/customer/login"
+            element={<CustomerLogin />}
+          />
+        </Route>
+
+        <Route path="/payment" element={<Payment />} />
+
+        {/* Admin-only pages */}
+        <Route element={<ProtectedRoleRoute role="admin" />}>
+          <Route path="/admin/*" element={<AdminLayout />} />
+        </Route>
+
+        {/* Password Recovery */}
         <Route
-          path="/customer/register"
-          element={<CustomerRegister />}
-        />
-        <Route
-          path="/customer/login"
-          element={<CustomerLogin />}
-        />
-        <Route
-          path="/customer/dashboard"
-          element={<CustomerDashboard />}
-        />
-        <Route
-          path="/customer/start-case"
-          element={<StartCase />}
-        />
-        <Route
-          path="/customer/my-cases"
-          element={<CustomerCases />}
-        />
-        <Route
-          path="/customer/my-cases/:caseId"
-          element={<CustomerCaseDetails />}
-        />
-        <Route
-          path="/customer/documents"
-          element={<CustomerDocuments />}
-        />
-        <Route
-          path="/customer/updates"
-          element={<CustomerUpdates />}
+          path="/forgot-password"
+          element={<ForgotPassword />}
         />
 
-        {/* Redirect unknown URLs */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route
+          path="/reset-password"
+          element={<ResetPassword />}
+        />
+
+
+
+        {/* contact page */}
+        <Route path="/contact" element={<ContactPage />} />
+        {/* Lawyer-only pages */}
+        <Route element={<ProtectedRoleRoute role="lawyer" />}>
+          <Route
+            path="/lawyer/dashboard"
+            element={<LawyerDashboard />}
+          />
+        </Route>
+
+        {/* Customer-only pages */}
+        <Route element={<ProtectedRoleRoute role="customer" />}>
+          <Route
+            path="/customer/dashboard"
+            element={<CustomerDashboard />}
+          />
+          <Route
+            path="/customer/start-case"
+            element={<StartCase />}
+          />
+          <Route
+            path="/customer/my-cases"
+            element={<CustomerCases />}
+          />
+          <Route
+            path="/customer/my-cases/:caseId"
+            element={<CustomerCaseDetails />}
+          />
+          <Route
+            path="/customer/documents"
+            element={<CustomerDocuments />}
+          />
+          <Route
+            path="/customer/updates"
+            element={<CustomerUpdates />}
+          />
+        </Route>
+
+        {/* Unknown URLs */}
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to={getDashboardForRole(getLoggedInRole())}
+              replace
+            />
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

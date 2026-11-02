@@ -17,3 +17,28 @@ backend/4justice/.env.*
 # IDE files
 .vscode/
 .idea/
+
+# Java and Maven
+**/target/
+*.class
+
+# Certificates and keystores
+*.pem
+*.jks
+*.p12
+*.keystore
+
+# Database backups
+*.sql
+*.sql.gz
+
+# Logs
+*.log
+
+# Local environment files
+application-local.properties
+
+# Local backups and sensitive configuration backups
+*.backup
+*.bak
+application.properties.backup

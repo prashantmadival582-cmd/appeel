@@ -1,8 +1,10 @@
 
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import API_BASE_URL from "../api/api";
 
-const API_BASE_URL = "http://localhost:8081";
+import DataTable from "../components/Table/DataTable";
+import LogoutConfirmDialog from "../components/LogoutConfirmDialog";
 
 function LawyerDashboard() {
   const navigate = useNavigate();
@@ -10,6 +12,7 @@ function LawyerDashboard() {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   const [availability, setAvailability] = useState("BUSY");
   const [availabilityLoading, setAvailabilityLoading] = useState(false);
 
@@ -21,6 +24,137 @@ function LawyerDashboard() {
   const [viewingId, setViewingId] = useState(null);
   const [updatingCaseId, setUpdatingCaseId] = useState(null);
 
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+const [loggingOut, setLoggingOut] = useState(false);
+
+
+
+
+
+  // Reusable DataTable columns
+  const lawyerCaseColumns = [
+    {
+      key: "caseId",
+      header: "Case ID",
+      accessor: "caseId",
+      render: (item) => (
+        <span className="case-id-tag">{item.caseId}</span>
+      ),
+    },
+    {
+      key: "customerName",
+      header: "Customer Name",
+      accessor: "customerName",
+      render: (item) => (
+        <strong>{item.customerName || "Customer"}</strong>
+      ),
+    },
+    {
+      key: "caseType",
+      header: "Matter Category",
+      accessor: "caseType",
+      render: (item) => (
+        <span className="table-type-badge">
+          {item.caseType || "General"}
+        </span>
+      ),
+    },
+    {
+      key: "description",
+      header: "Description",
+      accessor: "description",
+      render: (item) => (
+        <span className="text-truncate">
+          {item.description || "No description"}
+        </span>
+      ),
+    },
+    {
+      key: "status",
+      header: "Status",
+      accessor: "status",
+      render: (item) => (
+        <span className={getStatusClass(item.status)}>
+          {formatStatus(item.status)}
+        </span>
+      ),
+    },
+    {
+      key: "updateStatus",
+      header: "Update Status",
+      sortable: false,
+      render: (item) => (
+        <div className="status-update-inline">
+          <select
+            value={item.status || "PENDING"}
+            disabled={updatingCaseId === item.caseId}
+            onChange={(event) =>
+              updateStatus(item.caseId, event.target.value)
+            }
+            aria-label={`Update status for case ${item.caseId}`}
+            className="modern-select-sm"
+          >
+            <option value="PENDING">Pending</option>
+            <option value="UNDER_REVIEW">Under Review</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
+          </select>
+
+          {updatingCaseId === item.caseId && (
+            <small>Saving...</small>
+          )}
+        </div>
+      ),
+    },
+    {
+      key: "documents",
+      header: "Documents",
+      sortable: false,
+      render: (item) => (
+        <button
+          type="button"
+          className="btn-download-sm"
+          disabled={documentLoadingCase === item.caseId}
+          onClick={() => toggleDocuments(item.caseId)}
+        >
+          {documentLoadingCase === item.caseId
+            ? "Loading..."
+            : expandedCase === item.caseId
+              ? "Hide Files"
+              : `Files (${documentsByCase[item.caseId]?.length ?? "View"})`}
+        </button>
+      ),
+    },
+  ];
+
+  // Searchable fields
+  const lawyerCaseSearchFields = [
+    "caseId",
+    "customerName",
+    "caseType",
+    "description",
+    "status",
+  ];
+
+  // Status filter
+  const lawyerCaseFilters = [
+    {
+      key: "status",
+      label: "Status",
+      options: [
+        { label: "Pending", value: "PENDING" },
+        { label: "Submitted", value: "SUBMITTED" },
+        { label: "Under Review", value: "UNDER_REVIEW" },
+        { label: "In Progress", value: "IN_PROGRESS" },
+        { label: "Completed", value: "COMPLETED" },
+      ],
+    },
+  ];
+
+
+
+
+
   let lawyer = null;
 
   try {
@@ -31,10 +165,16 @@ function LawyerDashboard() {
   }
 
   const lawyerId = lawyer?.id;
+  const lawyerToken = localStorage.getItem("lawyerToken");
 
+  const authHeaders = () => ({
+    Authorization: `Bearer ${localStorage.getItem("lawyerToken") || ""}`,
+  });
+
+  // Load lawyer details and assigned cases.
   useEffect(() => {
-    if (!lawyerId) {
-      navigate("/lawyer/login");
+    if (!lawyerId || !lawyerToken) {
+      navigate("/login", { replace: true });
       return;
     }
 
@@ -45,13 +185,14 @@ function LawyerDashboard() {
 
         const lawyerResponse = await fetch(
           `${API_BASE_URL}/api/lawyers/${lawyerId}`,
-          { credentials: "include" }
+          { headers: authHeaders() }
         );
 
         if (!lawyerResponse.ok) {
           throw new Error(
-            lawyerResponse.status === 401
-              ? "Your session has expired. Please log in again."
+            lawyerResponse.status === 401 ||
+              lawyerResponse.status === 403
+              ? "Your session is invalid or expired. Please log in again."
               : "Unable to fetch lawyer details."
           );
         }
@@ -59,15 +200,15 @@ function LawyerDashboard() {
         const lawyerData = await lawyerResponse.json();
         setAvailability(lawyerData.availability || "BUSY");
 
-        // Fetch only cases assigned to the authenticated lawyer.
         const casesResponse = await fetch(
           `${API_BASE_URL}/api/lawyers/my-cases`,
-          { credentials: "include" }
+          { headers: authHeaders() }
         );
 
         if (!casesResponse.ok) {
           throw new Error(
-            casesResponse.status === 401
+            casesResponse.status === 401 ||
+              casesResponse.status === 403
               ? "Your lawyer session is not valid. Please log in again."
               : "Unable to fetch assigned cases."
           );
@@ -83,8 +224,9 @@ function LawyerDashboard() {
     };
 
     fetchLawyerData();
-  }, [lawyerId, navigate]);
+  }, [lawyerId, lawyerToken, navigate]);
 
+  // Update lawyer availability.
   const updateAvailability = async (status) => {
     try {
       setAvailabilityLoading(true);
@@ -93,7 +235,7 @@ function LawyerDashboard() {
         `${API_BASE_URL}/api/lawyers/${lawyerId}/availability?status=${encodeURIComponent(status)}`,
         {
           method: "PUT",
-          credentials: "include",
+          headers: authHeaders(),
         }
       );
 
@@ -112,6 +254,7 @@ function LawyerDashboard() {
     }
   };
 
+  // Update assigned case status.
   const updateStatus = async (caseId, status) => {
     try {
       setUpdatingCaseId(caseId);
@@ -120,7 +263,7 @@ function LawyerDashboard() {
         `${API_BASE_URL}/api/lawyers/cases/${encodeURIComponent(caseId)}/status?status=${encodeURIComponent(status)}`,
         {
           method: "PUT",
-          credentials: "include",
+          headers: authHeaders(),
         }
       );
 
@@ -146,6 +289,7 @@ function LawyerDashboard() {
     }
   };
 
+  // Fetch documents for a case.
   const fetchCaseDocuments = async (caseId) => {
     try {
       setDocumentLoadingCase(caseId);
@@ -157,24 +301,41 @@ function LawyerDashboard() {
 
       const response = await fetch(
         `${API_BASE_URL}/api/cases/${encodeURIComponent(caseId)}/documents`,
-        { credentials: "include" }
+        { headers: authHeaders() }
       );
 
       if (!response.ok) {
         throw new Error(
-          response.status === 404
-            ? "Documents are unavailable or you do not have access to this case."
-            : `Unable to load documents (${response.status}).`
+          (await response.text()) ||
+            `Unable to load documents (${response.status}).`
         );
       }
 
       const data = await response.json();
 
+      console.log("Documents received for case:", caseId, data);
+
+      const documentList = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.documents)
+        ? data.documents
+        : Array.isArray(data?.data)
+        ? data.data
+        : Array.isArray(data?.content)
+        ? data.content
+        : null;
+
+      if (!documentList) {
+        throw new Error("Invalid document list received from the server.");
+      }
+
       setDocumentsByCase((previous) => ({
         ...previous,
-        [caseId]: Array.isArray(data) ? data : [],
+        [caseId]: documentList,
       }));
     } catch (err) {
+      console.error("Failed to fetch case documents:", err);
+
       setDocumentErrors((previous) => ({
         ...previous,
         [caseId]: err.message || "Unable to load documents.",
@@ -184,6 +345,7 @@ function LawyerDashboard() {
     }
   };
 
+  // Expand or collapse a case's documents.
   const toggleDocuments = async (caseId) => {
     if (expandedCase === caseId) {
       setExpandedCase(null);
@@ -191,90 +353,172 @@ function LawyerDashboard() {
     }
 
     setExpandedCase(caseId);
-
-    if (!Object.prototype.hasOwnProperty.call(documentsByCase, caseId)) {
-      await fetchCaseDocuments(caseId);
-    }
+    await fetchCaseDocuments(caseId);
   };
 
+  // Download document bytes from the backend.
   const getDocumentBlob = async (documentId) => {
-    const response = await fetch(
-      `${API_BASE_URL}/api/cases/documents/${encodeURIComponent(documentId)}/download`,
-      { credentials: "include" }
+    if (documentId == null) {
+      throw new Error("Document ID is missing.");
+    }
+
+    const token = localStorage.getItem("lawyerToken");
+
+    if (!token) {
+      throw new Error("Lawyer session expired. Please log in again.");
+    }
+
+    const url =
+      `${API_BASE_URL}/api/cases/documents/` +
+      `${encodeURIComponent(documentId)}/download`;
+
+    console.log("Requesting document:", url);
+
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log("Document HTTP status:", response.status);
+    console.log(
+      "Document Content-Type:",
+      response.headers.get("content-type")
     );
 
     if (!response.ok) {
-      throw new Error(`Document request failed (${response.status}).`);
+      const message = await response.text();
+
+      throw new Error(
+        `Document request failed (${response.status}): ` +
+          (message || response.statusText)
+      );
     }
 
     const blob = await response.blob();
 
+    console.log("Received document size:", blob.size, "bytes");
+
     if (blob.size === 0) {
-      throw new Error("The document is empty.");
+      throw new Error("The server returned an empty document.");
     }
 
     return blob;
   };
 
-  const handleDownload = async (document) => {
+  // Download a document.
+  const handleDownload = async (file) => {
+    const docId = file?.id ?? file?.documentId;
+    if (!docId) {
+      alert("Document ID is missing.");
+      return;
+    }
+
     try {
-      setDownloadingId(document.id);
+      setDownloadingId(docId);
+      console.log("DOWNLOAD CLICKED:", file);
 
-      const blob = await getDocumentBlob(document.id);
-      const url = window.URL.createObjectURL(blob);
-      const link = documentElementLink(url, document.fileName);
+      const blob = await getDocumentBlob(docId);
+      const objectUrl = window.URL.createObjectURL(blob);
 
-      document.body.appendChild(link);
+      const link = window.document.createElement("a");
+      link.href = objectUrl;
+      link.download = file.fileName || file.name || "case-document";
+
+      window.document.body.appendChild(link);
       link.click();
       link.remove();
 
-      window.setTimeout(() => window.URL.revokeObjectURL(url), 1000);
+      window.setTimeout(() => {
+        window.URL.revokeObjectURL(objectUrl);
+      }, 1000);
     } catch (err) {
+      console.error("DOCUMENT DOWNLOAD ERROR:", err);
       alert(err.message || "Unable to download the document.");
     } finally {
       setDownloadingId(null);
     }
   };
 
-  const handleViewDocument = async (document) => {
-    const newTab = window.open("about:blank", "_blank");
-
-    if (!newTab) {
-      alert("Your browser blocked the new tab. Allow pop-ups and try again.");
+  // View a document in a new tab.
+  const handleViewDocument = async (file) => {
+    const docId = file?.id ?? file?.documentId;
+    if (!docId) {
+      alert("Document ID is missing.");
       return;
     }
 
+    // Open synchronously during the click to avoid popup blocking.
+    const newTab = window.open("about:blank", "_blank");
+
+    if (!newTab) {
+      alert("Pop-up blocked. Allow pop-ups for localhost:5173 and try again.");
+      return;
+    }
+
+    let objectUrl = null;
+
     try {
-      setViewingId(document.id);
+      setViewingId(docId);
+      console.log("VIEW CLICKED:", file);
 
-      const blob = await getDocumentBlob(document.id);
-      const url = window.URL.createObjectURL(blob);
+      newTab.document.title = "Loading document";
+      newTab.document.body.innerHTML =
+        "<p style='font-family:Arial;padding:24px'>Loading document...</p>";
 
-      newTab.location.href = url;
+      const blob = await getDocumentBlob(docId);
+      const fileType =
+        file.fileType || file.contentType || blob.type || "application/octet-stream";
 
-      // Keep the URL available while the document is being viewed.
-      window.setTimeout(() => window.URL.revokeObjectURL(url), 5 * 60 * 1000);
+      objectUrl = window.URL.createObjectURL(
+        new Blob([blob], { type: fileType })
+      );
+
+      newTab.location.replace(objectUrl);
+
+      // Give the browser time to load the document before cleanup.
+      window.setTimeout(() => {
+        if (objectUrl) {
+          window.URL.revokeObjectURL(objectUrl);
+        }
+      }, 300000);
     } catch (err) {
-      newTab.close();
-      alert(err.message || "Unable to view the document.");
+      console.error("DOCUMENT VIEW ERROR:", err);
+
+      if (!newTab.closed) {
+        newTab.document.body.innerHTML =
+          "<p style='font-family:Arial;padding:24px;color:#b91c1c'>" +
+          "Unable to open this document. Return to the dashboard and check the error." +
+          "</p>";
+      }
+
+      alert(err.message || "Unable to open the document.");
     } finally {
       setViewingId(null);
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      await fetch(`${API_BASE_URL}/api/lawyers/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (err) {
-      console.error("Logout request failed:", err);
-    } finally {
-      localStorage.removeItem("loggedInLawyer");
-      navigate("/lawyer/login");
-    }
-  };
+ // Sign out.
+const handleLogout = async () => {
+  if (loggingOut) return;
+
+  setLoggingOut(true);
+
+  try {
+    await fetch(`${API_BASE_URL}/api/lawyers/logout`, {
+      method: "POST",
+      headers: authHeaders(),
+    });
+  } catch (err) {
+    console.error("Logout request failed:", err);
+  } finally {
+    localStorage.removeItem("loggedInLawyer");
+    localStorage.removeItem("lawyerToken");
+
+    navigate("/login", { replace: true });
+  }
+};
 
   const totalCases = cases.length;
 
@@ -289,253 +533,249 @@ function LawyerDashboard() {
   const formatStatus = (status) =>
     status?.replaceAll("_", " ") || "Unknown";
 
-  const getStatusClass = (status) =>
-    `case-status ${status?.toLowerCase().replaceAll("_", "-") || ""}`;
+  const getStatusClass = (status = "") => {
+    const value = status.toUpperCase();
+
+    if (value.includes("PENDING") || value.includes("SUBMITTED")) {
+      return "status-badge pending";
+    }
+
+    if (value.includes("PROGRESS")) {
+      return "status-badge in-progress";
+    }
+
+    if (value.includes("REVIEW")) {
+      return "status-badge under-review";
+    }
+
+    if (value.includes("COMPLETED")) {
+      return "status-badge completed";
+    }
+
+    return "status-badge";
+  };
 
   return (
-    <main className="lawyer-dashboard">
-      <header className="lawyer-dashboard-header">
-        <div className="lawyer-dashboard-title-area">
-          <div className="lawyer-header-badge">Lawyer Workspace</div>
-          <h1>Lawyer Dashboard</h1>
+    <main className="portal-page">
+      <header className="customer-portal-navbar lawyer-navbar">
+        <div className="portal-nav-container">
+          <Link to="/lawyer/dashboard" className="portal-brand">
+            <span className="brand-icon">⚖️</span>
+            <span className="brand-title">APPEEL</span>
+            <span className="brand-portal-pill lawyer">
+              Lawyer Portal
+            </span>
+          </Link>
 
-          <p className="lawyer-dashboard-welcome">
-            {lawyer?.name || lawyer?.email || "Counsel"}
-          </p>
+          
+<div className="portal-nav-links open">
+  <Link
+    to="/"
+    className="portal-nav-link"
+  >
+    ⌂ Home
+  </Link>
 
-          <p className="lawyer-dashboard-subtitle">
-            Manage your assigned cases, review customer documents, and update
-            case progress.
-          </p>
-        </div>
+ <button
+  type="button"
+  className="btn-logout-nav"
+  onClick={() => setLogoutDialogOpen(true)}
+>
+  Sign Out
+</button>
+</div>
 
-        <div className="lawyer-dashboard-actions">
-          <button
-            type="button"
-            className="lawyer-dashboard-secondary"
-            onClick={() => navigate("/")}
-          >
-            ← Home
-          </button>
-
-          <button
-            type="button"
-            className="lawyer-dashboard-logout"
-            onClick={handleLogout}
-          >
-            Log Out
-          </button>
         </div>
       </header>
 
-      <section className="lawyer-stats-grid">
-        <div className="lawyer-stat-card">
-          <div className="lawyer-stat-icon total">📂</div>
-          <div className="lawyer-stat-details">
-            <span className="lawyer-stat-label">Assigned Cases</span>
-            <span className="lawyer-stat-val">
-              {loading ? "-" : totalCases}
-            </span>
-          </div>
-        </div>
-
-        <div className="lawyer-stat-card">
-          <div className="lawyer-stat-icon active">⚖️</div>
-          <div className="lawyer-stat-details">
-            <span className="lawyer-stat-label">Active / In Progress</span>
-            <span className="lawyer-stat-val">
-              {loading ? "-" : activeCases}
-            </span>
-          </div>
-        </div>
-
-        <div className="lawyer-stat-card">
-          <div className="lawyer-stat-icon completed">✅</div>
-          <div className="lawyer-stat-details">
-            <span className="lawyer-stat-label">Resolved Cases</span>
-            <span className="lawyer-stat-val">
-              {loading ? "-" : completedCases}
-            </span>
-          </div>
-        </div>
-
-        <div className="lawyer-stat-card availability-stat">
-          <div className="lawyer-stat-icon status-icon">
-            <span
-              className={`lawyer-pulse-dot ${availability?.toLowerCase()}`}
-            />
-          </div>
-
-          <div className="lawyer-stat-details">
-            <span className="lawyer-stat-label">Current Status</span>
-            <span
-              className={`lawyer-stat-val status-text ${availability?.toLowerCase()}`}
-            >
-              {availability === "AVAILABLE"
-                ? "Available for Cases"
-                : "Busy"}
-            </span>
-          </div>
-        </div>
-      </section>
-
-      <section className="lawyer-availability-card">
-        <div className="lawyer-card-lead">
-          <div className="lawyer-card-icon">⚡</div>
+      <div className="portal-container">
+        <div className="portal-page-header">
           <div>
-            <h2>Availability Status</h2>
-            <p>Choose whether you can accept new case allocations.</p>
-          </div>
-        </div>
 
-        <div className="lawyer-availability-control">
-          <label htmlFor="availability">Accepting Cases</label>
+            <h1>
+              Welcome, {lawyer?.name || lawyer?.email || "Counsel"}
+            </h1>
 
-          <div className="lawyer-select-wrapper">
-            <select
-              id="availability"
-              value={availability}
-              onChange={(event) => updateAvailability(event.target.value)}
-              disabled={availabilityLoading || loading}
-              className={`lawyer-status-select ${availability?.toLowerCase()}`}
-            >
-              <option value="AVAILABLE">🟢 Available</option>
-              <option value="BUSY">🔴 Busy</option>
-            </select>
-          </div>
-
-          {availabilityLoading && (
-            <span className="lawyer-dashboard-updating">
-              <span className="lawyer-spinner" /> Saving...
-            </span>
-          )}
-        </div>
-      </section>
-
-      <section className="lawyer-cases-card">
-        <div className="lawyer-cases-header">
-          <div>
-            <h2>Assigned Cases &amp; Matters</h2>
-            <p>
-              Review case details, access documents, and update case progress.
+            <p className="portal-subheading">
+              Manage your assigned legal cases, review client evidence,
+              and update case's.
             </p>
           </div>
 
-          <div className="lawyer-cases-count-badge">
-            {cases.length} {cases.length === 1 ? "case" : "cases"}
+          <div className="lawyer-availability-badge-box">
+            <span className="chip-label">Allocation Status</span>
+
+            <div className="availability-selector-wrap">
+              <select
+                id="availability"
+                value={availability}
+                onChange={(event) => updateAvailability(event.target.value)}
+                disabled={availabilityLoading || loading}
+                className={`availability-select ${availability.toLowerCase()}`}
+              >
+                <option value="AVAILABLE">🟢 Available for Cases</option>
+                <option value="BUSY">🔴 Currently Busy</option>
+              </select>
+
+              {availabilityLoading && (
+                <small className="saving-indicator">Saving...</small>
+              )}
+            </div>
           </div>
         </div>
 
-        {loading && (
-          <p className="lawyer-dashboard-message" role="status">
-            Loading assigned cases...
-          </p>
-        )}
-
-        {error && (
-          <div className="lawyer-dashboard-message lawyer-dashboard-error">
-            <p role="alert">{error}</p>
-            <button type="button" onClick={() => window.location.reload()}>
-              Reload Dashboard
-            </button>
+        <section className="stats-metric-grid">
+          <div className="metric-card">
+            <div className="metric-icon total">📁</div>
+            <div className="metric-info">
+              <span className="metric-label">Assigned Matters</span>
+              <strong className="metric-value">
+                {loading ? "-" : totalCases}
+              </strong>
+            </div>
           </div>
-        )}
 
-        {!loading && !error && cases.length === 0 && (
-          <p className="lawyer-dashboard-message">
-            No cases are currently assigned to you.
-          </p>
-        )}
-
-        {!loading && !error && cases.length > 0 && (
-          <div className="lawyer-cases-table-wrapper">
-            <table className="lawyer-cases-table">
-              <thead>
-                <tr>
-                  <th>Case ID</th>
-                  <th>Customer</th>
-                  <th>Case Type</th>
-                  <th>Description</th>
-                  <th>Status</th>
-                  <th>Update Status</th>
-                  <th>Documents</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {cases.map((item) => (
-                  <tr key={item.caseId}>
-                    <td className="lawyer-case-id">{item.caseId}</td>
-                    <td>{item.customerName || "Not provided"}</td>
-                    <td>{item.caseType || "Not specified"}</td>
-                    <td className="lawyer-case-description">
-                      {item.description || "No description"}
-                    </td>
-
-                    <td>
-                      <span className={getStatusClass(item.status)}>
-                        {formatStatus(item.status)}
-                      </span>
-                    </td>
-
-                    <td>
-                      <select
-                        value={item.status || "PENDING"}
-                        disabled={updatingCaseId === item.caseId}
-                        onChange={(event) =>
-                          updateStatus(item.caseId, event.target.value)
-                        }
-                        aria-label={`Update status for case ${item.caseId}`}
-                      >
-                        <option value="PENDING">Pending</option>
-                        <option value="UNDER_REVIEW">Under Review</option>
-                        <option value="IN_PROGRESS">In Progress</option>
-                        <option value="COMPLETED">Completed</option>
-                      </select>
-
-                      {updatingCaseId === item.caseId && (
-                        <small>Saving...</small>
-                      )}
-                    </td>
-
-                    <td>
-                      <button
-                        type="button"
-                        className="view-case-button"
-                        onClick={() => toggleDocuments(item.caseId)}
-                        disabled={documentLoadingCase === item.caseId}
-                      >
-                        {documentLoadingCase === item.caseId
-                          ? "Loading..."
-                          : expandedCase === item.caseId
-                            ? "Hide Documents"
-                            : "View Documents"}
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="metric-card">
+            <div className="metric-icon active">⚖️</div>
+            <div className="metric-info">
+              <span className="metric-label">Active / In Progress</span>
+              <strong className="metric-value">
+                {loading ? "-" : activeCases}
+              </strong>
+            </div>
           </div>
-        )}
 
-        {expandedCase && (
-          <section className="details-card lawyer-case-documents">
-            <div className="details-card-header">
-              <h2>Case Documents</h2>
-              <strong>{expandedCase}</strong>
+          <div className="metric-card">
+            <div className="metric-icon completed">✅</div>
+            <div className="metric-info">
+              <span className="metric-label">Resolved Cases</span>
+              <strong className="metric-value">
+                {loading ? "-" : completedCases}
+              </strong>
+            </div>
+          </div>
+
+          <div className="metric-card">
+            <div className="metric-icon status-icon">
+              <span className={`pulse-dot ${availability.toLowerCase()}`} />
+            </div>
+            <div className="metric-info">
+              <span className="metric-label">Accepting Cases</span>
+              <strong className="metric-value">
+                {availability === "AVAILABLE"
+                  ? "Yes (Available)"
+                  : "No (Busy)"}
+              </strong>
+            </div>
+          </div>
+        </section>
+
+        <section className="portal-card">
+          <div className="card-header-simple">
+            <div className="header-icon-title">
+              <span className="header-icon">📂</span>
+              <div>
+                <h3>Assigned Client Matters</h3>
+                <p>
+                  Update case progression and inspect client documentation
+                </p>
+              </div>
+            </div>
+
+            <span className="results-badge">
+              {cases.length} {cases.length === 1 ? "matter" : "matters"}
+            </span>
+          </div>
+
+          {loading && (
+            <div className="loading-card">
+              <div className="loading-spinner" />
+              <p>Loading assigned cases...</p>
+            </div>
+          )}
+
+          {error && (
+            <div className="alert-banner alert-error" role="alert">
+              <span className="alert-icon">⚠️</span>
+              <div>
+                <p>{error}</p>
+                <button
+                  type="button"
+                  className="btn-outline-navy btn-sm"
+                  onClick={() => window.location.reload()}
+                >
+                  Reload
+                </button>
+              </div>
+            </div>
+          )}
+
+          {!loading && !error && cases.length === 0 && (
+            <div className="empty-state-card">
+              <div className="empty-icon">📂</div>
+              <h2>No cases currently assigned</h2>
+              <p>
+                When administrators allocate incoming cases to your
+                specialization, they will appear here.
+              </p>
+            </div>
+          )}
+
+          
+  {!error && (
+    <DataTable
+      title="Assigned Client Matters"
+      showHeading={false}
+      columns={lawyerCaseColumns}
+      data={cases}
+      rowKey="caseId"
+      searchFields={lawyerCaseSearchFields}
+      filters={lawyerCaseFilters}
+      searchable={true}
+      exportable={true}
+      pagination={true}
+      pageSize={10}
+      loading={loading}
+      emptyMessage="No cases are currently assigned to you."
+    />
+  )}
+
+        </section>
+
+        {expandedCase !== null && (
+          <section className="portal-card vault-drawer">
+            <div className="card-header-simple">
+              <div className="header-icon-title">
+                <span className="header-icon">📄</span>
+                <div>
+                  <h3>Matter Files: {expandedCase}</h3>
+                  <p>Customer uploaded evidence and filed documents</p>
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="btn-close-sm"
+                onClick={() => setExpandedCase(null)}
+              >
+                ✕ Close
+              </button>
             </div>
 
             {documentLoadingCase === expandedCase && (
-              <p>Loading documents...</p>
+              <div className="loading-card">
+                <div className="loading-spinner" />
+                <p>Loading documents...</p>
+              </div>
             )}
 
-            {documentErrors[expandedCase] && (
-              <div role="alert">
-                <p>{documentErrors[expandedCase]}</p>
+            {!documentLoadingCase && documentErrors[expandedCase] && (
+              <div className="alert-banner alert-error" role="alert">
+                <span className="alert-icon">⚠️</span>
+                <span>{documentErrors[expandedCase]}</span>
                 <button
                   type="button"
-                  className="view-case-button"
+                  className="btn-outline-navy btn-sm"
                   onClick={() => fetchCaseDocuments(expandedCase)}
                 >
                   Retry
@@ -546,67 +786,78 @@ function LawyerDashboard() {
             {!documentLoadingCase &&
               !documentErrors[expandedCase] &&
               (documentsByCase[expandedCase] || []).length === 0 && (
-                <p>No documents have been uploaded for this case.</p>
+                <div className="vault-empty">
+                  <span>
+                    No documents found for case {expandedCase}.
+                  </span>
+                </div>
               )}
 
             {!documentLoadingCase &&
               !documentErrors[expandedCase] &&
-              (documentsByCase[expandedCase] || []).map((document) => (
-                <div className="case-document-item" key={document.id}>
-                  <div className="case-document-info">
-                    <span className="case-document-icon">📄</span>
-                    <div>
-                      <strong>
-                        {document.fileName || "Unnamed document"}
-                      </strong>
-                      <span>{document.fileType || "File"}</span>
-                    </div>
-                  </div>
+              (documentsByCase[expandedCase] || []).length > 0 && (
+                <ul className="file-items-list">
+                  {(documentsByCase[expandedCase] || []).map((file, index) => {
+                    const docId = file.id ?? file.documentId ?? index;
+                    return (
+                      <li className="file-item-row" key={docId}>
+                        <div className="file-info-group">
+                          <span className="file-type-icon">📄</span>
+                          <div className="file-text-meta">
+                            <span className="file-name" title={file.fileName || file.name}>
+                              {file.fileName || file.name || "Unnamed document"}
+                            </span>
+                            <span className="file-sub">
+                              {file.fileType || file.contentType || "File"}
+                            </span>
+                          </div>
+                        </div>
 
-                  <div className="case-document-actions">
-                    <button
-                      type="button"
-                      className="view-case-button"
-                      disabled={
-                        downloadingId === document.id ||
-                        viewingId === document.id
-                      }
-                      onClick={() => handleViewDocument(document)}
-                    >
-                      {viewingId === document.id
-                        ? "Opening..."
-                        : "View Document"}
-                    </button>
+                        <div className="file-action-buttons">
+                          <button
+                            type="button"
+                            className="btn-download-sm"
+                            disabled={
+                              downloadingId === docId ||
+                              viewingId === docId
+                            }
+                            onClick={() => handleViewDocument(file)}
+                          >
+                            {viewingId === docId ? "Opening..." : "View"}
+                          </button>
 
-                    <button
-                      type="button"
-                      className="view-case-button"
-                      disabled={
-                        downloadingId === document.id ||
-                        viewingId === document.id
-                      }
-                      onClick={() => handleDownload(document)}
-                    >
-                      {downloadingId === document.id
-                        ? "Downloading..."
-                        : "Download"}
-                    </button>
-                  </div>
-                </div>
-              ))}
+                          <button
+                            type="button"
+                            className="btn-download-sm"
+                            disabled={
+                              downloadingId === docId ||
+                              viewingId === docId
+                            }
+                            onClick={() => handleDownload(file)}
+                          >
+                            {downloadingId === docId
+                              ? "Downloading..."
+                              : "↓ Download"}
+                          </button>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
           </section>
         )}
-      </section>
+      </div>
+
+
+      <LogoutConfirmDialog
+  open={logoutDialogOpen}
+  loading={loggingOut}
+  onCancel={() => setLogoutDialogOpen(false)}
+  onConfirm={handleLogout}
+/>
     </main>
   );
-}
-
-// Create a download link for a document.
-function documentElementLink(url, fileName) {
-  const link = window.document.createElement("a");
-  link.href = url;
-  link.download = fileName || "case-document";
-  return link;
 }
 
 export default LawyerDashboard;

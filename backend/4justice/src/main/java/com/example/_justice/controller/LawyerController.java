@@ -4,18 +4,17 @@ package com.example._justice.controller;
 import com.example._justice.dto.LawyerLoginRequest;
 import com.example._justice.dto.LawyerRequest;
 import com.example._justice.dto.LawyerResponse;
-import com.example._justice.security.UserSession;
 import com.example._justice.entity.Case;
 import com.example._justice.entity.Lawyer;
+import com.example._justice.security.JwtService;
 import com.example._justice.service.CaseService;
 import com.example._justice.service.LawyerService;
 
 import jakarta.validation.Valid;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,15 +26,18 @@ public class LawyerController {
 
     private final LawyerService lawyerService;
     private final CaseService caseService;
+    private final JwtService jwtService;
 
     public LawyerController(
             LawyerService lawyerService,
-            CaseService caseService) {
+            CaseService caseService,
+            JwtService jwtService) {
         this.lawyerService = lawyerService;
         this.caseService = caseService;
+        this.jwtService = jwtService;
     }
 
-    // Register a lawyer
+    // Register Lawyer
     @PostMapping("/register")
     public ResponseEntity<?> registerLawyer(
             @Valid @RequestBody LawyerRequest request) {
@@ -47,83 +49,75 @@ public class LawyerController {
         }
     }
 
-    // Lawyer login
+    // Lawyer Login
     @PostMapping("/login")
     public ResponseEntity<?> loginLawyer(
-            @Valid @RequestBody LawyerLoginRequest request,
-            HttpServletRequest servletRequest) {
+            @RequestBody LawyerLoginRequest request) {
         try {
             Lawyer lawyer = lawyerService.loginLawyer(
                     request.getEmail(),
                     request.getPassword());
 
-            HttpSession existingSession =
-                    servletRequest.getSession(false);
+            String token = jwtService.generateToken(
+                    lawyer.getId(),
+                    lawyer.getEmail(),
+                    "LAWYER");
 
-            if (existingSession != null) {
-                existingSession.invalidate();
-            }
-
-            HttpSession session = servletRequest.getSession(true);
-
-            UserSession.start(session, UserSession.LAWYER);
-            session.setAttribute(
-                    UserSession.LAWYER_ID,
-                    lawyer.getId());
-
-            session.setMaxInactiveInterval(30 * 60);
-
-            return ResponseEntity.ok(LawyerResponse.from(lawyer));
+            return ResponseEntity.ok(Map.of(
+                    "message", "Lawyer login successful",
+                    "token", token,
+                    "role", "LAWYER",
+                    "userId", lawyer.getId(),
+                    "lawyer", LawyerResponse.from(lawyer)
+            ));
 
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of(
+                            "message", "Invalid email or password"
+                    ));
         }
     }
 
-    // Lawyer logout
+    // Logout
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(HttpSession session) {
-        if (session != null) {
-            session.invalidate();
-        }
-
+    public ResponseEntity<Void> logout() {
+        // The frontend removes the stored JWT.
         return ResponseEntity.noContent().build();
     }
 
-    // Get all lawyers
-    // Keep this endpoint for the existing admin assignment workflow.
+    // Get All Lawyers
     @GetMapping
     public ResponseEntity<List<LawyerResponse>> getAllLawyers() {
-        List<LawyerResponse> lawyers =
-                lawyerService.getAllLawyers()
-                        .stream()
-                        .map(LawyerResponse::from)
-                        .toList();
+        List<LawyerResponse> lawyers = lawyerService.getAllLawyers()
+                .stream()
+                .map(LawyerResponse::from)
+                .toList();
 
         return ResponseEntity.ok(lawyers);
     }
 
-    // Get lawyer details
+    // Get Lawyer By ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getLawyerById(
             @PathVariable Long id,
-            HttpSession session) {
+            @org.springframework.security.core.annotation.AuthenticationPrincipal
+            Jwt jwt) {
 
-        String role = UserSession.getRole(session);
-        Long loggedInLawyerId = getLoggedInLawyerId(session);
+        String role = jwt.getClaimAsString("role");
+        Long loggedInLawyerId = getUserId(jwt);
 
-        // A lawyer can access only their own details.
-        // Admin can access lawyer details for administration.
-        if (UserSession.LAWYER.equals(role)
+        if ("LAWYER".equals(role)
                 && !id.equals(loggedInLawyerId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("message",
-                            "You cannot access another lawyer's details."));
+                    .body(Map.of(
+                            "message",
+                            "You cannot access another lawyer's details."
+                    ));
         }
 
-        if (!UserSession.LAWYER.equals(role)
-                && !UserSession.ADMIN.equals(role)) {
-            return unauthorized();
+        if (!"LAWYER".equals(role) && !"ADMIN".equals(role)) {
+            return forbidden();
         }
 
         Lawyer lawyer = lawyerService.getLawyerById(id);
@@ -135,19 +129,16 @@ public class LawyerController {
         return ResponseEntity.ok(LawyerResponse.from(lawyer));
     }
 
-    // Update lawyer details
+    // Update Lawyer Details (Admin Only)
     @PutMapping("/{id}")
     public ResponseEntity<?> updateLawyer(
             @PathVariable Long id,
             @RequestBody LawyerRequest request,
-            HttpSession session) {
+            @org.springframework.security.core.annotation.AuthenticationPrincipal
+            Jwt jwt) {
 
-        String role = UserSession.getRole(session);
-        Long loggedInLawyerId = getLoggedInLawyerId(session);
-
-        // Only admin can update lawyer profile details.
-        if (!UserSession.ADMIN.equals(role)) {
-            return unauthorized();
+        if (!"ADMIN".equals(jwt.getClaimAsString("role"))) {
+            return forbidden();
         }
 
         try {
@@ -164,31 +155,31 @@ public class LawyerController {
         }
     }
 
-    // Update the logged-in lawyer's availability
+    // Update Availability (Lawyer Can Update Own Status Only)
     @PutMapping("/{id}/availability")
     public ResponseEntity<?> updateAvailability(
             @PathVariable Long id,
             @RequestParam String status,
-            HttpSession session) {
+            @org.springframework.security.core.annotation.AuthenticationPrincipal
+            Jwt jwt) {
 
-        String role = UserSession.getRole(session);
-        Long loggedInLawyerId = getLoggedInLawyerId(session);
+        String role = jwt.getClaimAsString("role");
+        Long loggedInLawyerId = getUserId(jwt);
 
-        if (!UserSession.LAWYER.equals(role)
-                || loggedInLawyerId == null) {
-            return unauthorized();
+        if (!"LAWYER".equals(role)) {
+            return forbidden();
         }
 
-        // Prevent a lawyer from changing another lawyer's availability.
         if (!id.equals(loggedInLawyerId)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                    .body(Map.of("message",
-                            "You can update only your own availability."));
+                    .body(Map.of(
+                            "message",
+                            "You can update only your own availability."
+                    ));
         }
 
         try {
-            Lawyer lawyer =
-                    lawyerService.updateAvailability(id, status);
+            Lawyer lawyer = lawyerService.updateAvailability(id, status);
 
             if (lawyer == null) {
                 return ResponseEntity.notFound().build();
@@ -201,40 +192,38 @@ public class LawyerController {
         }
     }
 
-    // Get only the cases assigned to the logged-in lawyer
+    // Get Cases Assigned to Logged-in Lawyer
     @GetMapping("/my-cases")
-    public ResponseEntity<?> getMyCases(HttpSession session) {
+    public ResponseEntity<?> getMyCases(
+            @org.springframework.security.core.annotation.AuthenticationPrincipal
+            Jwt jwt) {
 
-        String role = UserSession.getRole(session);
-        Long lawyerId = getLoggedInLawyerId(session);
-
-        if (!UserSession.LAWYER.equals(role) || lawyerId == null) {
-            return unauthorized();
+        if (!"LAWYER".equals(jwt.getClaimAsString("role"))) {
+            return forbidden();
         }
 
+        Long lawyerId = getUserId(jwt);
         List<Case> assignedCases =
                 caseService.getCasesForLawyer(lawyerId);
 
         return ResponseEntity.ok(assignedCases);
     }
 
-    // Update the status of a case assigned to the logged-in lawyer
+    // Update Case Status
     @PutMapping("/cases/{caseId}/status")
     public ResponseEntity<?> updateCaseStatus(
             @PathVariable String caseId,
             @RequestParam String status,
-            HttpSession session) {
+            @org.springframework.security.core.annotation.AuthenticationPrincipal
+            Jwt jwt) {
 
-        String role = UserSession.getRole(session);
-        Long lawyerId = getLoggedInLawyerId(session);
-
-        if (!UserSession.LAWYER.equals(role) || lawyerId == null) {
-            return unauthorized();
+        if (!"LAWYER".equals(jwt.getClaimAsString("role"))) {
+            return forbidden();
         }
 
+        Long lawyerId = getUserId(jwt);
+
         try {
-            // Use the lawyer ID from the authenticated session,
-            // never from a request parameter.
             Case updatedCase = caseService.updateCaseStatusByLawyer(
                     caseId,
                     lawyerId,
@@ -251,28 +240,33 @@ public class LawyerController {
         }
     }
 
-    // Shared session helper
-    private Long getLoggedInLawyerId(HttpSession session) {
-        if (session == null) {
-            return null;
+    // Safely Read User ID from JWT
+    private Long getUserId(Jwt jwt) {
+        Object userId = jwt.getClaim("userId");
+
+        if (userId instanceof Number number) {
+            return number.longValue();
         }
 
-        Object id = session.getAttribute(UserSession.LAWYER_ID);
-
-        if (id instanceof Long) {
-            return (Long) id;
+        if (userId instanceof String value) {
+            try {
+                return Long.parseLong(value);
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException(
+                        "Invalid userId in JWT", e);
+            }
         }
 
-        if (id instanceof Number) {
-            return ((Number) id).longValue();
-        }
-
-        return null;
+        throw new IllegalArgumentException(
+                "Missing or invalid userId in JWT");
     }
 
-    private ResponseEntity<Map<String, String>> unauthorized() {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(Map.of("message",
-                        "Please log in with the appropriate account."));
+    // Forbidden Response
+    private ResponseEntity<Map<String, String>> forbidden() {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(Map.of(
+                        "message",
+                        "Your account does not have permission for this action."
+                ));
     }
 }

@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface LawyerRepository extends JpaRepository<Lawyer, Long> {
 
     Optional<Lawyer> findByEmail(String email);
+     Optional<Lawyer> findByEmailIgnoreCase(String email);
 }

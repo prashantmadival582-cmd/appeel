@@ -11,6 +11,7 @@ export default function CustomerLogin() {
     password: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -31,6 +32,9 @@ export default function CustomerLogin() {
     try {
       const data = await getCustomerJson("/api/customers/login", {
         method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           email: formData.email.trim(),
           password: formData.password,
@@ -39,38 +43,27 @@ export default function CustomerLogin() {
 
       const customer = data?.customer;
 
-      if (
-        !customer ||
-        customer.id == null ||
-        !customer.email
-      ) {
+      if (!customer || customer.id == null || !customer.email) {
         throw new Error(
           "The server did not return your customer account details."
         );
       }
 
-      // Save the logged-in customer's details.
+      // Store customer details
       localStorage.setItem("customerId", String(customer.id));
-      localStorage.setItem(
-        "customerName",
-        customer.name || ""
-      );
-      localStorage.setItem(
-        "customerEmail",
-        customer.email
-      );
-      localStorage.setItem(
-        "customerPhone",
-        customer.phone || ""
-      );
+      localStorage.setItem("customerName", customer.name || "");
+      localStorage.setItem("customerEmail", customer.email);
+      localStorage.setItem("customerPhone", customer.phone || "");
 
-      // Redirect after successful login.
-      navigate("/customer/dashboard", {
-        replace: true,
-      });
+      // Store JWT token when provided by the backend
+      if (data?.token) {
+        localStorage.setItem("customerToken", data.token);
+      }
+
+      navigate("/customer/dashboard", { replace: true });
     } catch (err) {
       setError(
-        err.message || "Unable to sign in. Please try again."
+        err.message || "Unable to sign in. Please check your credentials."
       );
     } finally {
       setLoading(false);
@@ -78,68 +71,98 @@ export default function CustomerLogin() {
   };
 
   return (
-    <main className="lawyer-auth-page">
-      <section className="lawyer-auth-card">
-        <Link to="/" className="lawyer-auth-brand">
-          4Justice
-        </Link>
+    <main className="auth-page">
+      <div className="auth-card">
+        <div className="auth-header">
+          <Link to="/" className="auth-brand" aria-label="APPEEL Home">
+            <span className="auth-brand-icon">⚖️</span>
+            <span className="auth-brand-text">APPEEL</span>
+          </Link>
 
-        <h1>Customer Login</h1>
+          <span className="auth-badge">Customer Portal</span>
+          <h1>Welcome Back</h1>
 
-        <p className="lawyer-auth-subtitle">
-          Sign in to create and track your legal cases.
-        </p>
+          <p className="auth-subtitle">
+            Sign in to access your cases, documents, and legal updates.
+          </p>
+        </div>
 
         {error && (
-          <div className="lawyer-auth-error" role="alert">
-            {error}
+          <div className="alert-banner alert-error" role="alert">
+            <span className="alert-icon">⚠️</span>
+            <span>{error}</span>
           </div>
         )}
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="customer-login-email">
-            Email Address
-          </label>
+        <form onSubmit={handleSubmit} className="auth-form">
+          <div className="form-group">
+            <label htmlFor="customer-login-email">Email Address</label>
+            <input
+              id="customer-login-email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              placeholder="name@example.com"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <input
-            id="customer-login-email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            placeholder="Enter your email"
-            value={formData.email}
-            onChange={handleChange}
-            required
-          />
+          <div className="form-group">
+            <div className="form-label-row">
+              <label htmlFor="customer-login-password">Password</label>
 
-          <label htmlFor="customer-login-password">
-            Password
-          </label>
+              <button
+                type="button"
+                className="btn-toggle-pw"
+                onClick={() =>
+                  setShowPassword((previous) => !previous)
+                }
+                tabIndex={-1}
+              >
+                {showPassword ? "Hide" : "Show"}
+              </button>
+            </div>
 
-          <input
-            id="customer-login-password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            placeholder="Enter your password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-          />
+            <div className="input-pw-wrapper">
+              <input
+                id="customer-login-password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+          </div>
 
-          <button type="submit" disabled={loading}>
-            {loading ? "Signing In..." : "Sign In"}
+          <button
+            type="submit"
+            className="btn-primary-block"
+            disabled={loading}
+          >
+            {loading ? "Signing In..." : "Sign In to My Account"}
           </button>
         </form>
 
-        <p className="lawyer-auth-footer">
-          Don't have an account?{" "}
-          <Link to="/customer/register">
-            Register here
-          </Link>
-        </p>
-      </section>
+        <div className="auth-footer">
+          <p>
+            Don't have an APPEEL account?{" "}
+            <Link to="/customer/register" className="auth-link">
+              Create an account
+            </Link>
+          </p>
+
+          <div className="auth-secondary-links">
+            <Link to="/lawyer/login">Lawyer sign in</Link>
+            <span className="sep">•</span>
+            <Link to="/">Back to home</Link>
+          </div>
+        </div>
+      </div>
     </main>
   );
 }
-

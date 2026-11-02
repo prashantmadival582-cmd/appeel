@@ -1,3 +1,4 @@
+
 package com.example._justice.entity;
 
 import jakarta.persistence.*;
@@ -33,6 +34,10 @@ public class Case {
 
     @Column(nullable = false)
     private String status;
+
+    @Column(name = "payment_status", nullable = false)
+    @Builder.Default
+    private String paymentStatus = "UNPAID";
 
     @Column(name = "submitted_at", updatable = false)
     private LocalDateTime submittedAt;

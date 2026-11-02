@@ -1,16 +1,28 @@
+
 import API_BASE_URL from "./api";
 
 export async function customerRequest(path, options = {}) {
   let response;
 
   try {
+    const isPublicAuthRequest =
+      path === "/api/customers/login" ||
+      path === "/api/customers/register";
+
+    const token = isPublicAuthRequest
+      ? null
+      : localStorage.getItem("customerToken");
+
     response = await fetch(`${API_BASE_URL}${path}`, {
       ...options,
-      credentials: "include",
+      // Do not use credentials: "include" with this JWT-based setup.
       headers: {
         ...(options.body instanceof FormData
           ? {}
           : { "Content-Type": "application/json" }),
+        ...(token
+          ? { Authorization: `Bearer ${token}` }
+          : {}),
         ...options.headers,
       },
     });
@@ -21,6 +33,7 @@ export async function customerRequest(path, options = {}) {
   if (!response.ok) {
     const responseText = await response.text();
     let message = responseText;
+
     if (responseText) {
       try {
         const error = JSON.parse(responseText);
@@ -42,8 +55,11 @@ export async function customerRequest(path, options = {}) {
     }
 
     if (response.status === 413) {
-      throw new Error("The selected file is too large. Maximum size is 10 MB.");
+      throw new Error(
+        "The selected file is too large. Maximum size is 10 MB."
+      );
     }
+
     throw new Error(message || `Request failed (${response.status}).`);
   }
 
@@ -67,5 +83,6 @@ export async function downloadCustomerDocument(documentId) {
   const response = await customerRequest(
     `/api/customers/me/documents/${encodeURIComponent(documentId)}/download`
   );
+
   return response.blob();
 }

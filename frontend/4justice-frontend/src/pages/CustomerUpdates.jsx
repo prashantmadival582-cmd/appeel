@@ -1,98 +1,184 @@
-import { useEffect, useState } from "react";
+
+import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import { getCustomerJson, isCustomerAuthError } from "../api/customerApi";
-import { CustomerPageHeader } from "./CustomerCases";
+import { CustomerPageHeader, formatStatus, statusClass } from "./CustomerCases";
 
-const formatStatus = (status = "UNKNOWN") =>
-  status.replaceAll("_", " ").toLowerCase().replace(/\b\w/g, (letter) =>
-    letter.toUpperCase()
-  );
-
-const statusClass = (status = "") => {
-  const normalized = status.toLowerCase().replaceAll("_", "-").replaceAll(" ", "-");
-  if (normalized.includes("review")) return "under-review";
-  if (normalized.includes("progress")) return "in-progress";
-  if (normalized.includes("complete")) return "completed";
-  if (normalized.includes("submit") || normalized.includes("pending")) return "pending";
-  return normalized;
-};
+import DataTable from "../components/Table/DataTable";
 
 export default function CustomerUpdates() {
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     let active = true;
+
     getCustomerJson("/api/cases/mine")
       .then((data) => {
-        if (active) setCases(Array.isArray(data) ? data : []);
+        if (active) {
+          setCases(Array.isArray(data) ? data : []);
+          setError("");
+        }
       })
       .catch((requestError) => {
         if (!active) return;
+
         if (isCustomerAuthError(requestError)) {
           navigate("/customer/login", { replace: true });
           return;
         }
-        setError(requestError.message);
+
+        setError(requestError.message || "Unable to load case updates.");
       })
       .finally(() => {
-        if (active) setLoading(false);
+        if (active) {
+          setLoading(false);
+          setRefreshing(false);
+        }
       });
+
     return () => {
       active = false;
     };
   }, [navigate, refreshKey]);
 
+  const handleRefresh = () => {
+    setRefreshing(true);
+    setRefreshKey((key) => key + 1);
+  };
+
+  // Build status filter options from the available cases.
+  const filters = useMemo(() => {
+    const uniqueStatuses = [
+      ...new Set(
+        cases
+          .map((customerCase) => customerCase.status)
+          .filter(Boolean)
+      ),
+    ];
+
+    return [
+      {
+        key: "status",
+        label: "Status",
+        allLabel: "All Statuses",
+        options: uniqueStatuses.map((status) => ({
+          value: status,
+          label: formatStatus(status),
+        })),
+      },
+    ];
+  }, [cases]);
+
+ const headerStyle = {
+  color: "#12334f",
+  backgroundColor: "#eaf0f6",
+  fontSize: "13px",
+  fontWeight: 700,
+  display: "inline-block",
+  padding: "4px 0",
+  visibility: "visible",
+  opacity: 1,
+};
+
+const columns = [
+  {
+    key: "caseId",
+    header: "Case ID",
+    sortable: true,
+    render: (customerCase) => customerCase.caseId,
+  },
+  {
+    key: "status",
+    header: "Current Status",
+    sortable: true,
+    render: (customerCase) => (
+      <span className={`status-badge ${statusClass(customerCase.status)}`}>
+        {formatStatus(customerCase.status)}
+      </span>
+    ),
+  },
+  {
+    key: "action",
+    header: "Action",
+    sortable: false,
+    render: (customerCase) => (
+      <Link
+        to={`/customer/my-cases/${encodeURIComponent(customerCase.caseId)}`}
+        className="case-action-btn"
+      >
+        View Timeline →
+      </Link>
+    ),
+  },
+];
+
   return (
-    <main className="customer-dashboard customer-cases-page">
-      <CustomerPageHeader title="Case Updates" />
-      <section className="customer-dashboard-content">
-        <div className="customer-page-heading">
+    <main className="portal-page">
+      <CustomerPageHeader title="Case Updates" activeTab="updates" />
+
+      <div className="portal-container">
+        <div className="portal-page-header">
           <div>
-            <span className="customer-dashboard-badge">LATEST ACTIVITY</span>
-            <h1>Case Updates</h1>
-            <p>Check the latest status for each of your cases.</p>
+            <h1>Activity &amp; Progress Updates</h1>
+            <p className="portal-subheading">
+              Stay fully informed on status changes, counsel assignments,
+              and milestones across all your matters.
+            </p>
           </div>
-          <button
-            type="button"
-            className="customer-logout-button"
-            onClick={() => setRefreshKey((key) => key + 1)}
-          >
-            Refresh
-          </button>
         </div>
-        {loading && <p className="customer-page-message">Loading your updates...</p>}
-        {error && <p className="customer-page-error" role="alert">{error}</p>}
+
+        {error && (
+          <div className="alert-banner alert-error" role="alert">
+            <span className="alert-icon">⚠️</span>
+            <span>{error}</span>
+          </div>
+        )}
+
+        {!error && (
+         <div className="customer-updates-table-wrapper">
+  <DataTable
+    title="Your Case Updates"
+    columns={columns}
+    data={cases}
+    rowKey="caseId"
+    searchFields={[
+      "caseId",
+      "status",
+    ]}
+    filters={filters}
+    searchable
+    exportable
+    pagination
+    pageSize={8}
+    loading={loading}
+    onRefresh={handleRefresh}
+    refreshing={refreshing}
+    emptyMessage="No case updates found."
+  />
+</div>
+        )}
+
         {!loading && !error && cases.length === 0 && (
-          <div className="customer-empty-state">
-            <span aria-hidden="true">🔔</span>
+          <div className="empty-state-card">
+            <div className="empty-icon">🔔</div>
             <h2>No updates yet</h2>
-            <p>Updates will appear after you submit a case.</p>
+            <p>
+              Once you submit a case, its milestone progress updates
+              will appear right here.
+            </p>
+            <Link className="btn-primary-navy" to="/customer/start-case">
+              Start a Case
+            </Link>
           </div>
         )}
-        {!loading && cases.length > 0 && (
-          <div className="customer-case-list">
-            {cases.map((customerCase) => (
-              <article className="customer-update-card" key={customerCase.caseId}>
-                <div className="customer-update-icon" aria-hidden="true">🔔</div>
-                <div>
-                  <span className={`case-status ${statusClass(customerCase.status)}`}>
-                    {formatStatus(customerCase.status)}
-                  </span>
-                  <h2>{customerCase.caseType}</h2>
-                  <p>Case {customerCase.caseId} has status: {formatStatus(customerCase.status)}.</p>
-                  <Link to={`/customer/my-cases/${encodeURIComponent(customerCase.caseId)}`}>
-                    View case →
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
-      </section>
+      </div>
     </main>
   );
 }

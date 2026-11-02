@@ -1,13 +1,15 @@
-
 package com.example._justice.service;
 
 import com.example._justice.dto.CustomerLoginRequest;
 import com.example._justice.dto.CustomerRegistrationRequest;
+import com.example._justice.dto.AdminCustomerUpdateRequest;
+
 import com.example._justice.entity.Customer;
 import com.example._justice.repository.CustomerRepository;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -44,7 +46,6 @@ public class CustomerService {
         customer.setEmail(email);
         customer.setPhone(request.getPhone());
 
-        // Store encrypted password
         customer.setPassword(
                 passwordEncoder.encode(request.getPassword()));
 
@@ -67,12 +68,61 @@ public class CustomerService {
             return Optional.empty();
         }
 
-        return passwordEncoder.matches(request.getPassword(), customer.getPassword())
+        return passwordEncoder.matches(
+                request.getPassword(),
+                customer.getPassword())
                 ? Optional.of(customer)
                 : Optional.empty();
     }
 
+    // Find Customer By ID
     public Optional<Customer> findById(Long customerId) {
         return customerRepository.findById(customerId);
+    }
+
+    // Update Customer Details Without Changing Password
+    @Transactional
+    public Customer updateCustomerDetails(
+            Long customerId,
+            AdminCustomerUpdateRequest request) {
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() ->
+                        new RuntimeException("Customer not found"));
+
+        String name = request.getName().trim();
+        String email = request.getEmail().trim().toLowerCase();
+        String phone = request.getPhone().trim();
+
+        customerRepository.findByEmailIgnoreCase(email)
+                .filter(existing ->
+                        !existing.getId().equals(customerId))
+                .ifPresent(existing -> {
+                    throw new RuntimeException(
+                            "Email is already registered to another customer");
+                });
+
+        customer.setName(name);
+        customer.setEmail(email);
+        customer.setPhone(phone);
+
+        return customerRepository.save(customer);
+    }
+
+    // Reset Customer Password
+    @Transactional
+    public void resetCustomerPassword(
+            String email,
+            String newPassword) {
+
+        Customer customer = customerRepository
+                .findByEmailIgnoreCase(email.trim())
+                .orElseThrow(() ->
+                        new RuntimeException("Customer account not found"));
+
+        customer.setPassword(
+                passwordEncoder.encode(newPassword));
+
+        customerRepository.save(customer);
     }
 }

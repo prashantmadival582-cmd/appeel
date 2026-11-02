@@ -6,24 +6,29 @@ import {
   isCustomerAuthError,
 } from "../api/customerApi";
 
+import { CustomerPageHeader } from "./CustomerCases";
+
 export default function StartCase() {
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     customerName: "",
     customerEmail: "",
     caseType: "",
     description: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [checkingSession, setCheckingSession] = useState(true);
   const [error, setError] = useState("");
-  const [createdCase, setCreatedCase] = useState(null);
 
   useEffect(() => {
     let active = true;
+
     getCustomerJson("/api/customers/me")
       .then((customer) => {
         if (!active) return;
+
         setFormData((current) => ({
           ...current,
           customerName: customer.name || "",
@@ -32,31 +37,39 @@ export default function StartCase() {
       })
       .catch((requestError) => {
         if (!active) return;
-        setError(requestError.message);
+
+        setError(requestError.message || "Unable to verify your session.");
+
         if (isCustomerAuthError(requestError)) {
           navigate("/customer/login", { replace: true });
         }
       })
       .finally(() => {
-        if (active) setCheckingSession(false);
+        if (active) {
+          setCheckingSession(false);
+        }
       });
+
     return () => {
       active = false;
     };
   }, [navigate]);
 
   const handleChange = (event) => {
+    const { name, value } = event.target;
+
     setFormData((current) => ({
       ...current,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
     setError("");
-    setCreatedCase(null);
     setLoading(true);
+
     try {
       const response = await customerRequest("/api/cases", {
         method: "POST",
@@ -67,9 +80,27 @@ export default function StartCase() {
           description: formData.description,
         }),
       });
-      setCreatedCase(await response.json());
+
+      const caseData = await response.json();
+
+      if (!caseData.caseId) {
+        throw new Error(
+          "The case ID was not returned by the server. Please check your cases before submitting again."
+        );
+      }
+
+      // Navigate to payment only after the case is created successfully.
+      navigate("/payment", {
+        state: {
+          caseId: caseData.caseId,
+          customerEmail: formData.customerEmail,
+        },
+      });
     } catch (requestError) {
-      setError(requestError.message || "Unable to submit your case.");
+      setError(
+        requestError.message || "Unable to submit your case."
+      );
+
       if (isCustomerAuthError(requestError)) {
         navigate("/customer/login", { replace: true });
       }
@@ -78,100 +109,159 @@ export default function StartCase() {
     }
   };
 
-  if (createdCase) {
-    return (
-      <main className="start-case-page">
-        <section className="start-case-card case-success">
-          <div className="case-success-icon" aria-hidden="true">✓</div>
-          <h1>Case Submitted Successfully!</h1>
-          <p>Your legal case has been submitted for review.</p>
-          <div className="created-case-details">
-            <span>Case ID</span>
-            <strong>{createdCase.caseId}</strong>
-            <span>Current Status</span>
-            <strong>{createdCase.status || "SUBMITTED"}</strong>
-          </div>
-          <button type="button" onClick={() => navigate("/customer/my-cases")}>
-            View My Cases
-          </button>
-        </section>
-      </main>
-    );
-  }
-
   return (
-    <main className="start-case-page">
-      <section className="start-case-card">
-        <Link to="/customer/dashboard" className="start-case-brand">
-          ⚖️ 4Justice
-        </Link>
-        <h1>Start a New Case</h1>
-        <p className="start-case-subtitle">
-          Provide your details and explain the legal assistance you need.
-        </p>
-        {error && <div className="start-case-error" role="alert">{error}</div>}
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="customerName">Full Name</label>
-          <input
-            id="customerName"
-            name="customerName"
-            type="text"
-            autoComplete="name"
-            value={formData.customerName}
-            onChange={handleChange}
-            readOnly
-            required
-          />
-          <label htmlFor="customerEmail">Registered Email</label>
-          <input
-            id="customerEmail"
-            name="customerEmail"
-            type="email"
-            autoComplete="email"
-            value={formData.customerEmail}
-            onChange={handleChange}
-            readOnly
-            required
-          />
-          <label htmlFor="caseType">Case Type</label>
-          <select
-            id="caseType"
-            name="caseType"
-            value={formData.caseType}
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select a case type</option>
-            <option value="Family Law">Family Law</option>
-            <option value="Property Dispute">Property Dispute</option>
-            <option value="Criminal Law">Criminal Law</option>
-            <option value="Employment Law">Employment Law</option>
-            <option value="Business Law">Business Law</option>
-            <option value="Consumer Complaint">Consumer Complaint</option>
-            <option value="Other">Other</option>
-          </select>
-          <label htmlFor="description">Case Description</label>
-          <textarea
-            id="description"
-            name="description"
-            rows={5}
-            placeholder="Briefly explain your legal issue..."
-            value={formData.description}
-            onChange={handleChange}
-            required
-          />
-          <button type="submit" disabled={loading || checkingSession}>
-            {checkingSession
-              ? "Checking your session..."
-              : loading
-                ? "Submitting Case..."
-                : "Submit Case"}
-          </button>
-        </form>
-        <p className="start-case-footer">
-          <Link to="/customer/dashboard">← Back to Dashboard</Link>
-        </p>
-      </section>
+    <main className="form-page-layout">
+      <div className="form-card-container">
+        <CustomerPageHeader title="Start a New Case" activeTab="" />
+
+        <div className="form-header-bar">
+          
+        </div>
+
+        <section className="form-card">
+          <div className="form-intro">
+            <span className="auth-badge">INTAKE FORM</span>
+            <h1>Start a New Legal Case</h1>
+            <p>
+              Complete the details below so our legal team can assess
+              your requirements and connect you with the appropriate
+              attorney.
+            </p>
+          </div>
+
+          {error && (
+            <div className="alert-banner alert-error" role="alert">
+              <span className="alert-icon">⚠️</span>
+              <span>{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="modern-form">
+            <div className="form-section-title">
+              <h3>1. Client Information</h3>
+              <p>Verified from your customer profile</p>
+            </div>
+
+            <div className="form-grid-2col">
+              <div className="form-group">
+                <label htmlFor="customerName">Full Name</label>
+                <input
+                  id="customerName"
+                  name="customerName"
+                  type="text"
+                  autoComplete="name"
+                  value={formData.customerName}
+                  onChange={handleChange}
+                  readOnly
+                  className="input-readonly"
+                  required
+                />
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="customerEmail">
+                  Registered Email
+                </label>
+                <input
+                  id="customerEmail"
+                  name="customerEmail"
+                  type="email"
+                  autoComplete="email"
+                  value={formData.customerEmail}
+                  onChange={handleChange}
+                  readOnly
+                  className="input-readonly"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="form-section-title">
+              <h3>2. Case Information</h3>
+              <p>Specify the category and scope of your matter</p>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="caseType">
+                Legal Case Category
+              </label>
+
+              <select
+                id="caseType"
+                name="caseType"
+                value={formData.caseType}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Select a category...</option>
+                <option value="Family Law">
+                  Family Law (Divorce, Custody, Estates)
+                </option>
+                <option value="Property Dispute">
+                  Property Dispute (Real Estate, Leases, Tenancy)
+                </option>
+                <option value="Criminal Law">
+                  Criminal Law &amp; Defense
+                </option>
+                <option value="Employment Law">
+                  Employment Law (Contracts, Disputes, Severance)
+                </option>
+                <option value="Business Law">
+                  Business &amp; Corporate Law
+                </option>
+                <option value="Consumer Complaint">
+                  Consumer Rights &amp; Claims
+                </option>
+                <option value="Other">
+                  Other Legal Assistance
+                </option>
+              </select>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="description">
+                Case Description &amp; Background
+              </label>
+
+              <textarea
+                id="description"
+                name="description"
+                rows={6}
+                placeholder="Describe your situation in detail. Include dates, opposing parties, current status, and the outcome you are seeking..."
+                value={formData.description}
+                onChange={handleChange}
+                required
+              />
+
+              <small className="field-hint">
+                All communications and case details are securely
+                handled under strict confidentiality.
+              </small>
+            </div>
+
+            <div className="form-actions-row">
+              <button
+                type="submit"
+                className="btn-primary-navy btn-submit-large"
+                disabled={loading || checkingSession}
+              >
+                {checkingSession
+                  ? "Checking Session..."
+                  : loading
+                    ? "Creating Case..."
+                    : "Submit Case & Continue to Payment →"}
+              </button>
+
+              <Link
+                to="/customer/dashboard"
+                className="btn-cancel"
+              >
+                Cancel
+              </Link>
+            </div>
+          </form>
+        </section>
+      </div>
     </main>
   );
 }

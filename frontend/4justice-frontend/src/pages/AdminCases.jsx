@@ -2,35 +2,70 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import API_BASE_URL from "../api/api";
+import { FaEye } from "react-icons/fa";
+import DataTable from "../components/Table/DataTable";
+
+// Search fields used by the reusable DataTable
+const caseSearchFields = [
+  "caseId",
+  "customerName",
+  "caseType",
+  "status",
+  "lawyer.name",
+];
+
+// Custom status filter, including the Unassigned option
+const caseFilters = [
+  {
+    key: "caseStatus",
+    label: "Case Status",
+    options: [
+      { label: "All Statuses", value: "ALL" },
+      { label: "Unassigned Only", value: "UNASSIGNED" },
+      { label: "Pending", value: "PENDING" },
+      { label: "Under Review", value: "UNDER_REVIEW" },
+      { label: "In Progress", value: "IN_PROGRESS" },
+      { label: "Completed", value: "COMPLETED" },
+    ],
+    predicate: (item, selectedValue) => {
+      if (selectedValue === "UNASSIGNED") {
+        return !item.lawyer;
+      }
+
+      if (selectedValue === "ALL") {
+        return true;
+      }
+
+      return item.status === selectedValue;
+    },
+  },
+];
 
 function AdminCases() {
   const navigate = useNavigate();
 
   const [cases, setCases] = useState([]);
   const [lawyers, setLawyers] = useState([]);
-  const [selectedLawyers, setSelectedLawyers] = useState({});
-  const [assigningCase, setAssigningCase] = useState("");
   const [message, setMessage] = useState("");
   const [messageType, setMessageType] = useState("");
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    fetchCases();
-    fetchLawyers();
-  }, []);
-
-  // Fetch all cases using the admin session.
+  // Fetch all legal cases
   const fetchCases = async () => {
     try {
       setLoading(true);
       setError("");
 
-      const response = await fetch(
-        `${API_BASE_URL}/api/admin/cases`,
-        { credentials: "include" }
-      );
+      const token = localStorage.getItem("adminToken");
+
+      const response = await fetch(`${API_BASE_URL}/api/admin/cases`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
         throw new Error(
@@ -41,7 +76,12 @@ function AdminCases() {
       }
 
       const data = await response.json();
-      setCases(Array.isArray(data) ? data : []);
+
+      const sortedCases = (Array.isArray(data) ? [...data] : []).sort(
+        (a, b) => Number(b.id || 0) - Number(a.id || 0)
+      );
+
+      setCases(sortedCases);
     } catch (err) {
       console.error("Cases error:", err);
       setError(err.message || "Unable to load cases from the server.");
@@ -50,18 +90,21 @@ function AdminCases() {
     }
   };
 
-  // Fetch lawyers using the current session.
+  // Fetch lawyers for dashboard statistics
   const fetchLawyers = async () => {
     try {
-      const response = await fetch(
-        `${API_BASE_URL}/api/lawyers`,
-        { credentials: "include" }
-      );
+      const token = localStorage.getItem("adminToken");
+
+      const response = await fetch(`${API_BASE_URL}/api/lawyers`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to fetch lawyers (${response.status}).`
-        );
+        throw new Error(`Failed to fetch lawyers (${response.status}).`);
       }
 
       const data = await response.json();
@@ -75,329 +118,119 @@ function AdminCases() {
     }
   };
 
-  // Only available lawyers can be assigned.
+  // Initial data loading
+  useEffect(() => {
+    fetchCases();
+    fetchLawyers();
+  }, []);
+
+  // Refresh both cases and lawyers
+  const handleRefresh = async () => {
+    setMessage("");
+    setMessageType("");
+
+    await Promise.all([fetchCases(), fetchLawyers()]);
+  };
+
+  // Count available lawyers
   const availableLawyers = lawyers.filter(
-    (lawyer) =>
-      lawyer.availability?.toUpperCase() === "AVAILABLE"
+    (lawyer) => lawyer.availability?.toUpperCase() === "AVAILABLE"
   );
 
-  // Assign an available lawyer to a case.
-  const handleAssignLawyer = async (item) => {
-    const lawyerId = selectedLawyers[item.caseId];
-
-    if (!lawyerId) {
-      setMessage("Please select a lawyer first.");
-      setMessageType("error");
-      return;
-    }
-
-    try {
-      setAssigningCase(item.caseId);
-      setMessage("");
-      setMessageType("");
-
-      const response = await fetch(
-        `${API_BASE_URL}/api/admin/cases/${encodeURIComponent(
-          item.caseId
-        )}/assign-lawyer/${encodeURIComponent(lawyerId)}`,
-        {
-          method: "PUT",
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) {
-        const errorText = await response.text();
-
-        throw new Error(
-          errorText || `Failed to assign lawyer (${response.status}).`
-        );
-      }
-
-      setMessage(`Lawyer assigned successfully to ${item.caseId}.`);
-      setMessageType("success");
-
-      await fetchCases();
-      await fetchLawyers();
-
-      setSelectedLawyers((previous) => ({
-        ...previous,
-        [item.caseId]: "",
-      }));
-    } catch (err) {
-      console.error("Assign lawyer error:", err);
-      setMessage(err.message || "Unable to assign lawyer.");
-      setMessageType("error");
-    } finally {
-      setAssigningCase("");
-    }
-  };
-
-  // Search cases by case ID, customer, case type, status, or lawyer.
-  const filteredCases = cases.filter((item) => {
-    const value = search.toLowerCase().trim();
-
-    return (
-      item.caseId?.toLowerCase().includes(value) ||
-      item.customerName?.toLowerCase().includes(value) ||
-      item.caseType?.toLowerCase().includes(value) ||
-      item.status?.toLowerCase().includes(value) ||
-      item.lawyer?.name?.toLowerCase().includes(value)
-    );
-  });
-
-  const getStatusClass = (status) => {
-    switch (status) {
-      case "PENDING":
-        return "case-status pending";
-      case "IN_PROGRESS":
-        return "case-status progress";
-      case "UNDER_REVIEW":
-        return "case-status review";
-      case "COMPLETED":
-        return "case-status completed";
-      default:
-        return "case-status";
-    }
-  };
-
-  const formatStatus = (status) =>
-    status?.replaceAll("_", " ") || "Unknown";
+  // DataTable columns
+  const caseColumns = [
+    {
+      key: "caseId",
+      header: "Case ID",
+      accessor: "caseId",
+      render: (item) => (
+        <span className="case-id-tag">{item.caseId}</span>
+      ),
+    },
+    {
+      key: "caseType",
+      header: "Case Type",
+      accessor: "caseType",
+      render: (item) => (
+        <span className="table-type-badge">
+          {item.caseType || "Not specified"}
+        </span>
+      ),
+    },
+    {
+      key: "submittedAt",
+      header: "Applied Date",
+      accessor: "submittedAt",
+      format: (value) =>
+        value
+          ? new Date(value).toLocaleDateString("en-GB")
+          : "N/A",
+    },
+    {
+      key: "actions",
+      header: "Actions",
+      sortable: false,
+      render: (item) => (
+        <div className="case-actions-group">
+          <button
+            type="button"
+            className="btn-table-action"
+            onClick={() =>
+              navigate(
+                `/admin/cases/${encodeURIComponent(item.caseId)}`
+              )
+            }
+          >
+            <FaEye aria-hidden="true" />
+            View Details
+          </button>
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <section className="cases-page">
-      <div className="cases-page-header">
-        <div>
-          <h1>Cases</h1>
-          <p>Manage cases and assign available lawyers.</p>
-        </div>
+    <section className="admin-page-content">
+      {/* Page Header */}
+      <div className="admin-page-header">
+        
 
-        <div className="case-summary">
-          <span>Total Cases</span>
-          <strong>{cases.length}</strong>
-        </div>
+        <div className="admin-header-stats"></div>
       </div>
 
+      {/* Success and Error Messages */}
       {message && (
         <div
+          className={`alert-banner ${
+            messageType === "success" ? "alert-success" : "alert-error"
+          }`}
           role={messageType === "error" ? "alert" : "status"}
-          style={{
-            padding: "12px 16px",
-            marginBottom: "16px",
-            borderRadius: "8px",
-            background:
-              messageType === "success" ? "#e8f7ed" : "#fff0f0",
-            color:
-              messageType === "success" ? "#176534" : "#a12626",
-          }}
         >
-          {message}
+          <span className="alert-icon">
+            {messageType === "success" ? "✓" : "⚠️"}
+          </span>
+          <span>{message}</span>
         </div>
       )}
 
-      <div className="cases-card">
-        <div className="cases-toolbar">
-          <div className="cases-search">
-            <span>⌕</span>
-            <input
-              type="text"
-              placeholder="Search by case ID, customer, lawyer or case type..."
-              value={search}
-              onChange={(event) => setSearch(event.target.value)}
-            />
-          </div>
-
-          <button
-            type="button"
-            className="filter-button"
-            onClick={() => {
-              fetchCases();
-              fetchLawyers();
-            }}
-            disabled={loading}
-          >
-            ↻ Refresh
-          </button>
-        </div>
-
-        {loading && (
-          <div className="no-cases" role="status">
-            Loading cases...
-          </div>
-        )}
-
-        {error && !loading && (
-          <div className="no-cases" role="alert">
-            <p>{error}</p>
-            <button
-              type="button"
-              className="view-case-button"
-              onClick={fetchCases}
-            >
-              Try Again
-            </button>
-          </div>
-        )}
-
-        {!loading && !error && (
-          <div className="cases-table-wrapper">
-            <table className="cases-table">
-              <thead>
-                <tr>
-                  <th>Case ID</th>
-                  <th>Customer</th>
-                  <th>Case Type</th>
-                  <th>Assigned Lawyer</th>
-                  <th>Status</th>
-                  <th>Assign Lawyer</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {filteredCases.length > 0 ? (
-                  filteredCases.map((item) => (
-                    <tr key={item.caseId}>
-                      <td>
-                        <span className="admin-case-id">
-                          {item.caseId}
-                        </span>
-                      </td>
-
-                      <td>
-                        <div className="customer-cell">
-                          <div className="customer-avatar">
-                            {item.customerName
-                              ?.charAt(0)
-                              ?.toUpperCase() || "C"}
-                          </div>
-
-                          <div>
-                            <strong>
-                              {item.customerName || "Unknown customer"}
-                            </strong>
-                            <span>{item.customerEmail || "No email"}</span>
-                          </div>
-                        </div>
-                      </td>
-
-                      <td>
-                        <span className="case-type">
-                          {item.caseType || "Not specified"}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span className="lawyer-name">
-                          {item.lawyer?.name || "Not Assigned"}
-                        </span>
-                      </td>
-
-                      <td>
-                        <span className={getStatusClass(item.status)}>
-                          {formatStatus(item.status)}
-                        </span>
-                      </td>
-
-                      <td>
-                        {item.lawyer ? (
-                          <span>Already assigned</span>
-                        ) : (
-                          <div
-                            style={{
-                              display: "flex",
-                              flexDirection: "column",
-                              gap: "8px",
-                              minWidth: "170px",
-                            }}
-                          >
-                            <select
-                              aria-label={`Select lawyer for ${item.caseId}`}
-                              value={selectedLawyers[item.caseId] || ""}
-                              onChange={(event) =>
-                                setSelectedLawyers((previous) => ({
-                                  ...previous,
-                                  [item.caseId]: event.target.value,
-                                }))
-                              }
-                              disabled={assigningCase === item.caseId}
-                              style={{
-                                padding: "9px",
-                                borderRadius: "6px",
-                                border: "1px solid #d1d5db",
-                                maxWidth: "220px",
-                              }}
-                            >
-                              <option value="">
-                                Select available lawyer
-                              </option>
-
-                              {availableLawyers.map((lawyer) => (
-                                <option
-                                  key={lawyer.id}
-                                  value={lawyer.id}
-                                >
-                                  {lawyer.name}
-                                  {lawyer.specialization
-                                    ? ` — ${lawyer.specialization}`
-                                    : ""}
-                                </option>
-                              ))}
-                            </select>
-
-                            <button
-                              type="button"
-                              className="view-case-button"
-                              disabled={
-                                !selectedLawyers[item.caseId] ||
-                                assigningCase === item.caseId
-                              }
-                              onClick={() => handleAssignLawyer(item)}
-                            >
-                              {assigningCase === item.caseId
-                                ? "Assigning..."
-                                : "Assign"}
-                            </button>
-
-                            {availableLawyers.length === 0 && (
-                              <small>No available lawyers</small>
-                            )}
-                          </div>
-                        )}
-                      </td>
-
-                      <td>
-                        <button
-                          type="button"
-                          className="view-case-button"
-                          onClick={() =>
-                            navigate(
-                              `/admin/cases/${encodeURIComponent(
-                                item.caseId
-                              )}`
-                            )
-                          }
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td colSpan={7}>
-                      <div className="no-cases">
-                        {search
-                          ? "No cases match your search."
-                          : "No cases found."}
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        )}
+      {/* Cases Table */}
+      <div className="admin-card">
+        <DataTable
+          title="ALL LEAGAL CASES"
+          columns={caseColumns}
+          data={cases}
+          rowKey="caseId"
+          searchFields={caseSearchFields}
+          filters={caseFilters}
+          searchable={true}
+          exportable={true}
+          pagination={true}
+          pageSize={10}
+          loading={loading}
+          onRefresh={handleRefresh}
+          refreshing={loading}
+          emptyMessage="No legal cases match your search or filter."
+        />
       </div>
     </section>
   );

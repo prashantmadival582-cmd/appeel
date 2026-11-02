@@ -1,3 +1,4 @@
+
 package com.example._justice.repository;
 
 import com.example._justice.entity.Payment;

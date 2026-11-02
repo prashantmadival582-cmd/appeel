@@ -2,6 +2,7 @@ package com.example._justice.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "lawyers")
@@ -22,6 +23,7 @@ private String name;
 @Column(nullable = false, unique = true)
 private String email;
 
+@JsonIgnore
 @Column(nullable = false)
 private String password;
 
