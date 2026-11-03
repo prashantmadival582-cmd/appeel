@@ -21,7 +21,7 @@ import ResetPassword from "./pages/ResetPassword";
 import AdminSidebar from "./components/Admin/AdminSidebar";
 
 import LandingPage from "./components/home/LandingPage";
-import ContactPage from "./components/home/contactpage";
+import ContactPage from "./components/home/ContactPage";
 import ScrollTop from "./components/ScrollTop";
 
 import AdminCases from "./pages/AdminCases";
