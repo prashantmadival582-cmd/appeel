@@ -22,37 +22,45 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
+    
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
 
-        CorsConfiguration configuration = new CorsConfiguration();
+    CorsConfiguration configuration = new CorsConfiguration();
 
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "http://localhost:5174",
-                "http://127.0.0.1:5174"
-        ));
+    List<String> origins = new java.util.ArrayList<>();
 
-        configuration.setAllowedMethods(List.of(
-                "GET", "POST", "PUT", "PATCH",
-                "DELETE", "OPTIONS"
-        ));
+    origins.add("http://localhost:5173");
+    origins.add("http://127.0.0.1:5173");
+    origins.add("http://localhost:5174");
+    origins.add("http://127.0.0.1:5174");
 
-        configuration.setAllowedHeaders(List.of(
-                "Authorization", "Content-Type"
-        ));
+    String frontendUrl = System.getenv("FRONTEND_URL");
 
-        configuration.setAllowCredentials(false);
-        configuration.setMaxAge(3600L);
-
-        UrlBasedCorsConfigurationSource source =
-                new UrlBasedCorsConfigurationSource();
-
-        source.registerCorsConfiguration("/**", configuration);
-
-        return source;
+    if (frontendUrl != null && !frontendUrl.isBlank()) {
+        origins.add(frontendUrl.trim());
     }
+
+    configuration.setAllowedOrigins(origins);
+
+    configuration.setAllowedMethods(List.of(
+        "GET", "POST", "PUT", "PATCH",
+        "DELETE", "OPTIONS"
+    ));
+
+    configuration.setAllowedHeaders(List.of("*"));
+
+    configuration.setAllowCredentials(true);
+    configuration.setMaxAge(3600L);
+
+    UrlBasedCorsConfigurationSource source =
+        new UrlBasedCorsConfigurationSource();
+
+    source.registerCorsConfiguration("/**", configuration);
+
+    return source;
+}
+
 
     @Bean
     public SecurityFilterChain securityFilterChain(

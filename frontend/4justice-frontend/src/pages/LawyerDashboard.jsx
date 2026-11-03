@@ -453,7 +453,7 @@ const [loggingOut, setLoggingOut] = useState(false);
     const newTab = window.open("about:blank", "_blank");
 
     if (!newTab) {
-      alert("Pop-up blocked. Allow pop-ups for localhost:5173 and try again.");
+      alert("Pop-up blocked. Allow pop-ups for this site and try again.");
       return;
     }
 

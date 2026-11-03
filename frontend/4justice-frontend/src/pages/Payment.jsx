@@ -5,7 +5,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { CustomerPageHeader } from "./CustomerCases";
 
-const API_BASE_URL = "http://localhost:8081";
+const API_BASE_URL = "https://appeel.onrender.com";
 
 export default function Payment() {
     const navigate = useNavigate();

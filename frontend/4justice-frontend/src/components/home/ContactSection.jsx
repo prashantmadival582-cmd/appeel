@@ -8,7 +8,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-const API_URL = "http://localhost:8081/api/contact";
+const API_URL = "https://appeel.onrender.com/api/contact";
 
 function ContactSection() {
   const [submitted, setSubmitted] = useState(false);
