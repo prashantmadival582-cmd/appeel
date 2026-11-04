@@ -44,8 +44,7 @@ public class CaseDocumentController {
         }
 
         try {
-            CaseDocument document =
-                    caseDocumentService.uploadDocument(caseId, file);
+            CaseDocument document = caseDocumentService.uploadDocument(caseId, file);
 
             return ResponseEntity.ok(
                     CustomerDocumentResponse.from(document));
@@ -69,11 +68,10 @@ public class CaseDocumentController {
             return ResponseEntity.notFound().build();
         }
 
-        List<CustomerDocumentResponse> documents =
-                caseDocumentService.getDocumentsByCaseId(caseId)
-                        .stream()
-                        .map(CustomerDocumentResponse::from)
-                        .toList();
+        List<CustomerDocumentResponse> documents = caseDocumentService.getDocumentsByCaseId(caseId)
+                .stream()
+                .map(CustomerDocumentResponse::from)
+                .toList();
 
         return ResponseEntity.ok(documents);
     }
@@ -84,16 +82,14 @@ public class CaseDocumentController {
             @AuthenticationPrincipal Jwt jwt) {
 
         try {
-            CaseDocument document =
-                    caseDocumentService.getDocumentById(documentId);
+            CaseDocument document = caseDocumentService.getDocumentById(documentId);
 
             if (document == null
                     || !canAccessCase(document.getCaseId(), jwt)) {
                 return ResponseEntity.notFound().build();
             }
 
-            byte[] file =
-                    caseDocumentService.downloadDocument(documentId);
+            byte[] file = caseDocumentService.downloadDocument(documentId);
 
             if (file == null) {
                 return ResponseEntity.notFound().build();
@@ -123,6 +119,52 @@ public class CaseDocumentController {
         } catch (IOException e) {
             return ResponseEntity.internalServerError()
                     .body(Map.of("message", "File download failed."));
+        }
+    }
+
+    @GetMapping("/documents/{documentId}/view")
+    public ResponseEntity<?> viewDocument(
+            @PathVariable Long documentId,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        try {
+            CaseDocument document = caseDocumentService.getDocumentById(documentId);
+
+            if (document == null
+                    || !canAccessCase(document.getCaseId(), jwt)) {
+                return ResponseEntity.notFound().build();
+            }
+
+            byte[] file = caseDocumentService.downloadDocument(documentId);
+
+            if (file == null) {
+                return ResponseEntity.notFound().build();
+            }
+
+            String safeFileName = document.getFileName()
+                    .replace("\"", "")
+                    .replace("\r", "")
+                    .replace("\n", "");
+
+            MediaType mediaType;
+
+            try {
+                mediaType = MediaType.parseMediaType(
+                        document.getFileType());
+            } catch (Exception e) {
+                mediaType = MediaType.APPLICATION_OCTET_STREAM;
+            }
+
+            return ResponseEntity.ok()
+                    .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            "inline; filename=\"" + safeFileName + "\"")
+                    .contentType(mediaType)
+                    .body(file);
+
+        } catch (IOException e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("message", "File view failed."));
         }
     }
 

@@ -439,49 +439,50 @@ function Documents() {
 
 
  
-  async function viewDocument(documentId) {
-    // Open a blank tab immediately to avoid popup blocking.
-    const newTab = window.open("about:blank", "_blank");
+async function viewDocument(documentId) {
+  // Open a new tab immediately to avoid popup blocking.
+  const newTab = window.open("about:blank", "_blank");
 
-    if (!newTab) {
-      window.alert("Please allow pop-ups to view this document.");
-      return;
-    }
-
-    try {
-      setDownloadingId(documentId);
-
-      const response = await fetch(
-        `${API_BASE_URL}/api/cases/documents/${documentId}/download`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
-          },
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Unable to view document.");
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      newTab.location.href = url;
-
-      window.setTimeout(() => {
-        window.URL.revokeObjectURL(url);
-      }, 60000);
-    } catch (err) {
-      if (!newTab.closed) {
-        newTab.close();
-      }
-
-      window.alert(err.message || "Unable to view document.");
-    } finally {
-      setDownloadingId(null);
-    }
+  if (!newTab) {
+    window.alert("Please allow pop-ups to view this document.");
+    return;
   }
+
+  try {
+    setDownloadingId(documentId);
+
+    const response = await fetch(
+      `${API_BASE_URL}/api/cases/documents/${documentId}/view`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Unable to preview document.");
+    }
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    newTab.location.href = url;
+
+   
+    
+
+  } catch (err) {
+    if (!newTab.closed) {
+      newTab.close();
+    }
+
+    window.alert(err.message || "Unable to view document.");
+  } finally {
+    setDownloadingId(null);
+  }
+}
 
 
 
