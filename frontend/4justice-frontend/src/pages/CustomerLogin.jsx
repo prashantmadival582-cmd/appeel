@@ -1,10 +1,14 @@
 
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { FiAlertTriangle } from "react-icons/fi";
 import { getCustomerJson } from "../api/customerApi";
+import appeelLogo from "../assets/appeel-logo.png";
 
 export default function CustomerLogin() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -44,9 +48,7 @@ export default function CustomerLogin() {
       const customer = data?.customer;
 
       if (!customer || customer.id == null || !customer.email) {
-        throw new Error(
-          "The server did not return your customer account details."
-        );
+        throw new Error(t("customerLogin.errors.noCustomerDetails"));
       }
 
       // Store customer details
@@ -63,7 +65,7 @@ export default function CustomerLogin() {
       navigate("/customer/dashboard", { replace: true });
     } catch (err) {
       setError(
-        err.message || "Unable to sign in. Please check your credentials."
+        err.message || t("customerLogin.errors.signInFailed")
       );
     } finally {
       setLoading(false);
@@ -74,35 +76,49 @@ export default function CustomerLogin() {
     <main className="auth-page">
       <div className="auth-card">
         <div className="auth-header">
-          <Link to="/" className="auth-brand" aria-label="APPEEL Home">
-            <span className="auth-brand-icon">⚖️</span>
-            <span className="auth-brand-text">APPEEL</span>
+          <Link
+            to="/"
+            className="auth-brand"
+            aria-label={t("customerLogin.homeAria")}
+          >
+            <img
+              src={appeelLogo}
+              alt="APPEEL"
+              className="auth-page-logo"
+            />
+
           </Link>
 
-          <span className="auth-badge">Customer Portal</span>
-          <h1>Welcome Back</h1>
+          <span className="auth-badge">
+            {t("customerLogin.portal")}
+          </span>
+
+          <h1>{t("customerLogin.title")}</h1>
 
           <p className="auth-subtitle">
-            Sign in to access your cases, documents, and legal updates.
+            {t("customerLogin.subtitle")}
           </p>
         </div>
 
         {error && (
           <div className="alert-banner alert-error" role="alert">
-            <span className="alert-icon">⚠️</span>
+            <span className="alert-icon"><FiAlertTriangle /></span>
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="customer-login-email">Email Address</label>
+            <label htmlFor="customer-login-email">
+              {t("customerLogin.email")}
+            </label>
+
             <input
               id="customer-login-email"
               name="email"
               type="email"
               autoComplete="email"
-              placeholder="name@example.com"
+              placeholder={t("customerLogin.emailPlaceholder")}
               value={formData.email}
               onChange={handleChange}
               required
@@ -111,7 +127,9 @@ export default function CustomerLogin() {
 
           <div className="form-group">
             <div className="form-label-row">
-              <label htmlFor="customer-login-password">Password</label>
+              <label htmlFor="customer-login-password">
+                {t("customerLogin.password")}
+              </label>
 
               <button
                 type="button"
@@ -121,7 +139,9 @@ export default function CustomerLogin() {
                 }
                 tabIndex={-1}
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword
+                  ? t("customerLogin.hidePassword")
+                  : t("customerLogin.showPassword")}
               </button>
             </div>
 
@@ -131,7 +151,7 @@ export default function CustomerLogin() {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
-                placeholder="Enter your password"
+                placeholder={t("customerLogin.passwordPlaceholder")}
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -144,22 +164,30 @@ export default function CustomerLogin() {
             className="btn-primary-block"
             disabled={loading}
           >
-            {loading ? "Signing In..." : "Sign In to My Account"}
+            {loading
+              ? t("customerLogin.signingIn")
+              : t("customerLogin.submit")}
           </button>
         </form>
 
         <div className="auth-footer">
           <p>
-            Don't have an APPEEL account?{" "}
+            {t("customerLogin.noAccount")}{" "}
             <Link to="/customer/register" className="auth-link">
-              Create an account
+              {t("customerLogin.createAccount")}
             </Link>
           </p>
 
           <div className="auth-secondary-links">
-            <Link to="/lawyer/login">Lawyer sign in</Link>
+            <Link to="/lawyer/login">
+              {t("customerLogin.lawyerSignIn")}
+            </Link>
+
             <span className="sep">•</span>
-            <Link to="/">Back to home</Link>
+
+            <Link to="/">
+              {t("customerLogin.backHome")}
+            </Link>
           </div>
         </div>
       </div>

@@ -1,3 +1,5 @@
+import { useTranslation } from "react-i18next";
+
 function TablePagination({
   currentPage,
   totalPages,
@@ -6,6 +8,8 @@ function TablePagination({
   onPageChange,
   onPageSizeChange,
 }) {
+  const { t } = useTranslation();
+
   if (totalItems === 0) return null;
 
   const start = (currentPage - 1) * pageSize + 1;
@@ -14,13 +18,16 @@ function TablePagination({
   return (
     <div className="reusable-table-pagination">
       <div className="table-pagination-info">
-        Showing <strong>{start}</strong>–<strong>{end}</strong> of{" "}
-        <strong>{totalItems}</strong> records
+        {t("tablePagination.showing")}{" "}
+        <strong>{start}</strong>–<strong>{end}</strong>{" "}
+        {t("tablePagination.of")}{" "}
+        <strong>{totalItems}</strong>{" "}
+        {t("tablePagination.records")}
       </div>
 
       <div className="table-pagination-controls">
         <label>
-          Rows:
+          {t("tablePagination.rows")}:
           <select
             value={pageSize}
             onChange={(event) =>
@@ -39,11 +46,12 @@ function TablePagination({
           disabled={currentPage <= 1}
           onClick={() => onPageChange(currentPage - 1)}
         >
-          Previous
+          {t("tablePagination.previous")}
         </button>
 
         <span>
-          Page {currentPage} of {totalPages}
+          {t("tablePagination.page")} {currentPage}{" "}
+          {t("tablePagination.of")} {totalPages}
         </span>
 
         <button
@@ -51,7 +59,7 @@ function TablePagination({
           disabled={currentPage >= totalPages}
           onClick={() => onPageChange(currentPage + 1)}
         >
-          Next
+          {t("tablePagination.next")}
         </button>
       </div>
     </div>

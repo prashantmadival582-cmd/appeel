@@ -61,6 +61,7 @@ public Lawyer getLawyerById(Long id) {
 }
 
 // Update Lawyer Details Without Changing Password
+
 public Lawyer updateLawyer(Long id, LawyerRequest request) {
 
     Lawyer lawyer = lawyerRepository.findById(id).orElse(null);
@@ -87,8 +88,18 @@ public Lawyer updateLawyer(Long id, LawyerRequest request) {
     lawyer.setSpecialization(request.getSpecialization().trim());
     lawyer.setPhone(request.getPhone().trim());
 
+    // Update password only when admin enters a new password
+    if (request.getPassword() != null
+            && !request.getPassword().isBlank()) {
+
+        lawyer.setPassword(
+                passwordEncoder.encode(request.getPassword())
+        );
+    }
+
     return lawyerRepository.save(lawyer);
 }
+
 
 // Update Lawyer Availability
 public Lawyer updateAvailability(Long id, String availability) {

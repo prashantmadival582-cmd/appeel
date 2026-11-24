@@ -42,3 +42,12 @@ application-local.properties
 *.backup
 *.bak
 application.properties.backup
+
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Local uploaded documents
+uploads/

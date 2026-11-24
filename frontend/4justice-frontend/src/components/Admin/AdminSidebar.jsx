@@ -1,12 +1,24 @@
 
 import { Link, NavLink } from "react-router-dom";
-
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import {
+  FiX,
+  FiHome,
+  FiGrid,
+  FiFolder,
+  FiUsers,
+  FiFileText,
+  FiCreditCard,
+  FiLogOut,
+} from "react-icons/fi";
 import LogoutConfirmDialog from "../LogoutConfirmDialog";
+import appeelLogo from "../../assets/appeel-logo.png";
 
 function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
-
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+  const { t } = useTranslation();
+
   const closeMobileMenu = () => {
     setMobileMenuOpen(false);
   };
@@ -18,20 +30,23 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
     <aside className={`admin-sidebar ${mobileMenuOpen ? "open" : ""}`}>
       <div className="sidebar-brand-box">
         <Link to="/" className="sidebar-logo" onClick={closeMobileMenu}>
-          <span className="logo-symbol">⚖️</span>
-          <div>
-            <strong className="sidebar-brand-title">APPEEL</strong>
-            <span className="sidebar-sub">Admin Console</span>
-          </div>
+          <img
+            src={appeelLogo}
+            alt="APPEEL"
+            className="sidebar-brand-logo"
+          />
+          <span className="sidebar-sub">
+            {t("adminSidebar.console")}
+          </span>
         </Link>
 
         <button
           type="button"
           className="sidebar-close-btn"
           onClick={closeMobileMenu}
-          aria-label="Close sidebar"
+          aria-label={t("adminSidebar.closeSidebar")}
         >
-          ✕
+          <FiX />
         </button>
       </div>
 
@@ -41,8 +56,8 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
           className="dashboard-home-link"
           onClick={closeMobileMenu}
         >
-          <span>⌂</span>
-          <span>Home</span>
+          <span><FiHome /></span>
+          <span>{t("adminSidebar.home")}</span>
         </Link>
 
         <NavLink
@@ -50,8 +65,8 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
           className={navClass}
           onClick={closeMobileMenu}
         >
-          <span className="item-icon">▦</span>
-          <span>Dashboard</span>
+          <span className="item-icon"><FiGrid /></span>
+          <span>{t("adminSidebar.dashboard")}</span>
         </NavLink>
 
         <NavLink
@@ -59,8 +74,8 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
           className={navClass}
           onClick={closeMobileMenu}
         >
-          <span className="item-icon">📁</span>
-          <span>Cases &amp; Allocation</span>
+          <span className="item-icon"><FiFolder /></span>
+          <span>{t("adminSidebar.casesAllocation")}</span>
         </NavLink>
 
         <NavLink
@@ -68,8 +83,8 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
           className={navClass}
           onClick={closeMobileMenu}
         >
-          <span className="item-icon">👥</span>
-          <span>Lawyer Management</span>
+          <span className="item-icon"><FiUsers /></span>
+          <span>{t("adminSidebar.lawyerManagement")}</span>
         </NavLink>
 
         <NavLink
@@ -77,8 +92,8 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
           className={navClass}
           onClick={closeMobileMenu}
         >
-          <span className="item-icon">📄</span>
-          <span>Document Vault</span>
+          <span className="item-icon"><FiFileText /></span>
+          <span>{t("adminSidebar.documentVault")}</span>
         </NavLink>
 
         <NavLink
@@ -86,8 +101,8 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
           className={navClass}
           onClick={closeMobileMenu}
         >
-          <span className="item-icon">💳</span>
-          <span>Payments</span>
+          <span className="item-icon"><FiCreditCard /></span>
+          <span>{t("adminSidebar.payments")}</span>
         </NavLink>
       </nav>
 
@@ -95,31 +110,29 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
         <div className="admin-user-pill">
           <div className="admin-avatar-circle">A</div>
           <div className="admin-meta">
-            <strong>Admin</strong>
-            <span>System Controller</span>
+            <strong>{t("adminSidebar.admin")}</strong>
+            <span>{t("adminSidebar.systemController")}</span>
           </div>
         </div>
 
-       <button
-  type="button"
-  className="btn-sidebar-logout"
-  onClick={() => setLogoutDialogOpen(true)}
->
-  ↪ Sign Out
-</button>
+        <button
+          type="button"
+          className="btn-sidebar-logout"
+          onClick={() => setLogoutDialogOpen(true)}
+        >
+          <FiLogOut /> {t("adminSidebar.signOut")}
+        </button>
       </div>
 
-
- <LogoutConfirmDialog
-  open={logoutDialogOpen}
-  onCancel={() => setLogoutDialogOpen(false)}
-  onConfirm={() => {
-    localStorage.removeItem("adminToken");
-    setMobileMenuOpen(false);
-    window.location.replace("/");
-  }}
-/>
-
+      <LogoutConfirmDialog
+        open={logoutDialogOpen}
+        onCancel={() => setLogoutDialogOpen(false)}
+        onConfirm={() => {
+          localStorage.removeItem("adminToken");
+          setMobileMenuOpen(false);
+          window.location.replace("/");
+        }}
+      />
     </aside>
   );
 }

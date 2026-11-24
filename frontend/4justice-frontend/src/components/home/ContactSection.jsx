@@ -1,5 +1,7 @@
 
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   Mail,
   MessageCircle,
@@ -8,9 +10,13 @@ import {
   ShieldCheck,
 } from "lucide-react";
 
-const API_URL = "https://appeel.onrender.com/api/contact";
+import API_BASE_URL from "../../api/api";
+
+const API_URL = `${API_BASE_URL}/api/contact`;
 
 function ContactSection() {
+  const { t } = useTranslation();
+
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -46,7 +52,7 @@ function ContactSection() {
 
       if (!response.ok || !result.success) {
         throw new Error(
-          result.message || "Unable to send your enquiry. Please try again."
+          result.message || t("contact.errors.sendFailed")
         );
       }
 
@@ -54,8 +60,9 @@ function ContactSection() {
       setSubmitted(true);
     } catch (err) {
       console.error("Contact form error:", err);
+
       setError(
-        err.message || "Something went wrong. Please try again later."
+        err.message || t("contact.errors.general")
       );
     } finally {
       setLoading(false);
@@ -68,17 +75,17 @@ function ContactSection() {
 
         {/* LEFT CONTACT CONTENT */}
         <div className="home-contact-intro">
-          <span className="section-eyebrow">GET IN TOUCH</span>
+          <span className="section-eyebrow">
+            {t("contact.eyebrow")}
+          </span>
 
           <h2>
-            Let's make your next step
-            <span> clearer.</span>
+            {t("contact.heading")}
+            <span>{t("contact.headingHighlight")}</span>
           </h2>
 
           <p className="home-contact-description">
-            Legal questions can be difficult to navigate.
-            Start by telling us what's on your mind.
-            We're here to help you understand your options.
+            {t("contact.description")}
           </p>
 
           <div className="home-contact-highlights">
@@ -88,10 +95,8 @@ function ContactSection() {
               </div>
 
               <div>
-                <h4>Start with a conversation</h4>
-                <p>
-                  You don't need to know which service you need before contacting us.
-                </p>
+                <h4>{t("contact.highlight1Title")}</h4>
+                <p>{t("contact.highlight1Description")}</p>
               </div>
             </div>
 
@@ -101,11 +106,8 @@ function ContactSection() {
               </div>
 
               <div>
-                <h4>Share only what is necessary</h4>
-                <p>
-                  Avoid including sensitive personal or confidential case information
-                  in this general enquiry form.
-                </p>
+                <h4>{t("contact.highlight2Title")}</h4>
+                <p>{t("contact.highlight2Description")}</p>
               </div>
             </div>
           </div>
@@ -116,8 +118,8 @@ function ContactSection() {
             </div>
 
             <div>
-              <span>GENERAL ENQUIRIES</span>
-              <p>Use the form to send us your question.</p>
+              <span>{t("contact.generalEnquiries")}</span>
+              <p>{t("contact.generalEnquiriesDescription")}</p>
             </div>
           </div>
         </div>
@@ -125,11 +127,9 @@ function ContactSection() {
         {/* RIGHT CONTACT FORM */}
         <div className="home-contact-form-card">
           <div className="home-contact-form-heading">
-            <span>WE'RE HERE TO LISTEN</span>
-            <h3>Send us a message</h3>
-            <p>
-              Fill in the details below and tell us how we can help.
-            </p>
+            <span>{t("contact.formEyebrow")}</span>
+            <h3>{t("contact.formTitle")}</h3>
+            <p>{t("contact.formDescription")}</p>
           </div>
 
           {submitted ? (
@@ -138,12 +138,9 @@ function ContactSection() {
                 <CheckCircle2 size={34} />
               </div>
 
-              <h3>Thank you for your enquiry.</h3>
+              <h3>{t("contact.successTitle")}</h3>
 
-              <p>
-                Your enquiry has been sent successfully.
-                Our team will review your message.
-              </p>
+              <p>{t("contact.successDescription")}</p>
 
               <button
                 type="button"
@@ -153,7 +150,7 @@ function ContactSection() {
                   setError("");
                 }}
               >
-                Send another enquiry
+                {t("contact.sendAnother")}
                 <ArrowUpRight size={18} />
               </button>
             </div>
@@ -161,12 +158,15 @@ function ContactSection() {
             <form className="home-contact-form" onSubmit={handleSubmit}>
               <div className="home-contact-form-row">
                 <div className="contact-form-field">
-                  <label htmlFor="contact-name">Full name</label>
+                  <label htmlFor="contact-name">
+                    {t("contact.fullName")}
+                  </label>
+
                   <input
                     id="contact-name"
                     name="name"
                     type="text"
-                    placeholder="Enter your full name"
+                    placeholder={t("contact.fullNamePlaceholder")}
                     autoComplete="name"
                     maxLength={100}
                     required
@@ -174,12 +174,15 @@ function ContactSection() {
                 </div>
 
                 <div className="contact-form-field">
-                  <label htmlFor="contact-email">Email address</label>
+                  <label htmlFor="contact-email">
+                    {t("contact.email")}
+                  </label>
+
                   <input
                     id="contact-email"
                     name="email"
                     type="email"
-                    placeholder="you@example.com"
+                    placeholder={t("contact.emailPlaceholder")}
                     autoComplete="email"
                     maxLength={150}
                     required
@@ -189,27 +192,29 @@ function ContactSection() {
 
               <div className="contact-form-field">
                 <label htmlFor="contact-subject">
-                  What is your enquiry about?
+                  {t("contact.subject")}
                 </label>
 
                 <input
                   id="contact-subject"
                   name="subject"
                   type="text"
-                  placeholder="Enter a short subject"
+                  placeholder={t("contact.subjectPlaceholder")}
                   maxLength={150}
                   required
                 />
               </div>
 
               <div className="contact-form-field">
-                <label htmlFor="contact-message">Your message</label>
+                <label htmlFor="contact-message">
+                  {t("contact.message")}
+                </label>
 
                 <textarea
                   id="contact-message"
                   name="message"
                   rows="5"
-                  placeholder="Tell us how we can help..."
+                  placeholder={t("contact.messagePlaceholder")}
                   maxLength={5000}
                   required
                 />
@@ -226,15 +231,16 @@ function ContactSection() {
                 className="home-contact-submit"
                 disabled={loading}
               >
-                {loading ? "Sending..." : "Send enquiry"}
+                {loading
+                  ? t("contact.sending")
+                  : t("contact.sendEnquiry")}
+
                 {!loading && <ArrowUpRight size={19} />}
               </button>
 
               <div className="home-contact-form-note">
                 <ShieldCheck size={15} />
-                <span>
-                  Please don't include confidential case documents or sensitive details.
-                </span>
+                <span>{t("contact.formNote")}</span>
               </div>
             </form>
           )}

@@ -1,10 +1,13 @@
-
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { FiAlertTriangle } from "react-icons/fi";
 import API_BASE_URL from "../api/api";
+import appeelLogo from "../assets/appeel-logo.png";
 
 export default function LoginSelection() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -71,26 +74,20 @@ export default function LoginSelection() {
         const data = await response.json().catch(() => null);
 
         if (!response.ok) {
-          // Try the next role's login endpoint.
           continue;
         }
 
-        // Never accept a successful response without a token.
         if (!data?.token) {
-          throw new Error(
-            "The server did not return an authentication token."
-          );
+          throw new Error(t("login.errors.noToken"));
         }
 
-        // Save the authenticated user's token.
         localStorage.setItem(endpoint.tokenKey, data.token);
 
-        // Save the customer profile used by the existing dashboard.
         if (endpoint.role === "CUSTOMER") {
           const customer = data.customer;
 
           if (!customer?.id) {
-            throw new Error("Customer account details were not returned.");
+            throw new Error(t("login.errors.customerDetails"));
           }
 
           localStorage.setItem("customerId", String(customer.id));
@@ -99,12 +96,11 @@ export default function LoginSelection() {
           localStorage.setItem("customerPhone", customer.phone || "");
         }
 
-        // Save the lawyer profile used by the existing dashboard.
         if (endpoint.role === "LAWYER") {
           const lawyer = data.lawyer ?? data;
 
           if (lawyer?.id == null) {
-            throw new Error("Lawyer account details were not returned.");
+            throw new Error(t("login.errors.lawyerDetails"));
           }
 
           localStorage.setItem(
@@ -117,30 +113,29 @@ export default function LoginSelection() {
           );
         }
 
-        // Clear tokens from other roles to avoid stale sessions.
         const otherTokenKeys = [
           "customerToken",
           "lawyerToken",
           "adminToken",
         ].filter((key) => key !== endpoint.tokenKey);
 
-        otherTokenKeys.forEach((key) => localStorage.removeItem(key));
+        otherTokenKeys.forEach((key) =>
+          localStorage.removeItem(key)
+        );
 
-        // Navigate to the matching dashboard.
         navigate(endpoint.dashboard, { replace: true });
         authenticated = true;
         break;
       }
 
       if (!authenticated) {
-        throw new Error(
-          "Invalid email or password. Please check your credentials and try again."
-        );
+        throw new Error(t("login.errors.invalidCredentials"));
       }
     } catch (err) {
       console.error("Login error:", err);
+
       setError(
-        err.message || "Unable to connect to the server. Please try again."
+        err.message || t("login.errors.connection")
       );
     } finally {
       setLoading(false);
@@ -150,41 +145,48 @@ export default function LoginSelection() {
   return (
     <main className="login-selection-page">
       <div className="login-selection-container">
-       
 
         <div className="login-selection-heading">
-          <span className="login-selection-eyebrow">
-            WELCOME BACK
-          </span>
+          <h1>{t("login.title")}</h1>
 
-          <h1>Sign in to APPEEL</h1>
-
-          <p>
-            Access your legal workspace securely.
-          </p>
+          <p>{t("login.subtitle")}</p>
         </div>
 
         <section className="universal-login-card">
+          <div className="auth-brand-wrapper">
+            <Link to="/" className="auth-brand-logo-link" aria-label="APPEEL Home">
+              <img
+                src={appeelLogo}
+                alt="APPEEL"
+                className="auth-page-logo"
+              />
+
+            </Link>
+          </div>
+
           <div className="universal-login-heading">
-            <h2>Login to your account</h2>
-            <p>Enter your registered email and password.</p>
+            <h2>{t("login.accountTitle")}</h2>
+            <p>{t("login.accountSubtitle")}</p>
           </div>
 
           {error && (
             <div className="alert-banner alert-error" role="alert">
-              <span className="alert-icon">⚠️</span>
+              <span className="alert-icon"><FiAlertTriangle /></span>
               <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
-              <label htmlFor="universal-email">Email address</label>
+              <label htmlFor="universal-email">
+                {t("login.email")}
+              </label>
+
               <input
                 id="universal-email"
                 name="email"
                 type="email"
-                placeholder="Enter your registered email"
+                placeholder={t("login.emailPlaceholder")}
                 value={formData.email}
                 onChange={handleChange}
                 autoComplete="username"
@@ -194,14 +196,20 @@ export default function LoginSelection() {
 
             <div className="form-group">
               <div className="form-label-row">
-                <label htmlFor="universal-password">Password</label>
+                <label htmlFor="universal-password">
+                  {t("login.password")}
+                </label>
 
                 <button
                   type="button"
                   className="btn-toggle-pw"
-                  onClick={() => setShowPassword((previous) => !previous)}
+                  onClick={() =>
+                    setShowPassword((previous) => !previous)
+                  }
                 >
-                  {showPassword ? "Hide" : "Show"}
+                  {showPassword
+                    ? t("login.hidePassword")
+                    : t("login.showPassword")}
                 </button>
               </div>
 
@@ -209,7 +217,7 @@ export default function LoginSelection() {
                 id="universal-password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="Enter your password"
+                placeholder={t("login.passwordPlaceholder")}
                 value={formData.password}
                 onChange={handleChange}
                 autoComplete="current-password"
@@ -217,43 +225,48 @@ export default function LoginSelection() {
               />
             </div>
 
-
-
-             <div className="forgot-password-link">
-              <Link to="/forgot-password">Forgot password?</Link>
+            <div className="forgot-password-link">
+              <Link to="/forgot-password">
+                {t("login.forgotPassword")}
+              </Link>
             </div>
-
-
 
             <button
               type="submit"
               className="login-card-button universal-login-button"
               disabled={loading}
             >
-              {loading ? "Signing in..." : "Sign In"}
+              {loading
+                ? t("login.signingIn")
+                : t("login.signIn")}
+
               {!loading && <span>→</span>}
             </button>
           </form>
 
           <p className="universal-login-note">
-            Secure access for customers, lawyers and administrators.
+            {t("login.secureAccess")}
           </p>
 
           <div className="universal-login-footer">
             <p>
-              New customer?{" "}
-              <Link to="/customer/register">Create an account</Link>
+              {t("login.newCustomer")}{" "}
+              <Link to="/customer/register">
+                {t("login.createAccount")}
+              </Link>
             </p>
 
             <p>
-              Are you a lawyer?{" "}
-              <Link to="/lawyer/register">Register here</Link>
+              {t("login.areYouLawyer")}{" "}
+              <Link to="/lawyer/register">
+                {t("login.registerHere")}
+              </Link>
             </p>
           </div>
         </section>
 
         <Link to="/" className="login-back-home">
-          ← Back to homepage
+          ← {t("login.backHome")}
         </Link>
       </div>
     </main>

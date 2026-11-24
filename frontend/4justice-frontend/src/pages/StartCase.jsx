@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import {
   customerRequest,
   getCustomerJson,
@@ -7,9 +9,11 @@ import {
 } from "../api/customerApi";
 
 import { CustomerPageHeader } from "./CustomerCases";
+import { FiAlertTriangle } from "react-icons/fi";
 
 export default function StartCase() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -38,7 +42,10 @@ export default function StartCase() {
       .catch((requestError) => {
         if (!active) return;
 
-        setError(requestError.message || "Unable to verify your session.");
+        setError(
+          requestError.message ||
+            t("startCase.errors.verifySession")
+        );
 
         if (isCustomerAuthError(requestError)) {
           navigate("/customer/login", { replace: true });
@@ -53,7 +60,7 @@ export default function StartCase() {
     return () => {
       active = false;
     };
-  }, [navigate]);
+  }, [navigate, t]);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -85,7 +92,7 @@ export default function StartCase() {
 
       if (!caseData.caseId) {
         throw new Error(
-          "The case ID was not returned by the server. Please check your cases before submitting again."
+          t("startCase.errors.missingCaseId")
         );
       }
 
@@ -98,7 +105,8 @@ export default function StartCase() {
       });
     } catch (requestError) {
       setError(
-        requestError.message || "Unable to submit your case."
+        requestError.message ||
+          t("startCase.errors.submitFailed")
       );
 
       if (isCustomerAuthError(requestError)) {
@@ -112,39 +120,43 @@ export default function StartCase() {
   return (
     <main className="form-page-layout">
       <div className="form-card-container">
-        <CustomerPageHeader title="Start a New Case" activeTab="" />
+        <CustomerPageHeader
+          title={t("startCase.pageTitle")}
+          activeTab=""
+        />
 
-        <div className="form-header-bar">
-          
-        </div>
+        <div className="form-header-bar"></div>
 
         <section className="form-card">
           <div className="form-intro">
-            <span className="auth-badge">INTAKE FORM</span>
-            <h1>Start a New Legal Case</h1>
-            <p>
-              Complete the details below so our legal team can assess
-              your requirements and connect you with the appropriate
-              attorney.
-            </p>
+            <span className="auth-badge">
+              {t("startCase.eyebrow")}
+            </span>
+
+            <h1>{t("startCase.heading")}</h1>
+
+            <p>{t("startCase.description")}</p>
           </div>
 
           {error && (
             <div className="alert-banner alert-error" role="alert">
-              <span className="alert-icon">⚠️</span>
+              <span className="alert-icon"><FiAlertTriangle /></span>
               <span>{error}</span>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="modern-form">
             <div className="form-section-title">
-              <h3>1. Client Information</h3>
-              <p>Verified from your customer profile</p>
+              <h3>{t("startCase.clientSectionTitle")}</h3>
+              <p>{t("startCase.clientSectionDescription")}</p>
             </div>
 
             <div className="form-grid-2col">
               <div className="form-group">
-                <label htmlFor="customerName">Full Name</label>
+                <label htmlFor="customerName">
+                  {t("startCase.fullName")}
+                </label>
+
                 <input
                   id="customerName"
                   name="customerName"
@@ -160,8 +172,9 @@ export default function StartCase() {
 
               <div className="form-group">
                 <label htmlFor="customerEmail">
-                  Registered Email
+                  {t("startCase.registeredEmail")}
                 </label>
+
                 <input
                   id="customerEmail"
                   name="customerEmail"
@@ -177,13 +190,13 @@ export default function StartCase() {
             </div>
 
             <div className="form-section-title">
-              <h3>2. Case Information</h3>
-              <p>Specify the category and scope of your matter</p>
+              <h3>{t("startCase.caseSectionTitle")}</h3>
+              <p>{t("startCase.caseSectionDescription")}</p>
             </div>
 
             <div className="form-group">
               <label htmlFor="caseType">
-                Legal Case Category
+                {t("startCase.caseCategory")}
               </label>
 
               <select
@@ -193,49 +206,57 @@ export default function StartCase() {
                 onChange={handleChange}
                 required
               >
-                <option value="">Select a category...</option>
+                <option value="">
+                  {t("startCase.selectCategory")}
+                </option>
+
                 <option value="Family Law">
-                  Family Law (Divorce, Custody, Estates)
+                  {t("startCase.categories.familyLaw")}
                 </option>
+
                 <option value="Property Dispute">
-                  Property Dispute (Real Estate, Leases, Tenancy)
+                  {t("startCase.categories.propertyDispute")}
                 </option>
+
                 <option value="Criminal Law">
-                  Criminal Law &amp; Defense
+                  {t("startCase.categories.criminalLaw")}
                 </option>
+
                 <option value="Employment Law">
-                  Employment Law (Contracts, Disputes, Severance)
+                  {t("startCase.categories.employmentLaw")}
                 </option>
+
                 <option value="Business Law">
-                  Business &amp; Corporate Law
+                  {t("startCase.categories.businessLaw")}
                 </option>
+
                 <option value="Consumer Complaint">
-                  Consumer Rights &amp; Claims
+                  {t("startCase.categories.consumerComplaint")}
                 </option>
+
                 <option value="Other">
-                  Other Legal Assistance
+                  {t("startCase.categories.other")}
                 </option>
               </select>
             </div>
 
             <div className="form-group">
               <label htmlFor="description">
-                Case Description &amp; Background
+                {t("startCase.caseDescription")}
               </label>
 
               <textarea
                 id="description"
                 name="description"
                 rows={6}
-                placeholder="Describe your situation in detail. Include dates, opposing parties, current status, and the outcome you are seeking..."
+                placeholder={t("startCase.descriptionPlaceholder")}
                 value={formData.description}
                 onChange={handleChange}
                 required
               />
 
               <small className="field-hint">
-                All communications and case details are securely
-                handled under strict confidentiality.
+                {t("startCase.confidentialityNote")}
               </small>
             </div>
 
@@ -246,17 +267,17 @@ export default function StartCase() {
                 disabled={loading || checkingSession}
               >
                 {checkingSession
-                  ? "Checking Session..."
+                  ? t("startCase.checkingSession")
                   : loading
-                    ? "Creating Case..."
-                    : "Submit Case & Continue to Payment →"}
+                    ? t("startCase.creatingCase")
+                    : t("startCase.submit")}
               </button>
 
               <Link
                 to="/customer/dashboard"
                 className="btn-cancel"
               >
-                Cancel
+                {t("startCase.cancel")}
               </Link>
             </div>
           </form>

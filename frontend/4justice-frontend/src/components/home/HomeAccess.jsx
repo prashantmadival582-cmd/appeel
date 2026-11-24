@@ -1,7 +1,10 @@
 
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 function HomeAccess() {
+  const { t } = useTranslation();
+
   const adminToken = localStorage.getItem("adminToken");
   const lawyerToken = localStorage.getItem("lawyerToken");
   const customerToken = localStorage.getItem("customerToken");
@@ -29,27 +32,26 @@ function HomeAccess() {
 
         <div className="home-access-content">
           <span className="home-access-eyebrow">
-            YOUR NEXT STEP STARTS HERE
+            {t("homeAccess.eyebrow")}
           </span>
 
           <h2>
-            Your legal matter.
+            {t("homeAccess.heading")}
             <br />
-            <span>Your next move.</span>
+            <span>{t("homeAccess.headingHighlight")}</span>
           </h2>
 
           <p className="home-access-description">
-            Get clear on your options and move forward with
-            straightforward, affordable legal support.
+            {t("homeAccess.description")}
           </p>
 
           <div className="home-access-actions">
             <Link to={primaryPath} className="home-access-primary">
               {customerToken
-                ? "Continue My Case"
+                ? t("homeAccess.continueCase")
                 : isLoggedIn
-                  ? "Go to Dashboard"
-                  : "Start My Case"}
+                  ? t("homeAccess.dashboard")
+                  : t("homeAccess.startCase")}
 
               <span aria-hidden="true">↗</span>
             </Link>
@@ -59,33 +61,32 @@ function HomeAccess() {
                 to="/customer/login"
                 className="home-access-secondary"
               >
-                Already have an account? <strong>Sign in</strong>
+                {t("homeAccess.existingAccount")}{" "}
+                <strong>{t("homeAccess.signIn")}</strong>
               </Link>
             )}
           </div>
 
-          
-<div className="home-access-trust">
-  <span>
-    <span className="home-access-check">€</span>
-    Transparent pricing
-  </span>
+          <div className="home-access-trust">
+            <span>
+              <span className="home-access-check">€</span>
+              {t("homeAccess.transparentPricing")}
+            </span>
 
-  <span className="home-access-divider" aria-hidden="true" />
+            <span className="home-access-divider" aria-hidden="true" />
 
-  <span>
-    <span className="home-access-check">◇</span>
-    No obligation
-  </span>
+            <span>
+              <span className="home-access-check">◇</span>
+              {t("homeAccess.noObligation")}
+            </span>
 
-  <span className="home-access-divider" aria-hidden="true" />
+            <span className="home-access-divider" aria-hidden="true" />
 
-  <span>
-    <span className="home-access-check">♧</span>
-    Secure case handling
-  </span>
-</div>
- 
+            <span>
+              <span className="home-access-check">♧</span>
+              {t("homeAccess.secureHandling")}
+            </span>
+          </div>
         </div>
 
         <div className="home-access-visual" aria-hidden="true">
@@ -99,7 +100,7 @@ function HomeAccess() {
           <div className="home-access-floating-card">
             <span className="home-access-card-icon">✓</span>
             <div>
-              <strong>A clearer way forward</strong>
+              <strong>{t("homeAccess.visualMessage")}</strong>
             </div>
           </div>
         </div>

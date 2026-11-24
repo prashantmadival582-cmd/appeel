@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { FiSearch, FiFilter, FiRefreshCw } from "react-icons/fi";
 
 function TableToolbar({
   search,
@@ -13,7 +15,13 @@ function TableToolbar({
   exportable = true,
   searchable = true,
 }) {
+  const { t } = useTranslation();
   const [showFilters, setShowFilters] = useState(false);
+
+  const translateText = (value) => {
+    if (typeof value !== "string") return value;
+    return t(value, { defaultValue: value });
+  };
 
   const activeFilterCount = filters.filter(
     (filter) =>
@@ -26,13 +34,13 @@ function TableToolbar({
       <div className="table-toolbar-left">
         {searchable && (
           <div className="table-search-box">
-            <span className="table-search-icon">⌕</span>
+            <span className="table-search-icon"><FiSearch /></span>
             <input
               type="search"
               value={search}
               onChange={(event) => onSearchChange(event.target.value)}
-              placeholder="Search records..."
-              aria-label="Search records"
+              placeholder={t("tableToolbar.searchPlaceholder")}
+              aria-label={t("tableToolbar.searchLabel")}
             />
           </div>
         )}
@@ -45,8 +53,9 @@ function TableToolbar({
               onClick={() => setShowFilters((previous) => !previous)}
               aria-expanded={showFilters}
             >
-              <span>▽</span>
-              Filter
+              <span><FiFilter /></span>
+              {t("tableToolbar.filter")}
+
               {activeFilterCount > 0 && (
                 <span className="table-filter-count">
                   {activeFilterCount}
@@ -58,7 +67,7 @@ function TableToolbar({
               <div className="table-filter-dropdown">
                 {filters.map((filter) => (
                   <label key={filter.key} className="table-filter-group">
-                    <span>{filter.label}</span>
+                    <span>{translateText(filter.label)}</span>
 
                     <select
                       value={filterValues[filter.key] || "ALL"}
@@ -67,12 +76,16 @@ function TableToolbar({
                       }
                     >
                       <option value="ALL">
-                        {filter.allLabel || `All ${filter.label}`}
+                        {filter.allLabel
+                          ? translateText(filter.allLabel)
+                          : t("tableToolbar.all", {
+                              label: translateText(filter.label),
+                            })}
                       </option>
 
                       {filter.options.map((option) => (
                         <option key={option.value} value={option.value}>
-                          {option.label}
+                          {translateText(option.label)}
                         </option>
                       ))}
                     </select>
@@ -84,7 +97,7 @@ function TableToolbar({
                   className="table-filter-close"
                   onClick={() => setShowFilters(false)}
                 >
-                  Done
+                  {t("tableToolbar.done")}
                 </button>
               </div>
             )}
@@ -100,20 +113,14 @@ function TableToolbar({
             onClick={onRefresh}
             disabled={refreshing}
           >
-            <span>{refreshing ? "↻" : "⟳"}</span>
-            {refreshing ? "Refreshing..." : "Refresh"}
+            <span><FiRefreshCw /></span>
+            {refreshing
+              ? t("tableToolbar.refreshing")
+              : t("tableToolbar.refresh")}
           </button>
         )}
 
-        {exportable && (
-          <button
-            type="button"
-            className="table-export-button"
-            onClick={onExport}
-          >
-            ↓ Export CSV
-          </button>
-        )}
+
       </div>
     </div>
   );

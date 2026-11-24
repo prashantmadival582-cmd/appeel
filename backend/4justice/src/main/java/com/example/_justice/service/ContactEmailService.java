@@ -1,6 +1,8 @@
+
 package com.example._justice.service;
 
 import com.example._justice.dto.ContactRequest;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,31 +16,31 @@ public class ContactEmailService {
     @Value("${spring.mail.username}")
     private String senderEmail;
 
-    @Value("${app.contact.receiver}")
-    private String receiverEmail;
-
     public ContactEmailService(JavaMailSender mailSender) {
         this.mailSender = mailSender;
     }
 
     public void sendContactEnquiry(ContactRequest request) {
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
+        SimpleMailMessage message = new SimpleMailMessage();
 
-        mailMessage.setFrom(senderEmail);
-        mailMessage.setTo(receiverEmail);
-        mailMessage.setReplyTo(request.getEmail());
+        message.setFrom(senderEmail);
+        message.setTo(senderEmail);
 
-        mailMessage.setSubject("APPEEL Website Enquiry: " + request.getSubject());
+        message.setReplyTo(request.getEmail());
 
-        mailMessage.setText(
-            "New enquiry received through the APPEEL website.\n\n" +
-            "Name: " + request.getName() + "\n" +
-            "Email: " + request.getEmail() + "\n" +
-            "Subject: " + request.getSubject() + "\n\n" +
-            "Message:\n" + request.getMessage()
+        message.setSubject(
+                "APPEEL Contact Enquiry: " + request.getSubject()
         );
 
-        mailSender.send(mailMessage);
+        message.setText(
+                "A new contact enquiry has been received.\n\n" +
+                "Name: " + request.getName() + "\n" +
+                "Email: " + request.getEmail() + "\n" +
+                "Subject: " + request.getSubject() + "\n\n" +
+                "Message:\n" + request.getMessage()
+        );
+
+        mailSender.send(message);
     }
 }

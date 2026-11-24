@@ -10,5 +10,7 @@ public interface CaseDocumentRepository
 
     List<CaseDocument> findByCaseId(String caseId);
 
+    long countByCaseId(String caseId);
+
     List<CaseDocument> findAllByOrderByIdDesc();
 }

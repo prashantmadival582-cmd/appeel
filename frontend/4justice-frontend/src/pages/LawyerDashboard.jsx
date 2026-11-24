@@ -1,13 +1,26 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API_BASE_URL from "../api/api";
 
 import DataTable from "../components/Table/DataTable";
 import LogoutConfirmDialog from "../components/LogoutConfirmDialog";
+import appeelLogo from "../assets/appeel-logo.png";
+
+import LanguageSwitcher from "../components/LanguageSwitcher";
+import {
+  FiFolder,
+  FiRefreshCw,
+  FiCheckCircle,
+  FiFileText,
+  FiAlertTriangle,
+  FiX,
+  FiHome,
+} from "react-icons/fi";
 
 function LawyerDashboard() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -25,17 +38,42 @@ function LawyerDashboard() {
   const [updatingCaseId, setUpdatingCaseId] = useState(null);
 
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-const [loggingOut, setLoggingOut] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
+  const formatStatus = (status) => {
+    if (!status) return t("lawyerDashboard.statuses.UNKNOWN");
 
+    return t(`lawyerDashboard.statuses.${status}`, {
+      defaultValue: status.replaceAll("_", " "),
+    });
+  };
 
+  const getStatusClass = (status = "") => {
+    const value = status.toUpperCase();
 
+    if (value.includes("PENDING") || value.includes("SUBMITTED")) {
+      return "status-badge pending";
+    }
 
-  // Reusable DataTable columns
+    if (value.includes("PROGRESS")) {
+      return "status-badge in-progress";
+    }
+
+    if (value.includes("REVIEW")) {
+      return "status-badge under-review";
+    }
+
+    if (value.includes("COMPLETED")) {
+      return "status-badge completed";
+    }
+
+    return "status-badge";
+  };
+
   const lawyerCaseColumns = [
     {
       key: "caseId",
-      header: "Case ID",
+      header: "lawyerDashboard.columns.caseId",
       accessor: "caseId",
       render: (item) => (
         <span className="case-id-tag">{item.caseId}</span>
@@ -43,35 +81,28 @@ const [loggingOut, setLoggingOut] = useState(false);
     },
     {
       key: "customerName",
-      header: "Customer Name",
+      header: "lawyerDashboard.columns.customerName",
       accessor: "customerName",
       render: (item) => (
-        <strong>{item.customerName || "Customer"}</strong>
+        <strong>
+          {item.customerName || t("lawyerDashboard.fallback.customer")}
+        </strong>
       ),
     },
     {
       key: "caseType",
-      header: "Matter Category",
+      header: "lawyerDashboard.columns.matterCategory",
       accessor: "caseType",
       render: (item) => (
         <span className="table-type-badge">
-          {item.caseType || "General"}
+          {item.caseType || t("lawyerDashboard.fallback.general")}
         </span>
       ),
     },
-    {
-      key: "description",
-      header: "Description",
-      accessor: "description",
-      render: (item) => (
-        <span className="text-truncate">
-          {item.description || "No description"}
-        </span>
-      ),
-    },
+
     {
       key: "status",
-      header: "Status",
+      header: "lawyerDashboard.columns.status",
       accessor: "status",
       render: (item) => (
         <span className={getStatusClass(item.status)}>
@@ -81,7 +112,7 @@ const [loggingOut, setLoggingOut] = useState(false);
     },
     {
       key: "updateStatus",
-      header: "Update Status",
+      header: "lawyerDashboard.columns.updateStatus",
       sortable: false,
       render: (item) => (
         <div className="status-update-inline">
@@ -91,24 +122,34 @@ const [loggingOut, setLoggingOut] = useState(false);
             onChange={(event) =>
               updateStatus(item.caseId, event.target.value)
             }
-            aria-label={`Update status for case ${item.caseId}`}
+            aria-label={t("lawyerDashboard.updateStatusFor", {
+              caseId: item.caseId,
+            })}
             className="modern-select-sm"
           >
-            <option value="PENDING">Pending</option>
-            <option value="UNDER_REVIEW">Under Review</option>
-            <option value="IN_PROGRESS">In Progress</option>
-            <option value="COMPLETED">Completed</option>
+            <option value="PENDING">
+              {t("lawyerDashboard.statuses.PENDING")}
+            </option>
+            <option value="UNDER_REVIEW">
+              {t("lawyerDashboard.statuses.UNDER_REVIEW")}
+            </option>
+            <option value="IN_PROGRESS">
+              {t("lawyerDashboard.statuses.IN_PROGRESS")}
+            </option>
+            <option value="COMPLETED">
+              {t("lawyerDashboard.statuses.COMPLETED")}
+            </option>
           </select>
 
           {updatingCaseId === item.caseId && (
-            <small>Saving...</small>
+            <small>{t("lawyerDashboard.saving")}</small>
           )}
         </div>
       ),
     },
     {
       key: "documents",
-      header: "Documents",
+      header: "lawyerDashboard.columns.documents",
       sortable: false,
       render: (item) => (
         <button
@@ -118,42 +159,58 @@ const [loggingOut, setLoggingOut] = useState(false);
           onClick={() => toggleDocuments(item.caseId)}
         >
           {documentLoadingCase === item.caseId
-            ? "Loading..."
+            ? t("lawyerDashboard.loading")
             : expandedCase === item.caseId
-              ? "Hide Files"
-              : `Files (${documentsByCase[item.caseId]?.length ?? "View"})`}
+              ? t("lawyerDashboard.hideFiles")
+              : t("lawyerDashboard.files", {
+                  count: documentsByCase[item.caseId]?.length ?? null,
+                  defaultValue:
+                    documentsByCase[item.caseId]?.length != null
+                      ? t("lawyerDashboard.filesCount", {
+                          count: documentsByCase[item.caseId].length,
+                        })
+                      : t("lawyerDashboard.viewFiles"),
+                })}
         </button>
       ),
     },
   ];
 
-  // Searchable fields
   const lawyerCaseSearchFields = [
     "caseId",
     "customerName",
     "caseType",
-    "description",
     "status",
   ];
 
-  // Status filter
   const lawyerCaseFilters = [
     {
       key: "status",
-      label: "Status",
+      label: "lawyerDashboard.filters.status",
       options: [
-        { label: "Pending", value: "PENDING" },
-        { label: "Submitted", value: "SUBMITTED" },
-        { label: "Under Review", value: "UNDER_REVIEW" },
-        { label: "In Progress", value: "IN_PROGRESS" },
-        { label: "Completed", value: "COMPLETED" },
+        {
+          label: "lawyerDashboard.statuses.PENDING",
+          value: "PENDING",
+        },
+        {
+          label: "lawyerDashboard.statuses.SUBMITTED",
+          value: "SUBMITTED",
+        },
+        {
+          label: "lawyerDashboard.statuses.UNDER_REVIEW",
+          value: "UNDER_REVIEW",
+        },
+        {
+          label: "lawyerDashboard.statuses.IN_PROGRESS",
+          value: "IN_PROGRESS",
+        },
+        {
+          label: "lawyerDashboard.statuses.COMPLETED",
+          value: "COMPLETED",
+        },
       ],
     },
   ];
-
-
-
-
 
   let lawyer = null;
 
@@ -192,8 +249,8 @@ const [loggingOut, setLoggingOut] = useState(false);
           throw new Error(
             lawyerResponse.status === 401 ||
               lawyerResponse.status === 403
-              ? "Your session is invalid or expired. Please log in again."
-              : "Unable to fetch lawyer details."
+              ? t("lawyerDashboard.errors.invalidSession")
+              : t("lawyerDashboard.errors.fetchLawyer")
           );
         }
 
@@ -209,22 +266,31 @@ const [loggingOut, setLoggingOut] = useState(false);
           throw new Error(
             casesResponse.status === 401 ||
               casesResponse.status === 403
-              ? "Your lawyer session is not valid. Please log in again."
-              : "Unable to fetch assigned cases."
+              ? t("lawyerDashboard.errors.invalidLawyerSession")
+              : t("lawyerDashboard.errors.fetchCases")
           );
         }
 
         const assignedCases = await casesResponse.json();
-        setCases(Array.isArray(assignedCases) ? assignedCases : []);
+
+const sortedCases = Array.isArray(assignedCases)
+  ? [...assignedCases].sort(
+      (a, b) =>
+        new Date(b.submittedAt).getTime() -
+        new Date(a.submittedAt).getTime()
+    )
+  : [];
+
+setCases(sortedCases);
       } catch (err) {
-        setError(err.message || "Unable to load dashboard.");
+        setError(err.message || t("lawyerDashboard.errors.loadDashboard"));
       } finally {
         setLoading(false);
       }
     };
 
     fetchLawyerData();
-  }, [lawyerId, lawyerToken, navigate]);
+  }, [lawyerId, lawyerToken, navigate, t]);
 
   // Update lawyer availability.
   const updateAvailability = async (status) => {
@@ -241,14 +307,15 @@ const [loggingOut, setLoggingOut] = useState(false);
 
       if (!response.ok) {
         throw new Error(
-          (await response.text()) || "Failed to update availability."
+          (await response.text()) ||
+            t("lawyerDashboard.errors.updateAvailability")
         );
       }
 
       const updatedLawyer = await response.json();
       setAvailability(updatedLawyer.availability || status);
     } catch (err) {
-      alert(err.message || "Unable to update availability.");
+      alert(err.message || t("lawyerDashboard.errors.updateAvailability"));
     } finally {
       setAvailabilityLoading(false);
     }
@@ -269,7 +336,8 @@ const [loggingOut, setLoggingOut] = useState(false);
 
       if (!response.ok) {
         throw new Error(
-          (await response.text()) || "Failed to update case status."
+          (await response.text()) ||
+            t("lawyerDashboard.errors.updateCaseStatus")
         );
       }
 
@@ -283,7 +351,7 @@ const [loggingOut, setLoggingOut] = useState(false);
         )
       );
     } catch (err) {
-      alert(err.message || "Failed to update case status.");
+      alert(err.message || t("lawyerDashboard.errors.updateCaseStatus"));
     } finally {
       setUpdatingCaseId(null);
     }
@@ -307,7 +375,9 @@ const [loggingOut, setLoggingOut] = useState(false);
       if (!response.ok) {
         throw new Error(
           (await response.text()) ||
-            `Unable to load documents (${response.status}).`
+            t("lawyerDashboard.errors.loadDocumentsWithStatus", {
+              status: response.status,
+            })
         );
       }
 
@@ -318,15 +388,15 @@ const [loggingOut, setLoggingOut] = useState(false);
       const documentList = Array.isArray(data)
         ? data
         : Array.isArray(data?.documents)
-        ? data.documents
-        : Array.isArray(data?.data)
-        ? data.data
-        : Array.isArray(data?.content)
-        ? data.content
-        : null;
+          ? data.documents
+          : Array.isArray(data?.data)
+            ? data.data
+            : Array.isArray(data?.content)
+              ? data.content
+              : null;
 
       if (!documentList) {
-        throw new Error("Invalid document list received from the server.");
+        throw new Error(t("lawyerDashboard.errors.invalidDocumentList"));
       }
 
       setDocumentsByCase((previous) => ({
@@ -338,7 +408,8 @@ const [loggingOut, setLoggingOut] = useState(false);
 
       setDocumentErrors((previous) => ({
         ...previous,
-        [caseId]: err.message || "Unable to load documents.",
+        [caseId]:
+          err.message || t("lawyerDashboard.errors.loadDocuments"),
       }));
     } finally {
       setDocumentLoadingCase(null);
@@ -359,13 +430,13 @@ const [loggingOut, setLoggingOut] = useState(false);
   // Download document bytes from the backend.
   const getDocumentBlob = async (documentId) => {
     if (documentId == null) {
-      throw new Error("Document ID is missing.");
+      throw new Error(t("lawyerDashboard.errors.missingDocumentId"));
     }
 
     const token = localStorage.getItem("lawyerToken");
 
     if (!token) {
-      throw new Error("Lawyer session expired. Please log in again.");
+      throw new Error(t("lawyerDashboard.errors.expiredSession"));
     }
 
     const url =
@@ -391,8 +462,10 @@ const [loggingOut, setLoggingOut] = useState(false);
       const message = await response.text();
 
       throw new Error(
-        `Document request failed (${response.status}): ` +
-          (message || response.statusText)
+        t("lawyerDashboard.errors.documentRequestFailed", {
+          status: response.status,
+          message: message || response.statusText,
+        })
       );
     }
 
@@ -401,7 +474,7 @@ const [loggingOut, setLoggingOut] = useState(false);
     console.log("Received document size:", blob.size, "bytes");
 
     if (blob.size === 0) {
-      throw new Error("The server returned an empty document.");
+      throw new Error(t("lawyerDashboard.errors.emptyDocument"));
     }
 
     return blob;
@@ -410,8 +483,9 @@ const [loggingOut, setLoggingOut] = useState(false);
   // Download a document.
   const handleDownload = async (file) => {
     const docId = file?.id ?? file?.documentId;
+
     if (!docId) {
-      alert("Document ID is missing.");
+      alert(t("lawyerDashboard.errors.missingDocumentId"));
       return;
     }
 
@@ -435,7 +509,7 @@ const [loggingOut, setLoggingOut] = useState(false);
       }, 1000);
     } catch (err) {
       console.error("DOCUMENT DOWNLOAD ERROR:", err);
-      alert(err.message || "Unable to download the document.");
+      alert(err.message || t("lawyerDashboard.errors.downloadDocument"));
     } finally {
       setDownloadingId(null);
     }
@@ -444,8 +518,9 @@ const [loggingOut, setLoggingOut] = useState(false);
   // View a document in a new tab.
   const handleViewDocument = async (file) => {
     const docId = file?.id ?? file?.documentId;
+
     if (!docId) {
-      alert("Document ID is missing.");
+      alert(t("lawyerDashboard.errors.missingDocumentId"));
       return;
     }
 
@@ -453,7 +528,7 @@ const [loggingOut, setLoggingOut] = useState(false);
     const newTab = window.open("about:blank", "_blank");
 
     if (!newTab) {
-      alert("Pop-up blocked. Allow pop-ups for this site and try again.");
+      alert(t("lawyerDashboard.errors.popupBlocked"));
       return;
     }
 
@@ -463,13 +538,18 @@ const [loggingOut, setLoggingOut] = useState(false);
       setViewingId(docId);
       console.log("VIEW CLICKED:", file);
 
-      newTab.document.title = "Loading document";
+      newTab.document.title = t("lawyerDashboard.openingDocument");
       newTab.document.body.innerHTML =
-        "<p style='font-family:Arial;padding:24px'>Loading document...</p>";
+        `<p style='font-family:Arial;padding:24px'>${t(
+          "lawyerDashboard.loadingDocument"
+        )}</p>`;
 
       const blob = await getDocumentBlob(docId);
       const fileType =
-        file.fileType || file.contentType || blob.type || "application/octet-stream";
+        file.fileType ||
+        file.contentType ||
+        blob.type ||
+        "application/octet-stream";
 
       objectUrl = window.URL.createObjectURL(
         new Blob([blob], { type: fileType })
@@ -477,7 +557,6 @@ const [loggingOut, setLoggingOut] = useState(false);
 
       newTab.location.replace(objectUrl);
 
-      // Give the browser time to load the document before cleanup.
       window.setTimeout(() => {
         if (objectUrl) {
           window.URL.revokeObjectURL(objectUrl);
@@ -487,38 +566,37 @@ const [loggingOut, setLoggingOut] = useState(false);
       console.error("DOCUMENT VIEW ERROR:", err);
 
       if (!newTab.closed) {
-        newTab.document.body.innerHTML =
-          "<p style='font-family:Arial;padding:24px;color:#b91c1c'>" +
-          "Unable to open this document. Return to the dashboard and check the error." +
-          "</p>";
+        newTab.document.body.textContent = t(
+          "lawyerDashboard.errors.documentViewFailed"
+        );
       }
 
-      alert(err.message || "Unable to open the document.");
+      alert(err.message || t("lawyerDashboard.errors.openDocument"));
     } finally {
       setViewingId(null);
     }
   };
 
- // Sign out.
-const handleLogout = async () => {
-  if (loggingOut) return;
+  // Sign out.
+  const handleLogout = async () => {
+    if (loggingOut) return;
 
-  setLoggingOut(true);
+    setLoggingOut(true);
 
-  try {
-    await fetch(`${API_BASE_URL}/api/lawyers/logout`, {
-      method: "POST",
-      headers: authHeaders(),
-    });
-  } catch (err) {
-    console.error("Logout request failed:", err);
-  } finally {
-    localStorage.removeItem("loggedInLawyer");
-    localStorage.removeItem("lawyerToken");
+    try {
+      await fetch(`${API_BASE_URL}/api/lawyers/logout`, {
+        method: "POST",
+        headers: authHeaders(),
+      });
+    } catch (err) {
+      console.error("Logout request failed:", err);
+    } finally {
+      localStorage.removeItem("loggedInLawyer");
+      localStorage.removeItem("lawyerToken");
 
-    navigate("/login", { replace: true });
-  }
-};
+      navigate("/login", { replace: true });
+    }
+  };
 
   const totalCases = cases.length;
 
@@ -530,80 +608,59 @@ const handleLogout = async () => {
     (item) => item.status === "COMPLETED"
   ).length;
 
-  const formatStatus = (status) =>
-    status?.replaceAll("_", " ") || "Unknown";
-
-  const getStatusClass = (status = "") => {
-    const value = status.toUpperCase();
-
-    if (value.includes("PENDING") || value.includes("SUBMITTED")) {
-      return "status-badge pending";
-    }
-
-    if (value.includes("PROGRESS")) {
-      return "status-badge in-progress";
-    }
-
-    if (value.includes("REVIEW")) {
-      return "status-badge under-review";
-    }
-
-    if (value.includes("COMPLETED")) {
-      return "status-badge completed";
-    }
-
-    return "status-badge";
-  };
-
   return (
-    <main className="portal-page">
+    <main className="portal-page lawyer-dashboard">
       <header className="customer-portal-navbar lawyer-navbar">
         <div className="portal-nav-container">
           <Link to="/lawyer/dashboard" className="portal-brand">
-            <span className="brand-icon">⚖️</span>
-            <span className="brand-title">APPEEL</span>
+            <div className="portal-brand-content">
+              <img
+                src={appeelLogo}
+                alt="APPEEL"
+                className="portal-brand-logo"
+              />
+
+            </div>
             <span className="brand-portal-pill lawyer">
-              Lawyer Portal
+              {t("lawyerDashboard.lawyerPortal")}
             </span>
           </Link>
 
-          
-<div className="portal-nav-links open">
-  <Link
-    to="/"
-    className="portal-nav-link"
-  >
-    ⌂ Home
-  </Link>
+          <div className="portal-nav-links open">
+            <Link to="/" className="portal-nav-link">
+              <FiHome /> {t("lawyerDashboard.home")}
+            </Link>
 
- <button
-  type="button"
-  className="btn-logout-nav"
-  onClick={() => setLogoutDialogOpen(true)}
->
-  Sign Out
-</button>
-</div>
+              <LanguageSwitcher />
 
+            <button
+              type="button"
+              className="btn-logout-nav"
+              onClick={() => setLogoutDialogOpen(true)}
+            >
+              {t("lawyerDashboard.signOut")}
+            </button>
+          </div>
         </div>
       </header>
 
       <div className="portal-container">
         <div className="portal-page-header">
           <div>
-
             <h1>
-              Welcome, {lawyer?.name || lawyer?.email || "Counsel"}
+              {t("lawyerDashboard.welcome")},{" "}
+              {lawyer?.name || lawyer?.email || t("lawyerDashboard.counsel")}
             </h1>
 
             <p className="portal-subheading">
-              Manage your assigned legal cases, review client evidence,
-              and update case's.
+              {t("lawyerDashboard.subtitle")}
             </p>
           </div>
 
           <div className="lawyer-availability-badge-box">
-            <span className="chip-label">Allocation Status</span>
+            <span className="chip-label">
+              {t("lawyerDashboard.allocationStatus")}
+            </span>
 
             <div className="availability-selector-wrap">
               <select
@@ -613,12 +670,18 @@ const handleLogout = async () => {
                 disabled={availabilityLoading || loading}
                 className={`availability-select ${availability.toLowerCase()}`}
               >
-                <option value="AVAILABLE">🟢 Available for Cases</option>
-                <option value="BUSY">🔴 Currently Busy</option>
+                <option value="AVAILABLE">
+                  🟢 {t("lawyerDashboard.availableForCases")}
+                </option>
+                <option value="BUSY">
+                  🔴 {t("lawyerDashboard.currentlyBusy")}
+                </option>
               </select>
 
               {availabilityLoading && (
-                <small className="saving-indicator">Saving...</small>
+                <small className="saving-indicator">
+                  {t("lawyerDashboard.saving")}
+                </small>
               )}
             </div>
           </div>
@@ -626,9 +689,11 @@ const handleLogout = async () => {
 
         <section className="stats-metric-grid">
           <div className="metric-card">
-            <div className="metric-icon total">📁</div>
+            <div className="metric-icon total"><FiFolder /></div>
             <div className="metric-info">
-              <span className="metric-label">Assigned Matters</span>
+              <span className="metric-label">
+                {t("lawyerDashboard.assignedMatters")}
+              </span>
               <strong className="metric-value">
                 {loading ? "-" : totalCases}
               </strong>
@@ -636,9 +701,11 @@ const handleLogout = async () => {
           </div>
 
           <div className="metric-card">
-            <div className="metric-icon active">⚖️</div>
+            <div className="metric-icon active"><FiRefreshCw /></div>
             <div className="metric-info">
-              <span className="metric-label">Active / In Progress</span>
+              <span className="metric-label">
+                {t("lawyerDashboard.activeInProgress")}
+              </span>
               <strong className="metric-value">
                 {loading ? "-" : activeCases}
               </strong>
@@ -646,9 +713,11 @@ const handleLogout = async () => {
           </div>
 
           <div className="metric-card">
-            <div className="metric-icon completed">✅</div>
+            <div className="metric-icon completed"><FiCheckCircle /></div>
             <div className="metric-info">
-              <span className="metric-label">Resolved Cases</span>
+              <span className="metric-label">
+                {t("lawyerDashboard.resolvedCases")}
+              </span>
               <strong className="metric-value">
                 {loading ? "-" : completedCases}
               </strong>
@@ -660,11 +729,13 @@ const handleLogout = async () => {
               <span className={`pulse-dot ${availability.toLowerCase()}`} />
             </div>
             <div className="metric-info">
-              <span className="metric-label">Accepting Cases</span>
+              <span className="metric-label">
+                {t("lawyerDashboard.acceptingCases")}
+              </span>
               <strong className="metric-value">
                 {availability === "AVAILABLE"
-                  ? "Yes (Available)"
-                  : "No (Busy)"}
+                  ? t("lawyerDashboard.yesAvailable")
+                  : t("lawyerDashboard.noBusy")}
               </strong>
             </div>
           </div>
@@ -673,30 +744,30 @@ const handleLogout = async () => {
         <section className="portal-card">
           <div className="card-header-simple">
             <div className="header-icon-title">
-              <span className="header-icon">📂</span>
+              <span className="header-icon"><FiFolder /></span>
               <div>
-                <h3>Assigned Client Matters</h3>
-                <p>
-                  Update case progression and inspect client documentation
-                </p>
+                <h3>{t("lawyerDashboard.assignedClientMatters")}</h3>
+                <p>{t("lawyerDashboard.caseTableDescription")}</p>
               </div>
             </div>
 
             <span className="results-badge">
-              {cases.length} {cases.length === 1 ? "matter" : "matters"}
+              {t("lawyerDashboard.matterCount", {
+                count: cases.length,
+              })}
             </span>
           </div>
 
           {loading && (
             <div className="loading-card">
               <div className="loading-spinner" />
-              <p>Loading assigned cases...</p>
+              <p>{t("lawyerDashboard.loadingAssignedCases")}</p>
             </div>
           )}
 
           {error && (
             <div className="alert-banner alert-error" role="alert">
-              <span className="alert-icon">⚠️</span>
+              <span className="alert-icon"><FiAlertTriangle /></span>
               <div>
                 <p>{error}</p>
                 <button
@@ -704,7 +775,7 @@ const handleLogout = async () => {
                   className="btn-outline-navy btn-sm"
                   onClick={() => window.location.reload()}
                 >
-                  Reload
+                  {t("lawyerDashboard.reload")}
                 </button>
               </div>
             </div>
@@ -712,44 +783,43 @@ const handleLogout = async () => {
 
           {!loading && !error && cases.length === 0 && (
             <div className="empty-state-card">
-              <div className="empty-icon">📂</div>
-              <h2>No cases currently assigned</h2>
-              <p>
-                When administrators allocate incoming cases to your
-                specialization, they will appear here.
-              </p>
+              <div className="empty-icon"><FiFolder /></div>
+              <h2>{t("lawyerDashboard.noCasesAssigned")}</h2>
+              <p>{t("lawyerDashboard.noCasesDescription")}</p>
             </div>
           )}
 
-          
-  {!error && (
-    <DataTable
-      title="Assigned Client Matters"
-      showHeading={false}
-      columns={lawyerCaseColumns}
-      data={cases}
-      rowKey="caseId"
-      searchFields={lawyerCaseSearchFields}
-      filters={lawyerCaseFilters}
-      searchable={true}
-      exportable={true}
-      pagination={true}
-      pageSize={10}
-      loading={loading}
-      emptyMessage="No cases are currently assigned to you."
-    />
-  )}
-
+          {!error && (
+            <DataTable
+              title="lawyerDashboard.assignedClientMatters"
+              showHeading={false}
+              columns={lawyerCaseColumns}
+              data={cases}
+              rowKey="caseId"
+              searchFields={lawyerCaseSearchFields}
+              filters={lawyerCaseFilters}
+              searchable={true}
+              exportable={true}
+              pagination={true}
+              pageSize={10}
+              loading={loading}
+              emptyMessage="lawyerDashboard.noCasesForTable"
+            />
+          )}
         </section>
 
         {expandedCase !== null && (
           <section className="portal-card vault-drawer">
             <div className="card-header-simple">
               <div className="header-icon-title">
-                <span className="header-icon">📄</span>
+                <span className="header-icon"><FiFileText /></span>
                 <div>
-                  <h3>Matter Files: {expandedCase}</h3>
-                  <p>Customer uploaded evidence and filed documents</p>
+                  <h3>
+                    {t("lawyerDashboard.matterFiles", {
+                      caseId: expandedCase,
+                    })}
+                  </h3>
+                  <p>{t("lawyerDashboard.documentDescription")}</p>
                 </div>
               </div>
 
@@ -758,27 +828,27 @@ const handleLogout = async () => {
                 className="btn-close-sm"
                 onClick={() => setExpandedCase(null)}
               >
-                ✕ Close
+                <FiX /> {t("lawyerDashboard.close")}
               </button>
             </div>
 
             {documentLoadingCase === expandedCase && (
               <div className="loading-card">
                 <div className="loading-spinner" />
-                <p>Loading documents...</p>
+                <p>{t("lawyerDashboard.loadingDocuments")}</p>
               </div>
             )}
 
             {!documentLoadingCase && documentErrors[expandedCase] && (
               <div className="alert-banner alert-error" role="alert">
-                <span className="alert-icon">⚠️</span>
+                <span className="alert-icon"><FiAlertTriangle /></span>
                 <span>{documentErrors[expandedCase]}</span>
                 <button
                   type="button"
                   className="btn-outline-navy btn-sm"
                   onClick={() => fetchCaseDocuments(expandedCase)}
                 >
-                  Retry
+                  {t("lawyerDashboard.retry")}
                 </button>
               </div>
             )}
@@ -788,7 +858,9 @@ const handleLogout = async () => {
               (documentsByCase[expandedCase] || []).length === 0 && (
                 <div className="vault-empty">
                   <span>
-                    No documents found for case {expandedCase}.
+                    {t("lawyerDashboard.noDocumentsForCase", {
+                      caseId: expandedCase,
+                    })}
                   </span>
                 </div>
               )}
@@ -799,16 +871,24 @@ const handleLogout = async () => {
                 <ul className="file-items-list">
                   {(documentsByCase[expandedCase] || []).map((file, index) => {
                     const docId = file.id ?? file.documentId ?? index;
+
                     return (
                       <li className="file-item-row" key={docId}>
                         <div className="file-info-group">
-                          <span className="file-type-icon">📄</span>
+                          <span className="file-type-icon"><FiFileText /></span>
                           <div className="file-text-meta">
-                            <span className="file-name" title={file.fileName || file.name}>
-                              {file.fileName || file.name || "Unnamed document"}
+                            <span
+                              className="file-name"
+                              title={file.fileName || file.name}
+                            >
+                              {file.fileName ||
+                                file.name ||
+                                t("lawyerDashboard.unnamedDocument")}
                             </span>
                             <span className="file-sub">
-                              {file.fileType || file.contentType || "File"}
+                              {file.fileType ||
+                                file.contentType ||
+                                t("lawyerDashboard.file")}
                             </span>
                           </div>
                         </div>
@@ -823,7 +903,9 @@ const handleLogout = async () => {
                             }
                             onClick={() => handleViewDocument(file)}
                           >
-                            {viewingId === docId ? "Opening..." : "View"}
+                            {viewingId === docId
+                              ? t("lawyerDashboard.opening")
+                              : t("lawyerDashboard.view")}
                           </button>
 
                           <button
@@ -836,8 +918,8 @@ const handleLogout = async () => {
                             onClick={() => handleDownload(file)}
                           >
                             {downloadingId === docId
-                              ? "Downloading..."
-                              : "↓ Download"}
+                              ? t("lawyerDashboard.downloading")
+                              : `↓ ${t("lawyerDashboard.download")}`}
                           </button>
                         </div>
                       </li>
@@ -849,13 +931,12 @@ const handleLogout = async () => {
         )}
       </div>
 
-
       <LogoutConfirmDialog
-  open={logoutDialogOpen}
-  loading={loggingOut}
-  onCancel={() => setLogoutDialogOpen(false)}
-  onConfirm={handleLogout}
-/>
+        open={logoutDialogOpen}
+        loading={loggingOut}
+        onCancel={() => setLogoutDialogOpen(false)}
+        onConfirm={handleLogout}
+      />
     </main>
   );
 }

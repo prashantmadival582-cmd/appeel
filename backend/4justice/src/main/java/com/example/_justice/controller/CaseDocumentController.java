@@ -8,6 +8,7 @@ import com.example._justice.service.CaseDocumentService;
 import com.example._justice.service.CaseService;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -44,7 +45,8 @@ public class CaseDocumentController {
         }
 
         try {
-            CaseDocument document = caseDocumentService.uploadDocument(caseId, file);
+            CaseDocument document =
+                    caseDocumentService.uploadDocument(caseId, file);
 
             return ResponseEntity.ok(
                     CustomerDocumentResponse.from(document));
@@ -68,10 +70,11 @@ public class CaseDocumentController {
             return ResponseEntity.notFound().build();
         }
 
-        List<CustomerDocumentResponse> documents = caseDocumentService.getDocumentsByCaseId(caseId)
-                .stream()
-                .map(CustomerDocumentResponse::from)
-                .toList();
+        List<CustomerDocumentResponse> documents =
+                caseDocumentService.getDocumentsByCaseId(caseId)
+                        .stream()
+                        .map(CustomerDocumentResponse::from)
+                        .toList();
 
         return ResponseEntity.ok(documents);
     }
@@ -82,14 +85,16 @@ public class CaseDocumentController {
             @AuthenticationPrincipal Jwt jwt) {
 
         try {
-            CaseDocument document = caseDocumentService.getDocumentById(documentId);
+            CaseDocument document =
+                    caseDocumentService.getDocumentById(documentId);
 
             if (document == null
                     || !canAccessCase(document.getCaseId(), jwt)) {
                 return ResponseEntity.notFound().build();
             }
 
-            byte[] file = caseDocumentService.downloadDocument(documentId);
+            byte[] file =
+                    caseDocumentService.downloadDocument(documentId);
 
             if (file == null) {
                 return ResponseEntity.notFound().build();
@@ -128,14 +133,16 @@ public class CaseDocumentController {
             @AuthenticationPrincipal Jwt jwt) {
 
         try {
-            CaseDocument document = caseDocumentService.getDocumentById(documentId);
+            CaseDocument document =
+                    caseDocumentService.getDocumentById(documentId);
 
             if (document == null
                     || !canAccessCase(document.getCaseId(), jwt)) {
                 return ResponseEntity.notFound().build();
             }
 
-            byte[] file = caseDocumentService.downloadDocument(documentId);
+            byte[] file =
+                    caseDocumentService.downloadDocument(documentId);
 
             if (file == null) {
                 return ResponseEntity.notFound().build();
@@ -165,6 +172,41 @@ public class CaseDocumentController {
         } catch (IOException e) {
             return ResponseEntity.internalServerError()
                     .body(Map.of("message", "File view failed."));
+        }
+    }
+
+    @DeleteMapping("/documents/{documentId}")
+    public ResponseEntity<?> deleteDocument(
+            @PathVariable Long documentId,
+            @AuthenticationPrincipal Jwt jwt) {
+
+        if (jwt == null
+                || !"CUSTOMER".equals(jwt.getClaimAsString("role"))) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(Map.of(
+                            "message",
+                            "Only the customer can delete uploaded documents."));
+        }
+
+        CaseDocument document =
+                caseDocumentService.getDocumentById(documentId);
+
+        if (document == null
+                || !canAccessCase(document.getCaseId(), jwt)) {
+            return ResponseEntity.notFound().build();
+        }
+
+        try {
+            caseDocumentService.deleteDocument(documentId);
+            return ResponseEntity.noContent().build();
+
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("message", e.getMessage()));
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError()
+                    .body(Map.of("message", "Document deletion failed."));
         }
     }
 

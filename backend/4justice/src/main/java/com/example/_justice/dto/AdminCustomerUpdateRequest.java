@@ -1,3 +1,4 @@
+
 package com.example._justice.dto;
 
 import jakarta.validation.constraints.Email;
@@ -20,4 +21,8 @@ public class AdminCustomerUpdateRequest {
     @NotBlank(message = "Phone number is required")
     @Size(max = 30, message = "Phone number cannot exceed 30 characters")
     private String phone;
+
+    @Size(min = 8, max = 100,
+          message = "Password must contain between 8 and 100 characters")
+    private String password;
 }

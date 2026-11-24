@@ -4,6 +4,7 @@ import TableToolbar from "./TableToolbar";
 import TablePagination from "./TablePagination";
 import TableEmptyState from "./TableEmptyState";
 import { exportTableToCSV } from "../../utils/tableExport";
+import { useTranslation } from "react-i18next";
 import "../../App.css";
 
 function DataTable({
@@ -18,12 +19,13 @@ function DataTable({
   exportable = true,
   pagination = true,
   pageSize = 10,
-  emptyMessage = "No records found.",
+  emptyMessage = "table.empty",
   loading = false,
   onRefresh,
   refreshing = false,
-  
 }) {
+  const { t } = useTranslation();
+
   const table = useTable({
     data,
     columns,
@@ -32,15 +34,18 @@ function DataTable({
     initialPageSize: pageSize,
   });
 
+  const translateText = (value) => {
+    if (typeof value !== "string") return value;
+    return t(value, { defaultValue: value });
+  };
+
   const getNestedValue = (object, path) => {
     if (!object || !path) return undefined;
 
-    // Support function accessors
     if (typeof path === "function") {
       return path(object);
     }
 
-    // Support nested string paths
     if (typeof path !== "string") {
       return undefined;
     }
@@ -66,7 +71,6 @@ function DataTable({
       : value ?? "-";
   };
 
-
   const exportCSV = () => {
     const filename = `${(title || "table")
       .toLowerCase()
@@ -79,25 +83,25 @@ function DataTable({
     <div className="reusable-table-container">
       {title && showHeading && (
         <div className="reusable-table-heading">
-          <h3>{title}</h3>
-          <span>{table.totalItems} records</span>
+          <h3>{translateText(title)}</h3>
+          <span>
+            {t("table.records", { count: table.totalItems })}
+          </span>
         </div>
       )}
 
-<TableToolbar
-  search={table.search}
-  onSearchChange={table.setSearch}
-  filters={filters}
-
-  filterValues={table.filterValues}
-  onFilterChange={table.updateFilter}
-  
-  onExport={exportCSV}
-  searchable={searchable}
-  exportable={exportable}
-  onRefresh={onRefresh}
-  refreshing={refreshing}
-/>
+      <TableToolbar
+        search={table.search}
+        onSearchChange={table.setSearch}
+        filters={filters}
+        filterValues={table.filterValues}
+        onFilterChange={table.updateFilter}
+        onExport={exportCSV}
+        searchable={searchable}
+        exportable={exportable}
+        onRefresh={onRefresh}
+        refreshing={refreshing}
+      />
 
       <div className="table-responsive">
         <table className="admin-table reusable-data-table">
@@ -108,6 +112,9 @@ function DataTable({
                   column.sortKey || column.accessor || column.key;
 
                 const isSorted = table.sortConfig.key === sortKey;
+
+                const header =
+                  column.header ?? column.label ?? column.key;
 
                 return (
                   <th
@@ -122,7 +129,7 @@ function DataTable({
                         : ""
                     }
                   >
-                    {column.header ?? column.label ?? column.key}
+                    {translateText(header)}
 
                     {column.sortable !== false && isSorted && (
                       <span className="sort-indicator">
@@ -144,12 +151,12 @@ function DataTable({
                   colSpan={columns.length}
                   className="reusable-table-empty"
                 >
-                  Loading records...
+                  {t("table.loading")}
                 </td>
               </tr>
             ) : table.paginatedData.length === 0 ? (
               <TableEmptyState
-                message={emptyMessage}
+                message={translateText(emptyMessage)}
                 colSpan={columns.length}
               />
             ) : (

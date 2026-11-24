@@ -1,70 +1,91 @@
 
 import React from "react";
-import {
-  BadgeCheck,
-  Clock3,
-  Scale,
-  ClipboardCheck,
-} from "lucide-react";
+import { useTranslation } from "react-i18next";
+
+import benefitCard1 from "../../assets/home-benefit-card1.png";
+import benefitCard2 from "../../assets/home-benefit-card 2.png";
+import benefitCard3 from "../../assets/home-benefit-card3.png";
+import benefitCard4 from "../../assets/home-benefit-card 4.png";
 
 const benefits = [
   {
-    icon: BadgeCheck,
-    title: "Know the Cost Upfront",
-    description:
-      "See the price and agreed scope before you decide to proceed.",
+    number: "01",
+    titleKey: "benefits.card1Title",
+    descriptionKey: "benefits.card1Description",
+    image: benefitCard1,
   },
   {
-    icon: Clock3,
-    title: "A Clear Response Timeline",
-    description:
-      "We aim to provide an initial response within 24 hours.",
+    number: "02",
+    titleKey: "benefits.card2Title",
+    descriptionKey: "benefits.card2Description",
+    image: benefitCard2,
   },
   {
-    icon: Scale,
-    title: "Guidance for Your Situation",
-    description:
-      "Understand your options and get help preparing relevant documents.",
+    number: "03",
+    titleKey: "benefits.card3Title",
+    descriptionKey: "benefits.card3Description",
+    image: benefitCard3,
   },
   {
-    icon: ClipboardCheck,
-    title: "Stay Informed",
-    description:
-      "Follow your case progress and understand the next steps along the way.",
+    number: "04",
+    titleKey: "benefits.card4Title",
+    descriptionKey: "benefits.card4Description",
+    image: benefitCard4,
   },
 ];
 
 function BenefitsSection() {
+  const { t } = useTranslation();
+
   return (
-    <section id="trust" className="benefits-section">
-      <div className="home-section-container">
-        <header className="benefits-heading">
-          <span className="section-eyebrow">THE APPEEL APPROACH</span>
+    <section id="trust" className="benefits-modern-section">
+      <div className="benefits-modern-container">
 
-         <h2>Legal support made simple</h2>
+        <header className="benefits-modern-heading">
+          <span className="benefits-modern-eyebrow">
+            <span className="benefits-modern-eyebrow-line" />
+            {t("benefits.eyebrow")}
+          </span>
 
-          <p>
-            <b>Simple information, clear pricing, and easy next steps</b>
-          </p>
+          <h2>{t("benefits.heading")}</h2>
+
+          <p>{t("benefits.subtitle")}</p>
         </header>
 
-        <div className="home-benefits-grid">
-          {benefits.map((benefit) => {
-            const Icon = benefit.icon;
+        <div className="benefits-modern-grid">
+          {benefits.map((benefit) => (
+            <article
+              className="benefits-modern-card"
+              key={benefit.titleKey}
+            >
+              <div className="benefits-modern-image-wrap">
+                <img
+                  src={benefit.image}
+                  alt=""
+                  className="benefits-modern-image"
+                  loading="lazy"
+                  decoding="async"
+                />
 
-            return (
-              <article className="home-benefit-card" key={benefit.title}>
-                <div className="home-benefit-icon" aria-hidden="true">
-                  <Icon size={23} strokeWidth={1.8} />
-                </div>
+                <span className="benefits-modern-number">
+                  {benefit.number}
+                </span>
+              </div>
 
-                <h3>{benefit.title}</h3>
+              <div className="benefits-modern-content">
+                <h3>{t(benefit.titleKey)}</h3>
 
-                <p>{benefit.description}</p>
-              </article>
-            );
-          })}
+                <p>{t(benefit.descriptionKey)}</p>
+
+                <span
+                  className="benefits-modern-card-line"
+                  aria-hidden="true"
+                />
+              </div>
+            </article>
+          ))}
         </div>
+
       </div>
     </section>
   );

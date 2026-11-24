@@ -1,11 +1,14 @@
+
 import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API_BASE_URL from "../api/api";
 import DataTable from "../components/Table/DataTable";
 import AdminDetailLayout from "../components/Admin/AdminDetailLayout";
 
 function AdminLawyerDetails() {
   const { lawyerId } = useParams();
+  const { t } = useTranslation();
   const token = localStorage.getItem("adminToken");
 
   const [lawyer, setLawyer] = useState({
@@ -44,11 +47,15 @@ function AdminLawyerDetails() {
         ]);
 
         if (!lawyerRes.ok) {
-          throw new Error("Unable to load lawyer information.");
+          throw new Error(
+            t("adminLawyerDetails.errors.loadLawyer")
+          );
         }
 
         if (!casesRes.ok) {
-          throw new Error("Unable to load assigned cases.");
+          throw new Error(
+            t("adminLawyerDetails.errors.loadCases")
+          );
         }
 
         const lawyerData = await lawyerRes.json();
@@ -65,14 +72,16 @@ function AdminLawyerDetails() {
 
         setCases(Array.isArray(casesData) ? casesData : []);
       } catch (err) {
-        setError(err.message || "Something went wrong.");
+        setError(
+          err.message || t("adminLawyerDetails.errors.general")
+        );
       } finally {
         setLoading(false);
       }
     };
 
     loadData();
-  }, [lawyerId, token]);
+  }, [lawyerId, token, t]);
 
   // Handle form changes
   const handleChange = (event) => {
@@ -115,7 +124,9 @@ function AdminLawyerDetails() {
 
       if (!response.ok) {
         const message = await response.text();
-        throw new Error(message || "Unable to update lawyer.");
+        throw new Error(
+          message || t("adminLawyerDetails.errors.updateLawyer")
+        );
       }
 
       const responseText = await response.text();
@@ -131,9 +142,11 @@ function AdminLawyerDetails() {
         password: "",
       }));
 
-      setSuccess("Changes saved successfully.");
+      setSuccess(t("adminLawyerDetails.success"));
     } catch (err) {
-      setError(err.message || "Unable to save changes.");
+      setError(
+        err.message || t("adminLawyerDetails.errors.saveChanges")
+      );
     } finally {
       setSaving(false);
     }
@@ -143,13 +156,13 @@ function AdminLawyerDetails() {
   const caseColumns = [
     {
       key: "caseId",
-      header: "Case ID",
+      header: "adminLawyerDetails.columns.caseId",
       accessor: "caseId",
       render: (item) => item.caseId ?? item.id ?? "—",
     },
     {
       key: "customer",
-      header: "Customer",
+      header: "adminLawyerDetails.columns.customer",
       accessor: "customerName",
       render: (item) =>
         item.customerName ??
@@ -159,23 +172,27 @@ function AdminLawyerDetails() {
     },
     {
       key: "caseType",
-      header: "Case Type",
+      header: "adminLawyerDetails.columns.caseType",
       accessor: "caseType",
       render: (item) => item.caseType ?? item.type ?? "—",
     },
     {
       key: "status",
-      header: "Status",
+      header: "adminLawyerDetails.columns.status",
       accessor: "status",
       render: (item) => (
         <span className="admin-case-status">
-          {item.status ?? "—"}
+          {item.status
+            ? t(`adminLawyerDetails.statuses.${item.status}`, {
+                defaultValue: item.status,
+              })
+            : "—"}
         </span>
       ),
     },
     {
       key: "actions",
-      header: "Action",
+      header: "adminLawyerDetails.columns.action",
       sortable: false,
       render: (item) => {
         const caseId = item.caseId ?? item.id;
@@ -185,7 +202,7 @@ function AdminLawyerDetails() {
             to={`/admin/cases/${encodeURIComponent(caseId)}`}
             className="admin-view-case-button"
           >
-            View
+            {t("adminLawyerDetails.view")}
           </Link>
         ) : (
           "—"
@@ -208,27 +225,41 @@ function AdminLawyerDetails() {
   const caseFilters = [
     {
       key: "status",
-      label: "Status",
+      label: "adminLawyerDetails.filters.status",
       options: [
-        { label: "Pending", value: "PENDING" },
-        { label: "Under Review", value: "UNDER_REVIEW" },
-        { label: "In Progress", value: "IN_PROGRESS" },
-        { label: "Completed", value: "COMPLETED" },
+        {
+          label: "adminLawyerDetails.filters.pending",
+          value: "PENDING",
+        },
+        {
+          label: "adminLawyerDetails.filters.underReview",
+          value: "UNDER_REVIEW",
+        },
+        {
+          label: "adminLawyerDetails.filters.inProgress",
+          value: "IN_PROGRESS",
+        },
+        {
+          label: "adminLawyerDetails.filters.completed",
+          value: "COMPLETED",
+        },
       ],
     },
   ];
 
   return (
     <AdminDetailLayout
-      title="Lawyer Details"
-      subtitle={`Manage lawyer information and assigned cases · ID: ${lawyerId}`}
+      title={t("adminLawyerDetails.title")}
+      subtitle={t("adminLawyerDetails.subtitle", {
+        lawyerId,
+      })}
       backTo="/admin/lawyers"
-      backLabel="Back to Lawyers"
+      backLabel={t("adminLawyerDetails.backToLawyers")}
       status={lawyer.availability}
     >
       {loading ? (
         <div className="admin-detail-loading">
-          Loading lawyer details...
+          {t("adminLawyerDetails.loading")}
         </div>
       ) : (
         <>
@@ -250,8 +281,8 @@ function AdminLawyerDetails() {
             {/* Lawyer Information */}
             <div className="admin-detail-card-heading">
               <div>
-                <h2>Lawyer Information</h2>
-                <p>Update the lawyer's profile information.</p>
+                <h2>{t("adminLawyerDetails.informationTitle")}</h2>
+                <p>{t("adminLawyerDetails.informationDescription")}</p>
               </div>
             </div>
 
@@ -259,7 +290,9 @@ function AdminLawyerDetails() {
               <div className="admin-detail-form-grid">
 
                 <div className="admin-form-field">
-                  <label htmlFor="lawyer-name">Full Name</label>
+                  <label htmlFor="lawyer-name">
+                    {t("adminLawyerDetails.fullName")}
+                  </label>
                   <input
                     id="lawyer-name"
                     name="name"
@@ -270,7 +303,9 @@ function AdminLawyerDetails() {
                 </div>
 
                 <div className="admin-form-field">
-                  <label htmlFor="lawyer-email">Email</label>
+                  <label htmlFor="lawyer-email">
+                    {t("adminLawyerDetails.email")}
+                  </label>
                   <input
                     id="lawyer-email"
                     name="email"
@@ -283,7 +318,7 @@ function AdminLawyerDetails() {
 
                 <div className="admin-form-field">
                   <label htmlFor="lawyer-specialization">
-                    Specialization
+                    {t("adminLawyerDetails.specialization")}
                   </label>
                   <input
                     id="lawyer-specialization"
@@ -295,7 +330,9 @@ function AdminLawyerDetails() {
                 </div>
 
                 <div className="admin-form-field">
-                  <label htmlFor="lawyer-phone">Phone Number</label>
+                  <label htmlFor="lawyer-phone">
+                    {t("adminLawyerDetails.phone")}
+                  </label>
                   <input
                     id="lawyer-phone"
                     name="phone"
@@ -307,7 +344,7 @@ function AdminLawyerDetails() {
 
                 <div className="admin-form-field">
                   <label htmlFor="lawyer-password">
-                    New Password (optional)
+                    {t("adminLawyerDetails.newPassword")}
                   </label>
                   <input
                     id="lawyer-password"
@@ -315,7 +352,9 @@ function AdminLawyerDetails() {
                     type="password"
                     value={lawyer.password}
                     onChange={handleChange}
-                    placeholder="Leave blank to keep current password"
+                    placeholder={t(
+                      "adminLawyerDetails.passwordPlaceholder"
+                    )}
                     minLength={8}
                     autoComplete="new-password"
                   />
@@ -329,14 +368,16 @@ function AdminLawyerDetails() {
                   className="admin-detail-save-btn"
                   disabled={saving}
                 >
-                  {saving ? "Saving..." : "Save Changes"}
+                  {saving
+                    ? t("adminLawyerDetails.saving")
+                    : t("adminLawyerDetails.saveChanges")}
                 </button>
 
                 <Link
                   to="/admin/lawyers"
                   className="admin-detail-cancel-btn"
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </Link>
               </div>
             </form>
@@ -347,19 +388,25 @@ function AdminLawyerDetails() {
             {/* Assigned Cases */}
             <div className="admin-detail-card-heading admin-assigned-cases-heading">
               <div>
-                <h2>Assigned Cases</h2>
+                <h2>{t("adminLawyerDetails.assignedCases")}</h2>
                 <p>
-                  Cases assigned to {lawyer.name || "this lawyer"}.
+                  {t("adminLawyerDetails.assignedCasesDescription", {
+                    name:
+                      lawyer.name ||
+                      t("adminLawyerDetails.thisLawyer"),
+                  })}
                 </p>
               </div>
 
               <span className="admin-case-count">
-                {cases.length} {cases.length === 1 ? "case" : "cases"}
+                {t("adminLawyerDetails.caseCount", {
+                  count: cases.length,
+                })}
               </span>
             </div>
 
             <DataTable
-              title="Assigned Cases"
+              title="adminLawyerDetails.assignedCases"
               showHeading={false}
               columns={caseColumns}
               data={cases}
@@ -370,7 +417,7 @@ function AdminLawyerDetails() {
               exportable={true}
               pagination={true}
               pageSize={10}
-              emptyMessage="No cases assigned to this lawyer."
+              emptyMessage="adminLawyerDetails.emptyCases"
             />
 
           </section>

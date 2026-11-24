@@ -1,9 +1,12 @@
 
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API_BASE_URL from "../api/api";
 
 export default function ForgotPassword() {
+  const { t } = useTranslation();
+
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -30,15 +33,19 @@ export default function ForgotPassword() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || "Unable to process your request.");
+        throw new Error(
+          data.message || t("forgotPassword.errors.requestFailed")
+        );
       }
 
       setMessage(
         data.message ||
-          "If an account exists for this email, a reset link has been sent."
+          t("forgotPassword.success.default")
       );
     } catch (err) {
-      setError(err.message || "Unable to connect to the server.");
+      setError(
+        err.message || t("forgotPassword.errors.connection")
+      );
     } finally {
       setLoading(false);
     }
@@ -48,15 +55,19 @@ export default function ForgotPassword() {
     <main className="login-selection-page">
       <div className="login-selection-container">
         <div className="login-selection-heading">
-          <span className="login-selection-eyebrow">ACCOUNT RECOVERY</span>
-          <h1>Forgot your password?</h1>
-          <p>We'll send you a secure link to reset your password.</p>
+          <span className="login-selection-eyebrow">
+            {t("forgotPassword.eyebrow")}
+          </span>
+
+          <h1>{t("forgotPassword.title")}</h1>
+
+          <p>{t("forgotPassword.subtitle")}</p>
         </div>
 
         <section className="universal-login-card">
           <div className="universal-login-heading">
-            <h2>Reset your password</h2>
-            <p>Enter the email address registered with APPEEL.</p>
+            <h2>{t("forgotPassword.heading")}</h2>
+            <p>{t("forgotPassword.description")}</p>
           </div>
 
           {message && (
@@ -73,11 +84,14 @@ export default function ForgotPassword() {
 
           <form onSubmit={handleSubmit} className="auth-form">
             <div className="form-group">
-              <label htmlFor="forgot-email">Email address</label>
+              <label htmlFor="forgot-email">
+                {t("forgotPassword.email")}
+              </label>
+
               <input
                 id="forgot-email"
                 type="email"
-                placeholder="Enter your registered email"
+                placeholder={t("forgotPassword.emailPlaceholder")}
                 value={email}
                 onChange={(event) => setEmail(event.target.value)}
                 autoComplete="email"
@@ -90,21 +104,26 @@ export default function ForgotPassword() {
               className="login-card-button universal-login-button"
               disabled={loading}
             >
-              {loading ? "Sending..." : "Send Reset Link"}
+              {loading
+                ? t("forgotPassword.sending")
+                : t("forgotPassword.submit")}
+
               {!loading && <span>→</span>}
             </button>
           </form>
 
           <div className="universal-login-footer">
             <p>
-              Remember your password?{" "}
-              <Link to="/login">Back to login</Link>
+              {t("forgotPassword.rememberPassword")}{" "}
+              <Link to="/login">
+                {t("forgotPassword.backToLogin")}
+              </Link>
             </p>
           </div>
         </section>
 
         <Link to="/" className="login-back-home">
-          ← Back to homepage
+          ← {t("forgotPassword.backHome")}
         </Link>
       </div>
     </main>

@@ -1,61 +1,56 @@
 
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+
 import {
-  customerRequest,
-  downloadCustomerDocument,
   getCustomerJson,
   isCustomerAuthError,
 } from "../api/customerApi";
 
+import LogoutConfirmDialog from "../components/LogoutConfirmDialog";
 import DataTable from "../components/Table/DataTable";
 
+import LanguageSwitcher from "../components/LanguageSwitcher";
+import { FiGrid } from "react-icons/fi";
 
-import LogoutConfirmDialog from "../components/LogoutConfirmDialog";
-
-// =========================================================
-// SHARED HELPERS
-// =========================================================
-
-export const formatStatus = (status = "UNKNOWN") =>
-  status
-    .replaceAll("_", " ")
-    .toLowerCase()
-    .replace(/\b\w/g, (letter) => letter.toUpperCase());
-
-export const statusClass = (status = "") => {
-  const normalized = status
-    .toLowerCase()
-    .replaceAll("_", "-")
-    .replaceAll(" ", "-");
-
-  if (normalized.includes("review")) return "under-review";
-  if (normalized.includes("progress")) return "in-progress";
-  if (normalized.includes("complete")) return "completed";
-  if (normalized.includes("submit") || normalized.includes("pending")) {
-    return "pending";
+export const formatStatus = (status, t) => {
+  if (!status) {
+    return t
+      ? t("customerUpdates.statuses.UNKNOWN")
+      : "Unknown";
   }
 
-  return normalized;
+  const normalizedStatus = String(status).toUpperCase();
+
+  const fallback = String(status)
+    .replaceAll("_", " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (char) => char.toUpperCase());
+
+  return t
+    ? t(`customerUpdates.statuses.${normalizedStatus}`, {
+        defaultValue: fallback,
+      })
+    : fallback;
+};
+
+export const statusClass = (status) => {
+  if (!status) return "status-unknown";
+
+  return `status-${String(status)
+    .toLowerCase()
+    .replaceAll("_", "-")}`;
 };
 
 export const formatDate = (value) => {
-  if (!value) return "Date unavailable";
+  if (!value) return "—";
 
   const date = new Date(value);
 
-  return Number.isNaN(date.getTime())
-    ? "Date unavailable"
-    : date.toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-};
+  if (Number.isNaN(date.getTime())) return "—";
 
-// =========================================================
-// CUSTOMER CASES LIST
-// =========================================================
+  return date.toLocaleDateString();
+};
 
 export function CustomerCases() {
   const [cases, setCases] = useState([]);
@@ -73,11 +68,13 @@ export function CustomerCases() {
       setCases(Array.isArray(data) ? data : []);
     } catch (requestError) {
       if (isCustomerAuthError(requestError)) {
-        navigate("/customer/login", { replace: true });
+        navigate("/login", { replace: true });
         return;
       }
 
-      setError(requestError.message || "Unable to load your cases.");
+      setError(
+        requestError.message || "Unable to load your cases."
+      );
     } finally {
       setLoading(false);
     }
@@ -115,10 +112,10 @@ export function CustomerCases() {
       render: (customerCase) => (
         <span
           className={`status-badge ${statusClass(
-            customerCase.status || ""
+            customerCase.status
           )}`}
         >
-          {formatStatus(customerCase.status || "UNKNOWN")}
+          {formatStatus(customerCase.status)}
         </span>
       ),
     },
@@ -193,7 +190,7 @@ export function CustomerCases() {
 
   return (
     <main className="portal-page">
-      <CustomerPageHeader title="My Cases" activeTab="cases" />
+      <CustomerPageHeader />
 
       <div className="portal-container">
         <div className="portal-page-header">
@@ -213,8 +210,10 @@ export function CustomerCases() {
         </div>
 
         {error && (
-          <div className="alert-banner alert-error" role="alert">
-            <span className="alert-icon">⚠️</span>
+          <div
+            className="alert-banner alert-error"
+            role="alert"
+          >
             <span>{error}</span>
 
             <button
@@ -238,9 +237,7 @@ export function CustomerCases() {
               rowKey="caseId"
               searchFields={[
                 "caseId",
-                "caseType",
-                "description",
-                "lawyerName",
+                "submittedAt",
                 "status",
               ]}
               filters={caseFilters}
@@ -258,8 +255,8 @@ export function CustomerCases() {
 
         {!loading && !error && cases.length === 0 && (
           <div className="empty-state-card">
-            <div className="empty-icon">📁</div>
             <h2>No cases submitted yet</h2>
+
             <p>
               Once you submit a legal request, your case will appear here.
             </p>
@@ -278,625 +275,82 @@ export function CustomerCases() {
 }
 
 // =========================================================
-// CUSTOMER CASE DETAILS
-// =========================================================
+import appeelLogo from "../assets/appeel-logo.png";
 
-export function CustomerCaseDetails() {
-  const { caseId } = useParams();
+export function CustomerPageHeader() {
   const navigate = useNavigate();
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
-  const [customerCase, setCustomerCase] = useState(null);
-  const [documents, setDocuments] = useState([]);
-  const [loadedCaseId, setLoadedCaseId] = useState("");
+  const handleLogout = () => {
+    localStorage.removeItem("customerToken");
+    localStorage.removeItem("customerId");
+    localStorage.removeItem("customerName");
+    localStorage.removeItem("customerEmail");
+    localStorage.removeItem("customerPhone");
 
-  const loading = loadedCaseId !== caseId;
-
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState("");
-  const [notice, setNotice] = useState("");
-
-  const loadCase = async () => {
-    const [caseInfo, caseDocuments] = await Promise.all([
-      getCustomerJson(
-        `/api/cases/mine/${encodeURIComponent(caseId)}`
-      ),
-      getCustomerJson(
-        `/api/customers/me/cases/${encodeURIComponent(caseId)}/documents`
-      ),
-    ]);
-
-    setCustomerCase(caseInfo);
-    setDocuments(Array.isArray(caseDocuments) ? caseDocuments : []);
+    navigate("/login", { replace: true });
   };
-
-  useEffect(() => {
-    let active = true;
-
-    setError("");
-    setNotice("");
-
-    Promise.all([
-      getCustomerJson(
-        `/api/cases/mine/${encodeURIComponent(caseId)}`
-      ),
-      getCustomerJson(
-        `/api/customers/me/cases/${encodeURIComponent(caseId)}/documents`
-      ),
-    ])
-      .then(([caseInfo, caseDocuments]) => {
-        if (!active) return;
-
-        setCustomerCase(caseInfo);
-        setDocuments(Array.isArray(caseDocuments) ? caseDocuments : []);
-      })
-      .catch((requestError) => {
-        if (!active) return;
-
-        if (isCustomerAuthError(requestError)) {
-          navigate("/customer/login", { replace: true });
-          return;
-        }
-
-        setError(requestError.message || "Unable to load case details.");
-      })
-      .finally(() => {
-        if (active) {
-          setLoadedCaseId(caseId);
-        }
-      });
-
-    return () => {
-      active = false;
-    };
-  }, [caseId, navigate]);
-
-  // -------------------------------------------------------
-  // DOCUMENT UPLOAD
-  // -------------------------------------------------------
-
-  const handleUpload = async (event) => {
-    event.preventDefault();
-
-    const form = event.currentTarget;
-    const file = form.elements.caseDocument.files[0];
-
-    if (!file) {
-      setError("Please select a document to upload.");
-      return;
-    }
-
-    const allowedTypes = new Set([
-      "application/pdf",
-      "application/msword",
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-      "image/png",
-      "image/jpeg",
-    ]);
-
-    const extension = file.name.split(".").pop()?.toLowerCase();
-
-    if (!["pdf", "doc", "docx", "png", "jpg", "jpeg"].includes(extension)) {
-      setError("Please upload a PDF, DOC, DOCX, PNG, JPG, or JPEG file.");
-      return;
-    }
-
-    if (file.size > 10 * 1024 * 1024) {
-      setError("File size must be 10 MB or less.");
-      return;
-    }
-
-    if (file.type && !allowedTypes.has(file.type)) {
-      setError("The selected file type is not supported.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("file", file);
-
-    setBusy(true);
-    setError("");
-    setNotice("");
-
-    try {
-      await customerRequest(
-        `/api/customers/me/cases/${encodeURIComponent(caseId)}/documents`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      form.reset();
-      await loadCase();
-
-      setNotice("Document uploaded successfully.");
-    } catch (requestError) {
-      if (isCustomerAuthError(requestError)) {
-        navigate("/customer/login", { replace: true });
-        return;
-      }
-
-      setError(requestError.message || "Unable to upload document.");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  // -------------------------------------------------------
-  // DOCUMENT DOWNLOAD
-  // -------------------------------------------------------
-
-  const handleDownload = async (doc) => {
-    setBusy(true);
-    setError("");
-
-    try {
-      const blob = await downloadCustomerDocument(doc.id);
-      const url = URL.createObjectURL(blob);
-
-      const link = window.document.createElement("a");
-      link.href = url;
-      link.download = doc.fileName || `document-${doc.id}`;
-
-      window.document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-    } catch (requestError) {
-      if (isCustomerAuthError(requestError)) {
-        navigate("/customer/login", { replace: true });
-        return;
-      }
-
-      setError(requestError.message || "Unable to download document.");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  // -------------------------------------------------------
-  // PROGRESS TIMELINE
-  // -------------------------------------------------------
-
-  const currentStatus = String(
-    customerCase?.status || "PENDING"
-  ).toUpperCase();
-
-  const reviewStatuses = [
-    "UNDER_REVIEW",
-    "IN_PROGRESS",
-    "ASSIGNED",
-    "COMPLETED",
-    "RESOLVED",
-    "CLOSED",
-  ];
-
-  const progressStatuses = [
-    "IN_PROGRESS",
-    "COMPLETED",
-    "RESOLVED",
-    "CLOSED",
-  ];
-
-  const completedStatuses = [
-    "COMPLETED",
-    "RESOLVED",
-    "CLOSED",
-  ];
-
-  const reviewComplete = reviewStatuses.includes(currentStatus);
-  const progressComplete = progressStatuses.includes(currentStatus);
-  const resolutionComplete = completedStatuses.includes(currentStatus);
-
-  // -------------------------------------------------------
-  // PAGE
-  // -------------------------------------------------------
 
   return (
-    <main className="portal-page">
-      <CustomerPageHeader title="Case Details" activeTab="cases" />
+    <>
+      <header className="customer-portal-navbar customer-dashboard-navbar">
+        <div className="customer-portal-navbar-inner">
 
-   
+          {/* Brand */}
+          <Link
+            to="/customer/dashboard"
+            className="customer-portal-brand"
+          >
+            <img
+              src={appeelLogo}
+              alt="APPEEL"
+              className="portal-brand-logo"
+            />
 
-      <div className="portal-container customer-case-details-container">
+          </Link>
 
-        {/* PAGE HEADING */}
-        <div className="customer-case-details-heading">
-          <div>
+          {/* Customer Portal Badge */}
+          <span className="customer-portal-badge">
+            CUSTOMER PORTAL
+          </span>
+
+          {/* Navigation */}
+          <div className="customer-portal-actions">
             <Link
-              to="/customer/my-cases"
-              className="case-back-link"
+              to="/"
+              className="customer-home-link"
+              aria-label="Home"
             >
-              ← Back to My Cases
+              Home
             </Link>
 
-            <h1>Case Details</h1>
-            <p>
-              View your case progress and manage its documents.
-            </p>
+            <Link
+              to="/customer/dashboard"
+              className="customer-nav-card"
+            >
+              <span className="customer-nav-icon"><FiGrid /></span>
+              <span>Dashboard</span>
+            </Link>
+            <LanguageSwitcher />
+
+            {/* Sign Out Button */}
+            <button
+              type="button"
+              className="app-signout-btn customer-signout-btn"
+              onClick={() => setShowLogoutDialog(true)}
+            >
+              Sign Out
+            </button>
           </div>
         </div>
+      </header>
 
-        {/* LOADING */}
-        {loading && (
-          <div className="loading-card">
-            <div className="loading-spinner" />
-            <p>Loading case details...</p>
-          </div>
-        )}
-
-        {/* ERROR */}
-        {error && (
-          <div className="alert-banner alert-error" role="alert">
-            <span className="alert-icon">⚠️</span>
-            <span>{error}</span>
-          </div>
-        )}
-
-        {/* UNIFIED CASE CARD */}
-        {!loading && customerCase && (
-          <section className="customer-case-unified-card">
-
-            {/* CASE HEADER */}
-            <div className="customer-case-card-header">
-              <div>
-                <span className="badge-tag">LEGAL MATTER</span>
-
-                <h2>
-                  {customerCase.caseType || "Legal Matter"}
-                </h2>
-
-                <span className="case-sub-id">
-                  Case ID: {customerCase.caseId || caseId}
-                </span>
-              </div>
-
-              <span
-                className={`status-badge large ${statusClass(
-                  currentStatus
-                )}`}
-              >
-                {formatStatus(currentStatus)}
-              </span>
-            </div>
-
-            {/* MAIN CONTENT */}
-            <div className="customer-case-unified-grid">
-
-              {/* LEFT: CASE INFORMATION */}
-              <div className="customer-case-info-column">
-
-                {/* TIMELINE */}
-                <div className="case-timeline-section">
-                  <h4 className="timeline-title">
-                    Progress Timeline
-                  </h4>
-
-                  <div className="timeline-steps">
-
-                    <div className="step-point completed">
-                      <div className="point-circle">✓</div>
-                      <span>Submitted</span>
-                    </div>
-
-                    <div
-                      className={`step-point ${reviewComplete ? "completed" : "active"
-                        }`}
-                    >
-                      <div className="point-circle">
-                        {reviewComplete ? "✓" : "2"}
-                      </div>
-                      <span>Review &amp; Lawyer</span>
-                    </div>
-
-                    <div
-                      className={`step-point ${progressComplete ? "completed" : ""
-                        }`}
-                    >
-                      <div className="point-circle">
-                        {progressComplete ? "✓" : "3"}
-                      </div>
-                      <span>In Progress</span>
-                    </div>
-
-                    <div
-                      className={`step-point ${resolutionComplete ? "completed" : ""
-                        }`}
-                    >
-                      <div className="point-circle">
-                        {resolutionComplete ? "✓" : "4"}
-                      </div>
-                      <span>Resolution</span>
-                    </div>
-
-                  </div>
-                </div>
-
-                {/* CASE METADATA */}
-                <div className="customer-case-meta-row">
-
-                  <div className="customer-case-meta-item">
-                    <span>Assigned Counsel</span>
-                    <strong>
-                      {customerCase.lawyerName || "Not yet assigned"}
-                    </strong>
-                  </div>
-
-                  <div className="customer-case-meta-item">
-                    <span>Submission Date</span>
-                    <strong>
-                      {formatDate(customerCase.submittedAt)}
-                    </strong>
-                  </div>
-
-                </div>
-
-                {/* DESCRIPTION */}
-                <div className="customer-case-description">
-                  <h3>Matter Overview &amp; Instructions</h3>
-
-                  <p>
-                    {customerCase.description ||
-                      "No description provided."}
-                  </p>
-                </div>
-
-              </div>
-
-              {/* RIGHT: DOCUMENTS */}
-              <div className="customer-case-documents-column">
-
-                <div className="customer-case-documents-heading">
-                  <div>
-                    <h3>Case Documents</h3>
-                    <p>Upload and access your case files.</p>
-                  </div>
-
-                  <span className="customer-document-count">
-                    {documents.length}
-                  </span>
-                </div>
-
-                {/* UPLOAD SUCCESS */}
-                {notice && (
-                  <div
-                    className="alert-banner alert-success"
-                    role="status"
-                  >
-                    <span className="alert-icon">✓</span>
-                    <span>{notice}</span>
-                  </div>
-                )}
-
-                {/* UPLOAD FORM */}
-                <form
-                  className="document-upload-dropzone"
-                  onSubmit={handleUpload}
-                >
-                  <label
-                    htmlFor="case-document"
-                    className="upload-label"
-                  >
-                    <span className="upload-icon">☁️</span>
-
-                    <strong className="upload-prompt">
-                      Select a document
-                    </strong>
-
-                    <span className="upload-limits">
-                      PDF, DOC, DOCX, PNG, JPG · Max 10 MB
-                    </span>
-                  </label>
-
-                  <input
-                    id="case-document"
-                    name="caseDocument"
-                    type="file"
-                    accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
-                    disabled={busy}
-                    className="file-input-hidden"
-                  />
-
-                  <button
-                    type="submit"
-                    className="btn-primary-block"
-                    disabled={busy}
-                  >
-                    {busy ? "Uploading..." : "Upload Document"}
-                  </button>
-                </form>
-
-                {/* DOCUMENT LIST */}
-                <div className="documents-vault-list">
-                  <h4 className="vault-header">
-                    Uploaded Files ({documents.length})
-                  </h4>
-
-                  {documents.length === 0 ? (
-                    <div className="vault-empty">
-                      No files uploaded to this case yet.
-                    </div>
-                  ) : (
-                    <ul className="file-items-list">
-                      {documents.map((doc) => (
-                        <li
-                          key={doc.id}
-                          className="file-item-row"
-                        >
-                          <div className="file-info-group">
-                            <span className="file-type-icon">
-                              📄
-                            </span>
-
-                            <div className="file-text-meta">
-                              <span
-                                className="file-name"
-                                title={doc.fileName}
-                              >
-                                {doc.fileName || `Document ${doc.id}`}
-                              </span>
-
-                              <span className="file-sub">
-                                Document #{doc.id}
-                              </span>
-                            </div>
-                          </div>
-
-                          <button
-                            type="button"
-                            className="btn-download-sm"
-                            disabled={busy}
-                            onClick={() => handleDownload(doc)}
-                          >
-                            {busy ? "Please wait..." : "Download ↓"}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-
-              </div>
-            </div>
-          </section>
-        )}
-      </div>
-    </main>
-  );
-}
-
-// =========================================================
-// CUSTOMER NAVIGATION HEADER
-// =========================================================
-
-export function CustomerPageHeader({
-  title,
-  activeTab = "",
-}) {
-  const navigate = useNavigate();
-
-const [mobileOpen, setMobileOpen] = useState(false);
-const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
-const [loggingOut, setLoggingOut] = useState(false);
-
-  const handleLogout = async () => {
-    if (loggingOut) return;
-
-    setLoggingOut(true);
-
-    try {
-      await customerRequest("/api/customers/logout", {
-        method: "POST",
-      });
-    } catch (error) {
-      console.error("Customer logout failed:", error);
-    } finally {
-      [
-        "customerToken",
-        "customerId",
-        "customerName",
-        "customerEmail",
-        "customerPhone",
-      ].forEach((key) => localStorage.removeItem(key));
-
-      navigate("/customer/login", { replace: true });
-    }
-  };
-
-  const closeMobileMenu = () => setMobileOpen(false);
-
-  return (
-    <header className="customer-portal-navbar">
-      <div className="portal-nav-container">
-
-        <div className="portal-brand-wrap">
-          <Link
-            to="/customer/dashboard"
-            className="portal-brand"
-            onClick={closeMobileMenu}
-          >
-            <span className="brand-icon">⚖️</span>
-            <span className="brand-title">APPEEL</span>
-          </Link>
-        </div>
-
-        <button
-          type="button"
-          className="portal-mobile-btn"
-          aria-label="Toggle navigation menu"
-          aria-expanded={mobileOpen}
-          onClick={() => setMobileOpen((current) => !current)}
-        >
-          {mobileOpen ? "✕" : "☰"}
-        </button>
-
-        <nav
-          className={`portal-nav-links ${mobileOpen ? "open" : ""
-            }`}
-        >
-          <Link
-            to="/"
-            className="portal-nav-link"
-            onClick={closeMobileMenu}
-          >
-            ⌂ Home
-          </Link>
-
-          <Link
-            to="/customer/dashboard"
-            className={`portal-nav-link ${activeTab === "dashboard" ? "active" : ""
-              }`}
-            onClick={closeMobileMenu}
-          >
-            Dashboard
-          </Link>
-
-          <Link
-            to="/customer/my-cases"
-            className={`portal-nav-link ${activeTab === "cases" ? "active" : ""
-              }`}
-            onClick={closeMobileMenu}
-          >
-            My Cases
-          </Link>
-
-          <Link
-            to="/customer/documents"
-            className={`portal-nav-link ${activeTab === "documents" ? "active" : ""
-              }`}
-            onClick={closeMobileMenu}
-          >
-            Documents
-          </Link>
-
-          <Link
-            to="/customer/updates"
-            className={`portal-nav-link ${activeTab === "updates" ? "active" : ""
-              }`}
-            onClick={closeMobileMenu}
-          >
-            Updates
-          </Link>
-
-          <div className="portal-nav-separator" />
-          <button
-            type="button"
-            className="btn-logout-nav"
-            onClick={() => setLogoutDialogOpen(true)}
-          >
-            Sign Out
-          </button>
-        </nav>
-      </div>
-
-
+      {/* Shared Sign Out Confirmation Dialog */}
       <LogoutConfirmDialog
-  open={logoutDialogOpen}
-  loading={loggingOut}
-  onCancel={() => setLogoutDialogOpen(false)}
-  onConfirm={handleLogout}
-/>
-    </header>
+        open={showLogoutDialog}
+        onCancel={() => setShowLogoutDialog(false)}
+        onConfirm={handleLogout}
+      />
+    </>
   );
 }

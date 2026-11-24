@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import {
   ArrowUpRight,
   CheckCircle2,
@@ -12,68 +14,73 @@ import {
 const services = [
   {
     id: "initial-review",
-    title: "Initial Case Review",
-    price: "99 SEK",
-    priceNote: "One-time starting fee",
-    description:
-      "Share your situation and documents to get an initial assessment of your next steps.",
-    detail: "A simple place to start",
     icon: FileSearch,
     featured: true,
-    buttonText: "Start with a review",
+    titleKey: "initialReview.title",
+    price: "99 SEK",
+    priceNoteKey: "initialReview.priceNote",
+    descriptionKey: "initialReview.description",
+    detailKey: "initialReview.detail",
+    buttonKey: "initialReview.button",
   },
   {
     id: "arn-complaint",
-    title: "ARN Complaint",
-    price: "1,490 SEK",
-    priceNote: "Fixed price",
-    description:
-      "Get help reviewing your materials and preparing an ARN complaint.",
-    detail: "For consumer disputes",
     icon: Scale,
     featured: false,
-    buttonText: "Choose ARN support",
+    titleKey: "arnComplaint.title",
+    price: "1,490 SEK",
+    priceNoteKey: "arnComplaint.priceNote",
+    descriptionKey: "arnComplaint.description",
+    detailKey: "arnComplaint.detail",
+    buttonKey: "arnComplaint.button",
   },
   {
     id: "district-court",
-    title: "District Court Defence",
-    price: "From 2,900 SEK",
-    priceNote: "Based on case scope",
-    description:
-      "Discuss your case and the support needed to prepare a defence.",
-    detail: "Scope confirmed before proceeding",
     icon: Gavel,
     featured: false,
-    buttonText: "Discuss your case",
+    titleKey: "districtCourt.title",
+    price: null,
+    priceNoteKey: "districtCourt.priceNote",
+    descriptionKey: "districtCourt.description",
+    detailKey: "districtCourt.detail",
+    buttonKey: "districtCourt.button",
   },
   {
     id: "tenancy-arbitration",
-    title: "Tenancy & Arbitration",
-    price: "From 2,900 SEK",
-    priceNote: "Based on case scope",
-    description:
-      "Get help understanding your dispute, reviewing evidence, and planning next steps.",
-    detail: "Scope confirmed before proceeding",
     icon: Home,
     featured: false,
-    buttonText: "Discuss your case",
+    titleKey: "tenancyArbitration.title",
+    price: null,
+    priceNoteKey: "tenancyArbitration.priceNote",
+    descriptionKey: "tenancyArbitration.description",
+    detailKey: "tenancyArbitration.detail",
+    buttonKey: "tenancyArbitration.button",
   },
 ];
 
 function PricingSection() {
+  const { t, i18n } = useTranslation();
+
   return (
     <section id="pricing" className="home-pricing-section">
       <div className="home-pricing-container">
         <header className="home-pricing-heading">
-          <h2>Legal support, with clear prices.</h2>
+          <h2>{t("pricing.heading")}</h2>
 
-          <p><b>Know the cost and support before you proceed.</b>
+          <p>
+            <b>{t("pricing.subtitle")}</b>
           </p>
         </header>
 
         <div className="home-pricing-grid">
           {services.map((service) => {
             const Icon = service.icon;
+
+            const price =
+              service.price ||
+              (i18n.resolvedLanguage === "sv"
+                ? "Från 2,900 SEK"
+                : "From 2,900 SEK");
 
             return (
               <article
@@ -84,7 +91,7 @@ function PricingSection() {
               >
                 {service.featured && (
                   <span className="home-pricing-badge">
-                    START HERE
+                    {t("pricing.startHere")}
                   </span>
                 )}
 
@@ -93,21 +100,43 @@ function PricingSection() {
                 </div>
 
                 <p className="home-pricing-detail">
-                  {service.detail}
+                  {t(`pricing.${service.id === "initial-review"
+                    ? "initialReview"
+                    : service.id === "arn-complaint"
+                    ? "arnComplaint"
+                    : service.id === "district-court"
+                    ? "districtCourt"
+                    : "tenancyArbitration"}.detail`)}
                 </p>
 
-                <h3>{service.title}</h3>
+                <h3>{t(`pricing.${service.id === "initial-review"
+                  ? "initialReview"
+                  : service.id === "arn-complaint"
+                  ? "arnComplaint"
+                  : service.id === "district-court"
+                  ? "districtCourt"
+                  : "tenancyArbitration"}.title`)}</h3>
 
-                <div className="home-pricing-price">
-                  {service.price}
-                </div>
+                <div className="home-pricing-price">{price}</div>
 
                 <p className="home-pricing-note">
-                  {service.priceNote}
+                  {t(`pricing.${service.id === "initial-review"
+                    ? "initialReview"
+                    : service.id === "arn-complaint"
+                    ? "arnComplaint"
+                    : service.id === "district-court"
+                    ? "districtCourt"
+                    : "tenancyArbitration"}.priceNote`)}
                 </p>
 
                 <p className="home-pricing-description">
-                  {service.description}
+                  {t(`pricing.${service.id === "initial-review"
+                    ? "initialReview"
+                    : service.id === "arn-complaint"
+                    ? "arnComplaint"
+                    : service.id === "district-court"
+                    ? "districtCourt"
+                    : "tenancyArbitration"}.description`)}
                 </p>
 
                 <Link
@@ -116,7 +145,15 @@ function PricingSection() {
                     service.featured ? "primary" : "secondary"
                   }`}
                 >
-                  <span>{service.buttonText}</span>
+                  <span>
+                    {t(`pricing.${service.id === "initial-review"
+                      ? "initialReview"
+                      : service.id === "arn-complaint"
+                      ? "arnComplaint"
+                      : service.id === "district-court"
+                      ? "districtCourt"
+                      : "tenancyArbitration"}.button`)}
+                  </span>
                   <ArrowUpRight size={17} aria-hidden="true" />
                 </Link>
               </article>
@@ -128,8 +165,7 @@ function PricingSection() {
           <CheckCircle2 size={19} aria-hidden="true" />
 
           <p>
-        <b>    No hidden fees. Any additional work is discussed with you
-            and requires your approval before proceeding.</b>
+            <b>{t("pricing.footerNote")}</b>
           </p>
         </div>
       </div>

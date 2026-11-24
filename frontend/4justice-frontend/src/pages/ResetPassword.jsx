@@ -1,9 +1,10 @@
-
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API_BASE_URL from "../api/api";
 
 export default function ResetPassword() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const token = searchParams.get("token");
 
@@ -22,6 +23,7 @@ export default function ResetPassword() {
     const verifyToken = async () => {
       if (!token) {
         setTokenValid(false);
+        setError(t("resetPassword.errors.missingToken"));
         setCheckingToken(false);
         return;
       }
@@ -32,7 +34,7 @@ export default function ResetPassword() {
           { method: "POST" }
         );
 
-        const data = await response.json();
+        const data = await response.json().catch(() => ({}));
 
         if (!active) return;
 
@@ -40,12 +42,12 @@ export default function ResetPassword() {
 
         if (!response.ok || data.valid !== true) {
           setError(
-            data.message || "This password reset link is invalid or expired."
+            data.message || t("resetPassword.errors.invalidToken")
           );
         }
       } catch {
         if (!active) return;
-        setError("Unable to verify the reset link. Please try again.");
+        setError(t("resetPassword.errors.verifyFailed"));
       } finally {
         if (active) setCheckingToken(false);
       }
@@ -56,7 +58,7 @@ export default function ResetPassword() {
     return () => {
       active = false;
     };
-  }, [token]);
+  }, [token, t]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -64,12 +66,12 @@ export default function ResetPassword() {
     setSuccess("");
 
     if (newPassword.length < 8 || newPassword.length > 100) {
-      setError("Password must contain between 8 and 100 characters.");
+      setError(t("resetPassword.errors.passwordLength"));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("Passwords do not match.");
+      setError(t("resetPassword.errors.passwordMismatch"));
       return;
     }
 
@@ -90,20 +92,22 @@ export default function ResetPassword() {
         }
       );
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         throw new Error(
-          data.message || "Unable to reset your password."
+          data.message || t("resetPassword.errors.resetFailed")
         );
       }
 
-      setSuccess("Your password has been reset successfully.");
+      setSuccess(t("resetPassword.success"));
       setTokenValid(false);
       setNewPassword("");
       setConfirmPassword("");
     } catch (err) {
-      setError(err.message || "Unable to reset your password.");
+      setError(
+        err.message || t("resetPassword.errors.resetFailed")
+      );
     } finally {
       setLoading(false);
     }
@@ -114,7 +118,7 @@ export default function ResetPassword() {
       <main className="login-selection-page">
         <div className="login-selection-container">
           <section className="universal-login-card">
-            <p>Verifying your password reset link...</p>
+            <p>{t("resetPassword.verifying")}</p>
           </section>
         </div>
       </main>
@@ -125,15 +129,19 @@ export default function ResetPassword() {
     <main className="login-selection-page">
       <div className="login-selection-container">
         <div className="login-selection-heading">
-          <span className="login-selection-eyebrow">ACCOUNT SECURITY</span>
-          <h1>Create a new password</h1>
-          <p>Choose a new password for your APPEEL account.</p>
+          <span className="login-selection-eyebrow">
+            {t("resetPassword.eyebrow")}
+          </span>
+
+          <h1>{t("resetPassword.pageTitle")}</h1>
+
+          <p>{t("resetPassword.pageDescription")}</p>
         </div>
 
         <section className="universal-login-card">
           <div className="universal-login-heading">
-            <h2>Reset your password</h2>
-            <p>Enter your new password below.</p>
+            <h2>{t("resetPassword.cardTitle")}</h2>
+            <p>{t("resetPassword.cardDescription")}</p>
           </div>
 
           {error && (
@@ -146,19 +154,22 @@ export default function ResetPassword() {
             <div className="alert-banner alert-success" role="status">
               {success}
               <p>
-                <Link to="/login">Continue to login →</Link>
+                <Link to="/login">
+                  {t("resetPassword.continueLogin")} →
+                </Link>
               </p>
             </div>
           )}
 
           {!tokenValid && !success && (
             <div className="auth-form">
-              <p>
-                This reset link is missing, invalid, expired, or already used.
-                Please request a new password reset link.
-              </p>
-              <Link to="/forgot-password" className="login-card-button">
-                Request a new link →
+              <p>{t("resetPassword.invalidLinkDescription")}</p>
+
+              <Link
+                to="/forgot-password"
+                className="login-card-button"
+              >
+                {t("resetPassword.requestNewLink")} →
               </Link>
             </div>
           )}
@@ -166,11 +177,14 @@ export default function ResetPassword() {
           {tokenValid && !success && (
             <form onSubmit={handleSubmit} className="auth-form">
               <div className="form-group">
-                <label htmlFor="new-password">New password</label>
+                <label htmlFor="new-password">
+                  {t("resetPassword.newPassword")}
+                </label>
+
                 <input
                   id="new-password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your new password"
+                  placeholder={t("resetPassword.newPasswordPlaceholder")}
                   value={newPassword}
                   onChange={(event) => setNewPassword(event.target.value)}
                   autoComplete="new-password"
@@ -181,11 +195,14 @@ export default function ResetPassword() {
               </div>
 
               <div className="form-group">
-                <label htmlFor="confirm-password">Confirm new password</label>
+                <label htmlFor="confirm-password">
+                  {t("resetPassword.confirmPassword")}
+                </label>
+
                 <input
                   id="confirm-password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Confirm your new password"
+                  placeholder={t("resetPassword.confirmPasswordPlaceholder")}
                   value={confirmPassword}
                   onChange={(event) =>
                     setConfirmPassword(event.target.value)
@@ -202,7 +219,9 @@ export default function ResetPassword() {
                 className="btn-toggle-pw"
                 onClick={() => setShowPassword((previous) => !previous)}
               >
-                {showPassword ? "Hide passwords" : "Show passwords"}
+                {showPassword
+                  ? t("resetPassword.hidePasswords")
+                  : t("resetPassword.showPasswords")}
               </button>
 
               <button
@@ -210,7 +229,10 @@ export default function ResetPassword() {
                 className="login-card-button universal-login-button"
                 disabled={loading}
               >
-                {loading ? "Updating password..." : "Reset Password"}
+                {loading
+                  ? t("resetPassword.updating")
+                  : t("resetPassword.submit")}
+
                 {!loading && <span>→</span>}
               </button>
             </form>
@@ -218,7 +240,9 @@ export default function ResetPassword() {
 
           <div className="universal-login-footer">
             <p>
-              <Link to="/login">← Back to login</Link>
+              <Link to="/login">
+                ← {t("resetPassword.backToLogin")}
+              </Link>
             </p>
           </div>
         </section>
@@ -226,4 +250,3 @@ export default function ResetPassword() {
     </main>
   );
 }
-

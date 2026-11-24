@@ -1,5 +1,7 @@
+
 import { useCallback, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import API_BASE_URL from "../api/api";
 import AdminDetailLayout from "../components/Admin/AdminDetailLayout";
 
@@ -107,6 +109,11 @@ const formatStatus = (status) =>
     .toLowerCase()
     .replace(/\b\w/g, (letter) => letter.toUpperCase());
 
+const getTranslatedStatus = (status, t) =>
+  t(`adminCaseDetails.statuses.${status}`, {
+    defaultValue: formatStatus(status),
+  });
+
 const getAuthHeaders = () => {
   const token = localStorage.getItem("adminToken");
   return token ? { Authorization: `Bearer ${token}` } : {};
@@ -126,10 +133,20 @@ function DetailItem({ label, children }) {
 
 export default function AdminCaseDetails() {
   const { caseId } = useParams();
+  const { t } = useTranslation();
 
   const [caseData, setCaseData] = useState(null);
   const [lawyers, setLawyers] = useState([]);
   const [documents, setDocuments] = useState([]);
+
+  // External invoice state
+const [externalInvoices, setExternalInvoices] = useState([]);
+const [expandedInvoiceId, setExpandedInvoiceId] = useState(null);
+const [invoiceAmount, setInvoiceAmount] = useState("");
+  const [invoiceLoading, setInvoiceLoading] = useState(false);
+  const [invoiceSending, setInvoiceSending] = useState(false);
+  const [invoiceError, setInvoiceError] = useState("");
+  const [invoiceMessage, setInvoiceMessage] = useState("");
 
   const [selectedStatus, setSelectedStatus] = useState("PENDING");
   const [selectedLawyer, setSelectedLawyer] = useState("");
@@ -139,6 +156,7 @@ export default function AdminCaseDetails() {
     name: "",
     email: "",
     phone: "",
+    password: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -153,6 +171,7 @@ export default function AdminCaseDetails() {
   const [customerError, setCustomerError] = useState("");
   const [documentError, setDocumentError] = useState("");
 
+  // Fetch case details
   const fetchCaseDetails = useCallback(async () => {
     const response = await fetch(
       `${API_BASE_URL}/api/admin/cases/${encodeURIComponent(caseId)}`,
@@ -160,7 +179,7 @@ export default function AdminCaseDetails() {
     );
 
     if (!response.ok) {
-      throw new Error("Unable to load case details.");
+      throw new Error(t("adminCaseDetails.errors.loadCase"));
     }
 
     const data = await response.json();
@@ -173,9 +192,11 @@ export default function AdminCaseDetails() {
       name: data.customer?.name || data.customerName || "",
       email: data.customer?.email || data.customerEmail || "",
       phone: data.customer?.phone || "",
+      password: "",
     });
-  }, [caseId]);
+  }, [caseId, t]);
 
+  // Fetch case documents
   const fetchDocuments = useCallback(async () => {
     try {
       setDocumentError("");
@@ -186,17 +207,51 @@ export default function AdminCaseDetails() {
       );
 
       if (!response.ok) {
-        throw new Error("Unable to load case documents.");
+        throw new Error(t("adminCaseDetails.errors.loadDocuments"));
       }
 
       const data = await response.json();
       setDocuments(Array.isArray(data) ? data : []);
     } catch (err) {
       setDocuments([]);
-      setDocumentError(err.message || "Unable to load documents.");
+      setDocumentError(
+        err.message || t("adminCaseDetails.errors.loadDocuments")
+      );
+    }
+  }, [caseId, t]);
+
+  // Fetch external invoices for this case
+  const fetchExternalInvoices = useCallback(async () => {
+    setInvoiceLoading(true);
+    setInvoiceError("");
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/cases/${encodeURIComponent(caseId)}/external-invoices`,
+        {
+          headers: getAuthHeaders(),
+        }
+      );
+
+      const data = await response.json().catch(() => []);
+
+      if (!response.ok) {
+        throw new Error(
+          getErrorMessage(data, "Unable to load external invoices.")
+        );
+      }
+
+      setExternalInvoices(Array.isArray(data) ? data : []);
+    } catch (err) {
+      setInvoiceError(
+        err.message || "Unable to load external invoices."
+      );
+    } finally {
+      setInvoiceLoading(false);
     }
   }, [caseId]);
 
+  // Fetch lawyers
   const fetchLawyers = useCallback(async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/lawyers`, {
@@ -204,7 +259,7 @@ export default function AdminCaseDetails() {
       });
 
       if (!response.ok) {
-        throw new Error("Unable to load lawyers.");
+        throw new Error(t("adminCaseDetails.errors.loadLawyers"));
       }
 
       const data = await response.json();
@@ -212,8 +267,9 @@ export default function AdminCaseDetails() {
     } catch (err) {
       setError((current) => current || err.message);
     }
-  }, []);
+  }, [t]);
 
+  // Load page data
   const loadPage = useCallback(async () => {
     setLoading(true);
     setError("");
@@ -223,18 +279,26 @@ export default function AdminCaseDetails() {
         fetchCaseDetails(),
         fetchDocuments(),
         fetchLawyers(),
+        fetchExternalInvoices(),
       ]);
     } catch (err) {
-      setError(err.message || "Unable to load this case.");
+      setError(err.message || t("adminCaseDetails.errors.loadCase"));
     } finally {
       setLoading(false);
     }
-  }, [fetchCaseDetails, fetchDocuments, fetchLawyers]);
+  }, [
+    fetchCaseDetails,
+    fetchDocuments,
+    fetchLawyers,
+    fetchExternalInvoices,
+    t,
+  ]);
 
   useEffect(() => {
     loadPage();
   }, [loadPage]);
 
+  // Customer form change
   const handleCustomerChange = (event) => {
     const { name, value } = event.target;
 
@@ -244,11 +308,13 @@ export default function AdminCaseDetails() {
     }));
   };
 
+  // Cancel customer editing
   const handleCancelCustomerEdit = () => {
     setCustomerForm({
       name: caseData?.customer?.name || caseData?.customerName || "",
       email: caseData?.customer?.email || caseData?.customerEmail || "",
       phone: caseData?.customer?.phone || "",
+      password: "",
     });
 
     setEditingCustomer(false);
@@ -256,6 +322,7 @@ export default function AdminCaseDetails() {
     setCustomerError("");
   };
 
+  // Update customer details and optional password
   const handleCustomerUpdate = async (event) => {
     event.preventDefault();
     setCustomerSaving(true);
@@ -276,6 +343,9 @@ export default function AdminCaseDetails() {
             name: customerForm.name.trim(),
             email: customerForm.email.trim(),
             phone: customerForm.phone.trim(),
+            ...(customerForm.password.trim()
+              ? { password: customerForm.password }
+              : {}),
           }),
         }
       );
@@ -284,7 +354,10 @@ export default function AdminCaseDetails() {
 
       if (!response.ok) {
         throw new Error(
-          getErrorMessage(data, "Unable to update customer details.")
+          getErrorMessage(
+            data,
+            t("adminCaseDetails.errors.updateCustomer")
+          )
         );
       }
 
@@ -294,17 +367,23 @@ export default function AdminCaseDetails() {
         name: data.customer?.name || data.customerName || "",
         email: data.customer?.email || data.customerEmail || "",
         phone: data.customer?.phone || "",
+        password: "",
       });
 
       setEditingCustomer(false);
-      setCustomerMessage("Customer details updated successfully.");
+      setCustomerMessage(
+        t("adminCaseDetails.success.customerUpdated")
+      );
     } catch (err) {
-      setCustomerError(err.message || "Unable to update customer details.");
+      setCustomerError(
+        err.message || t("adminCaseDetails.errors.updateCustomer")
+      );
     } finally {
       setCustomerSaving(false);
     }
   };
 
+  // Update case status
   const handleStatusUpdate = async (event) => {
     event.preventDefault();
     setStatusSaving(true);
@@ -324,7 +403,10 @@ export default function AdminCaseDetails() {
 
       if (!response.ok) {
         throw new Error(
-          getErrorMessage(data, "Unable to update case status.")
+          getErrorMessage(
+            data,
+            t("adminCaseDetails.errors.updateStatus")
+          )
         );
       }
 
@@ -335,19 +417,22 @@ export default function AdminCaseDetails() {
       }));
 
       setSelectedStatus(data.status || selectedStatus);
-      setMessage("Case status updated successfully.");
+      setMessage(t("adminCaseDetails.success.statusUpdated"));
     } catch (err) {
-      setError(err.message || "Unable to update case status.");
+      setError(
+        err.message || t("adminCaseDetails.errors.updateStatus")
+      );
     } finally {
       setStatusSaving(false);
     }
   };
 
+  // Assign lawyer
   const handleAssignLawyer = async (event) => {
     event.preventDefault();
 
     if (!selectedLawyer) {
-      setError("Please select a lawyer before assigning.");
+      setError(t("adminCaseDetails.errors.selectLawyer"));
       return;
     }
 
@@ -367,108 +452,200 @@ export default function AdminCaseDetails() {
       const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        throw new Error(getErrorMessage(data, "Unable to assign lawyer."));
+        throw new Error(
+          getErrorMessage(
+            data,
+            t("adminCaseDetails.errors.assignLawyer")
+          )
+        );
       }
 
       await fetchCaseDetails();
-      setMessage("Lawyer assigned successfully.");
+
+      setMessage(t("adminCaseDetails.success.lawyerAssigned"));
     } catch (err) {
-      setError(err.message || "Unable to assign lawyer.");
+      setError(
+        err.message || t("adminCaseDetails.errors.assignLawyer")
+      );
     } finally {
       setLawyerSaving(false);
     }
   };
 
-const openDocument = async (documentId, mode) => {
-  setDocumentError("");
+  // Send external invoice to customer
+  const handleSendExternalInvoice = async (event) => {
+    event.preventDefault();
 
-  // Open a blank tab immediately to avoid popup blocking.
-  let newTab = null;
+    const amount = Number(invoiceAmount);
 
-  if (mode === "view") {
-    newTab = window.open("about:blank", "_blank");
-
-    if (!newTab) {
-      setDocumentError("Please allow pop-ups to view this document.");
+    if (!invoiceAmount || !Number.isFinite(amount) || amount <= 0) {
+      setInvoiceError("Please enter a valid invoice amount greater than zero.");
       return;
     }
-  }
 
-  setOpeningDocumentId(documentId);
-
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/cases/documents/${encodeURIComponent(documentId)}/download`,
-      { headers: getAuthHeaders() }
-    );
-
-    if (!response.ok) {
-      throw new Error("Unable to open this document.");
+    if (!customerForm.email?.trim()) {
+      setInvoiceError("Customer email address is missing.");
+      return;
     }
 
-    const blob = await response.blob();
-    const objectUrl = URL.createObjectURL(blob);
+    setInvoiceSending(true);
+    setInvoiceError("");
+    setInvoiceMessage("");
+
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/api/admin/cases/${encodeURIComponent(caseId)}/external-invoices`,
+        {
+          method: "POST",
+          headers: {
+            ...getAuthHeaders(),
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ amount }),
+        }
+      );
+
+      const data = await response.json().catch(() => ({}));
+
+      if (!response.ok) {
+        throw new Error(
+          getErrorMessage(data, "Unable to send the external invoice.")
+        );
+      }
+
+      setInvoiceAmount("");
+      setInvoiceMessage(
+        `External invoice ${data.invoiceReference} was created and sent to ${data.customerEmail}.`
+      );
+
+      await fetchExternalInvoices();
+    } catch (err) {
+      setInvoiceError(
+        err.message || "Unable to send the external invoice."
+      );
+    } finally {
+      setInvoiceSending(false);
+    }
+  };
+
+  // View or download document
+  const openDocument = async (documentId, mode) => {
+    setDocumentError("");
+
+    // Open a blank tab immediately to avoid popup blocking.
+    let newTab = null;
 
     if (mode === "view") {
-      newTab.location.href = objectUrl;
+      newTab = window.open("about:blank", "_blank");
 
-      window.setTimeout(() => {
-        URL.revokeObjectURL(objectUrl);
-      }, 60000);
-    } else {
-      const link = window.document.createElement("a");
-      link.href = objectUrl;
-      link.download = `document-${documentId}`;
-
-      window.document.body.appendChild(link);
-      link.click();
-      link.remove();
-
-      window.setTimeout(() => {
-        URL.revokeObjectURL(objectUrl);
-      }, 1000);
-    }
-  } catch (err) {
-    if (newTab && !newTab.closed) {
-      newTab.close();
+      if (!newTab) {
+        setDocumentError(
+          t("adminCaseDetails.errors.allowPopups")
+        );
+        return;
+      }
     }
 
-    setDocumentError(err.message || "Unable to open document.");
-  } finally {
-    setOpeningDocumentId(null);
-  }
-};
+    setOpeningDocumentId(documentId);
 
+    try {
+      const endpoint = mode === "view" ? "view" : "download";
 
-  const layoutTitle = caseData?.caseType || "Case Details";
-  const layoutSubtitle = `Manage case information and allocation · ID: ${caseData?.caseId || caseId}`;
+      const response = await fetch(
+        `${API_BASE_URL}/api/cases/documents/${encodeURIComponent(documentId)}/${endpoint}`,
+        { headers: getAuthHeaders() }
+      );
 
+      if (!response.ok) {
+        throw new Error(
+          t("adminCaseDetails.errors.openDocument")
+        );
+      }
+
+      console.log("Document endpoint:", response.url);
+      console.log(
+        "HTTP Content-Type:",
+        response.headers.get("content-type")
+      );
+      console.log(
+        "HTTP Content-Disposition:",
+        response.headers.get("content-disposition")
+      );
+
+      const blob = await response.blob();
+
+      console.log("Blob type:", blob.type);
+      console.log("Blob size:", blob.size);
+
+      const objectUrl = URL.createObjectURL(blob);
+
+      if (mode === "view") {
+        newTab.location.href = objectUrl;
+
+        window.setTimeout(() => {
+          URL.revokeObjectURL(objectUrl);
+        }, 60000);
+      } else {
+        const link = window.document.createElement("a");
+        link.href = objectUrl;
+        link.download = `document-${documentId}`;
+
+        window.document.body.appendChild(link);
+        link.click();
+        link.remove();
+
+        window.setTimeout(() => {
+          URL.revokeObjectURL(objectUrl);
+        }, 1000);
+      }
+    } catch (err) {
+      if (newTab && !newTab.closed) {
+        newTab.close();
+      }
+
+      setDocumentError(
+        err.message || t("adminCaseDetails.errors.openDocument")
+      );
+    } finally {
+      setOpeningDocumentId(null);
+    }
+  };
+
+  const layoutTitle =
+    caseData?.caseType || t("adminCaseDetails.title");
+
+  const layoutSubtitle = t("adminCaseDetails.subtitle", {
+    caseId: caseData?.caseId || caseId,
+  });
+
+  // Loading screen
   if (loading) {
     return (
       <AdminDetailLayout
-        title="Case Details"
-        subtitle={`Loading case information · ID: ${caseId}`}
+        title={t("adminCaseDetails.title")}
+        subtitle={t("adminCaseDetails.loadingSubtitle", { caseId })}
         backTo="/admin/cases"
-        backLabel="Back to Cases"
+        backLabel={t("adminCaseDetails.backToCases")}
       >
         <div className="admin-detail-loading">
-          Loading case details...
+          {t("adminCaseDetails.loading")}
         </div>
       </AdminDetailLayout>
     );
   }
 
+  // Case not found
   if (!caseData) {
     return (
       <AdminDetailLayout
-        title="Case Details"
-        subtitle={`Case ID: ${caseId}`}
+        title={t("adminCaseDetails.title")}
+        subtitle={t("adminCaseDetails.caseIdSubtitle", { caseId })}
         backTo="/admin/cases"
-        backLabel="Back to Cases"
+        backLabel={t("adminCaseDetails.backToCases")}
       >
         <div className="admin-detail-card">
           <p style={{ color: "#b42332", marginTop: "10px" }}>
-            {error || "Case details could not be found."}
+            {error || t("adminCaseDetails.errors.caseNotFound")}
           </p>
 
           <button
@@ -477,7 +654,7 @@ const openDocument = async (documentId, mode) => {
             className="case-action-button"
             onClick={loadPage}
           >
-            Try Again
+            {t("adminCaseDetails.tryAgain")}
           </button>
         </div>
       </AdminDetailLayout>
@@ -492,7 +669,7 @@ const openDocument = async (documentId, mode) => {
       title={layoutTitle}
       subtitle={layoutSubtitle}
       backTo="/admin/cases"
-      backLabel="Back to Cases"
+      backLabel={t("adminCaseDetails.backToCases")}
       status={caseData.status}
     >
       {error && (
@@ -523,13 +700,13 @@ const openDocument = async (documentId, mode) => {
         </div>
       )}
 
-      {/* One combined card for all case sections */}
       <section
         style={styles.card}
         className="case-details-card admin-detail-card"
       >
-        {/* Case and customer information */}
-        <h2 style={styles.sectionTitle}>Case Information</h2>
+        <h2 style={styles.sectionTitle}>
+          {t("adminCaseDetails.caseInformation")}
+        </h2>
 
         <div style={styles.grid}>
           <div style={{ minWidth: 0 }}>
@@ -569,7 +746,7 @@ const openDocument = async (documentId, mode) => {
               }}
             >
               <h3 style={{ ...styles.sectionTitle, margin: 0 }}>
-                Client Information
+                {t("adminCaseDetails.clientInformation")}
               </h3>
 
               {!editingCustomer && (
@@ -583,7 +760,7 @@ const openDocument = async (documentId, mode) => {
                     setEditingCustomer(true);
                   }}
                 >
-                  Edit Details
+                  {t("adminCaseDetails.editDetails")}
                 </button>
               )}
             </div>
@@ -592,7 +769,7 @@ const openDocument = async (documentId, mode) => {
               <form onSubmit={handleCustomerUpdate}>
                 <div style={styles.detail} className="case-detail-row">
                   <label style={styles.label} htmlFor="customer-name">
-                    Customer Name
+                    {t("adminCaseDetails.customerName")}
                   </label>
 
                   <input
@@ -609,7 +786,7 @@ const openDocument = async (documentId, mode) => {
 
                 <div style={styles.detail} className="case-detail-row">
                   <label style={styles.label} htmlFor="customer-email">
-                    Email Address
+                    {t("adminCaseDetails.emailAddress")}
                   </label>
 
                   <input
@@ -627,7 +804,7 @@ const openDocument = async (documentId, mode) => {
 
                 <div style={styles.detail} className="case-detail-row">
                   <label style={styles.label} htmlFor="customer-phone">
-                    Phone Number
+                    {t("adminCaseDetails.phoneNumber")}
                   </label>
 
                   <input
@@ -640,6 +817,37 @@ const openDocument = async (documentId, mode) => {
                     maxLength={20}
                     autoComplete="tel"
                   />
+                </div>
+
+                {/* Optional customer password update */}
+                <div style={styles.detail} className="case-detail-row">
+                  <label style={styles.label} htmlFor="customer-password">
+                    New Password
+                  </label>
+
+                  <input
+                    id="customer-password"
+                    style={styles.input}
+                    name="password"
+                    type="password"
+                    value={customerForm.password}
+                    onChange={handleCustomerChange}
+                    minLength={8}
+                    maxLength={100}
+                    autoComplete="new-password"
+                    placeholder="Enter new password (optional)"
+                  />
+
+                  <small
+                    style={{
+                      display: "block",
+                      color: "#71839a",
+                      fontSize: "11px",
+                      marginTop: "5px",
+                    }}
+                  >
+                    Leave blank to keep the current password.
+                  </small>
                 </div>
 
                 <div
@@ -656,7 +864,9 @@ const openDocument = async (documentId, mode) => {
                     className="case-action-button"
                     disabled={customerSaving}
                   >
-                    {customerSaving ? "Saving..." : "Save Changes"}
+                    {customerSaving
+                      ? t("adminCaseDetails.saving")
+                      : t("adminCaseDetails.saveChanges")}
                   </button>
 
                   <button
@@ -666,31 +876,31 @@ const openDocument = async (documentId, mode) => {
                     onClick={handleCancelCustomerEdit}
                     disabled={customerSaving}
                   >
-                    Cancel
+                    {t("common.cancel")}
                   </button>
                 </div>
               </form>
             ) : (
               <>
-                <DetailItem label="Customer Name">
+                <DetailItem label={t("adminCaseDetails.customerName")}>
                   {customer.name || caseData.customerName}
                 </DetailItem>
 
-                <DetailItem label="Email Address">
+                <DetailItem label={t("adminCaseDetails.emailAddress")}>
                   {customer.email || caseData.customerEmail}
                 </DetailItem>
 
-                <DetailItem label="Phone Number">
-                  {customer.phone || "Not provided"}
+                <DetailItem label={t("adminCaseDetails.phoneNumber")}>
+                  {customer.phone || t("adminCaseDetails.notProvided")}
                 </DetailItem>
               </>
             )}
 
-            <DetailItem label="Case Type">
+            <DetailItem label={t("adminCaseDetails.caseType")}>
               {caseData.caseType}
             </DetailItem>
 
-            <DetailItem label="Case Description">
+            <DetailItem label={t("adminCaseDetails.caseDescription")}>
               {caseData.description}
             </DetailItem>
           </div>
@@ -704,19 +914,21 @@ const openDocument = async (documentId, mode) => {
             }}
           >
             <div style={{ marginBottom: "22px" }}>
-              <h3 style={styles.sectionTitle}>Assigned Lawyer</h3>
+              <h3 style={styles.sectionTitle}>
+                {t("adminCaseDetails.assignedLawyer")}
+              </h3>
 
-              <DetailItem label="Current Assignment">
+              <DetailItem label={t("adminCaseDetails.currentAssignment")}>
                 {assignedLawyer
                   ? assignedLawyer.name ||
                     assignedLawyer.fullName ||
                     assignedLawyer.email ||
                     `Lawyer #${assignedLawyer.id}`
-                  : "Not assigned"}
+                  : t("adminCaseDetails.notAssigned")}
               </DetailItem>
 
               {assignedLawyer?.email && (
-                <DetailItem label="Lawyer Email">
+                <DetailItem label={t("adminCaseDetails.lawyerEmail")}>
                   {assignedLawyer.email}
                 </DetailItem>
               )}
@@ -724,7 +936,9 @@ const openDocument = async (documentId, mode) => {
 
             <div>
               <h3 style={styles.sectionTitle}>
-                Documents ({documents.length})
+                {t("adminCaseDetails.documents", {
+                  count: documents.length,
+                })}
               </h3>
 
               {documentError && (
@@ -747,14 +961,14 @@ const openDocument = async (documentId, mode) => {
                     className="case-secondary-button"
                     onClick={fetchDocuments}
                   >
-                    Retry
+                    {t("adminCaseDetails.retry")}
                   </button>
                 </div>
               )}
 
               {documents.length === 0 ? (
                 <div style={{ ...styles.value, color: "#71839a" }}>
-                  No documents uploaded
+                  {t("adminCaseDetails.noDocuments")}
                 </div>
               ) : (
                 documents.map((doc) => {
@@ -804,8 +1018,8 @@ const openDocument = async (documentId, mode) => {
                           onClick={() => openDocument(documentId, "view")}
                         >
                           {openingDocumentId === documentId
-                            ? "Opening..."
-                            : "View"}
+                            ? t("adminCaseDetails.opening")
+                            : t("adminCaseDetails.view")}
                         </button>
 
                         <button
@@ -817,7 +1031,7 @@ const openDocument = async (documentId, mode) => {
                             openDocument(documentId, "download")
                           }
                         >
-                          Download
+                          {t("adminCaseDetails.download")}
                         </button>
                       </div>
                     </div>
@@ -828,7 +1042,6 @@ const openDocument = async (documentId, mode) => {
           </div>
         </div>
 
-        {/* Divider between case information and quick actions */}
         <div className="admin-detail-section-divider" />
 
         {/* Quick actions */}
@@ -836,12 +1049,14 @@ const openDocument = async (documentId, mode) => {
           style={styles.actionPanel}
           className="case-quick-actions"
         >
-          <h2 style={styles.sectionTitle}>Quick Actions</h2>
+          <h2 style={styles.sectionTitle}>
+            {t("adminCaseDetails.quickActions")}
+          </h2>
 
           <div style={styles.actionGrid}>
             <form onSubmit={handleStatusUpdate}>
               <label style={styles.label} htmlFor="case-status">
-                Update Status
+                {t("adminCaseDetails.updateStatus")}
               </label>
 
               <div
@@ -870,7 +1085,7 @@ const openDocument = async (documentId, mode) => {
                     "CANCELLED",
                   ].map((status) => (
                     <option key={status} value={status}>
-                      {formatStatus(status)}
+                      {getTranslatedStatus(status, t)}
                     </option>
                   ))}
                 </select>
@@ -883,14 +1098,16 @@ const openDocument = async (documentId, mode) => {
                     statusSaving || selectedStatus === caseData.status
                   }
                 >
-                  {statusSaving ? "Saving..." : "Save Status"}
+                  {statusSaving
+                    ? t("adminCaseDetails.saving")
+                    : t("adminCaseDetails.saveStatus")}
                 </button>
               </div>
             </form>
 
             <form onSubmit={handleAssignLawyer}>
               <label style={styles.label} htmlFor="assign-lawyer">
-                Assign Lawyer
+                {t("adminCaseDetails.assignLawyer")}
               </label>
 
               <div
@@ -908,7 +1125,9 @@ const openDocument = async (documentId, mode) => {
                     setSelectedLawyer(event.target.value)
                   }
                 >
-                  <option value="">Select a lawyer</option>
+                  <option value="">
+                    {t("adminCaseDetails.selectLawyer")}
+                  </option>
 
                   {lawyers.map((lawyer) => (
                     <option key={lawyer.id} value={lawyer.id}>
@@ -917,7 +1136,10 @@ const openDocument = async (documentId, mode) => {
                         lawyer.email ||
                         `Lawyer #${lawyer.id}`}
                       {lawyer.availability
-                        ? ` (${formatStatus(lawyer.availability)})`
+                        ? ` (${getTranslatedStatus(
+                            lawyer.availability,
+                            t
+                          )})`
                         : ""}
                     </option>
                   ))}
@@ -929,10 +1151,237 @@ const openDocument = async (documentId, mode) => {
                   className="case-action-button"
                   disabled={lawyerSaving || !selectedLawyer}
                 >
-                  {lawyerSaving ? "Assigning..." : "Assign"}
+                  {lawyerSaving
+                    ? t("adminCaseDetails.assigning")
+                    : t("adminCaseDetails.assign")}
                 </button>
               </div>
             </form>
+          </div>
+
+          {/* External Invoices */}
+          <div className="admin-detail-section-divider" />
+
+          <div style={{ marginTop: "20px" }}>
+            <h2 style={styles.sectionTitle}>
+              External Invoices
+            </h2>
+
+            <p style={{ ...styles.value, color: "#71839a", marginBottom: "16px" }}>
+              Create and send additional payment invoices to the customer.
+            </p>
+
+            {invoiceMessage && (
+              <div
+                role="status"
+                style={{
+                  ...styles.alert,
+                  background: "#eaf7ef",
+                  color: "#217348",
+                  border: "1px solid #ccebd8",
+                }}
+              >
+                {invoiceMessage}
+              </div>
+            )}
+
+            {invoiceError && (
+              <div
+                role="alert"
+                style={{
+                  ...styles.alert,
+                  background: "#fff0f0",
+                  color: "#a52632",
+                  border: "1px solid #f4cccc",
+                }}
+              >
+                {invoiceError}
+              </div>
+            )}
+
+            <form
+              onSubmit={handleSendExternalInvoice}
+              style={{
+                ...styles.actionPanel,
+                marginTop: "12px",
+              }}
+            >
+              <div style={styles.actionGrid}>
+                <div>
+                  <label style={styles.label} htmlFor="external-invoice-amount">
+                    Invoice Amount (SEK)
+                  </label>
+
+                  <input
+                    id="external-invoice-amount"
+                    type="number"
+                    min="0.01"
+                    step="0.01"
+                    placeholder="Enter invoice amount"
+                    style={styles.input}
+                    value={invoiceAmount}
+                    onChange={(event) => {
+                      setInvoiceAmount(event.target.value);
+                      setInvoiceError("");
+                    }}
+                    required
+                    disabled={invoiceSending}
+                  />
+                </div>
+
+                <div>
+                  <label style={styles.label}>
+                    Customer Email
+                  </label>
+
+                  <div style={{ ...styles.value, padding: "9px 0" }}>
+                    {customerForm.email || "Email address unavailable"}
+                  </div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: "16px" }}>
+                <button
+                  type="submit"
+                  style={styles.button}
+                  className="case-action-button"
+                  disabled={invoiceSending || !customerForm.email}
+                >
+                  {invoiceSending
+                    ? "Creating and Sending..."
+                    : "Send External Invoice"}
+                </button>
+              </div>
+
+              <p style={{ ...styles.value, color: "#71839a", marginTop: "12px" }}>
+                The customer will receive an email containing a PayPal Sandbox
+                payment link.
+              </p>
+            </form>
+
+            {/* Invoice history */}
+
+            {/* Invoice history accordion */}
+            <div className="invoice-history-section">
+              <div className="invoice-history-heading">
+                <h3 style={{ ...styles.sectionTitle, margin: 0 }}>
+                  Invoice History ({externalInvoices.length})
+                </h3>
+
+                <button
+                  type="button"
+                  style={styles.secondaryButton}
+                  className="case-secondary-button"
+                  onClick={fetchExternalInvoices}
+                  disabled={invoiceLoading}
+                >
+                  {invoiceLoading ? "Refreshing..." : "Refresh"}
+                </button>
+              </div>
+
+              {invoiceLoading ? (
+                <p style={styles.value}>Loading external invoices...</p>
+              ) : externalInvoices.length === 0 ? (
+                <p className="invoice-history-empty">
+                  No external invoices have been created for this case.
+                </p>
+              ) : (
+                <div className="invoice-accordion-list">
+                  {externalInvoices.map((invoice) => {
+                    const isExpanded = expandedInvoiceId === invoice.id;
+
+                    return (
+                      <div className="invoice-accordion-item" key={invoice.id}>
+                        <button
+                          type="button"
+                          className="invoice-accordion-trigger"
+                          aria-expanded={isExpanded}
+                          aria-controls={`invoice-details-${invoice.id}`}
+                          onClick={() =>
+                            setExpandedInvoiceId((current) =>
+                              current === invoice.id ? null : invoice.id
+                            )
+                          }
+                        >
+                          <div className="invoice-accordion-summary">
+                            <strong className="invoice-reference">
+                              {invoice.invoiceReference}
+                            </strong>
+
+                            <span className="invoice-summary-amount">
+                              {invoice.currency}{" "}
+                              {Number(invoice.amount).toFixed(2)}
+                            </span>
+
+                            <span
+                              className={`invoice-status ${
+                                invoice.status === "SUCCESS"
+                                  ? "invoice-status-success"
+                                  : "invoice-status-pending"
+                              }`}
+                            >
+                              {invoice.status || "PENDING"}
+                            </span>
+                          </div>
+
+                          <span
+                            className={`invoice-accordion-arrow ${
+                              isExpanded ? "expanded" : ""
+                            }`}
+                            aria-hidden="true"
+                          >
+                            ▼
+                          </span>
+                        </button>
+
+                        {isExpanded && (
+                          <div
+                            id={`invoice-details-${invoice.id}`}
+                            className="invoice-accordion-content"
+                          >
+                            <div style={styles.grid}>
+                              <div>
+                                <DetailItem label="Invoice Amount">
+                                  {invoice.currency}{" "}
+                                  {Number(invoice.amount).toFixed(2)}
+                                </DetailItem>
+
+                                <DetailItem label="Customer Email">
+                                  {invoice.customerEmail}
+                                </DetailItem>
+
+                                <DetailItem label="Created At">
+                                  {invoice.createdAt
+                                    ? new Date(invoice.createdAt).toLocaleString()
+                                    : "—"}
+                                </DetailItem>
+                              </div>
+
+                              <div>
+                                <DetailItem label="Case ID">
+                                  {invoice.caseId}
+                                </DetailItem>
+
+                                <DetailItem label="Invoice ID">
+                                  #{invoice.id}
+                                </DetailItem>
+
+                                <DetailItem label="Paid At">
+                                  {invoice.paidAt
+                                    ? new Date(invoice.paidAt).toLocaleString()
+                                    : "Not paid yet"}
+                                </DetailItem>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
           </div>
         </div>
       </section>

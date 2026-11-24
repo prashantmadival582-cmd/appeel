@@ -93,10 +93,15 @@ public CorsConfigurationSource corsConfigurationSource() {
                         "/api/auth/reset-password"
                 ).permitAll()
 
-                // Admin-only endpoints
-                .requestMatchers("/api/admin/**")
-                .hasRole("ADMIN")
+               // Public PayPal external invoice capture
+.requestMatchers(
+        HttpMethod.POST,
+        "/api/external-invoices/capture"
+).permitAll()
 
+// Admin-only endpoints
+.requestMatchers("/api/admin/**")
+.hasRole("ADMIN")
                 // Lawyer case operations
                 .requestMatchers(
                         HttpMethod.GET,

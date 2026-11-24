@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import { FiAlertTriangle } from "react-icons/fi";
 import API_BASE_URL from "../api/api";
+import appeelLogo from "../assets/appeel-logo.png";
 
 export default function LawyerRegister() {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -44,15 +48,15 @@ export default function LawyerRegister() {
         throw new Error(
           typeof data === "string"
             ? data
-            : data?.message || "Registration failed. Please try again."
+            : data?.message || t("lawyerRegister.errors.registrationFailed")
         );
       }
 
-      alert("Registration successful! Please log in.");
+      alert(t("lawyerRegister.success"));
       navigate("/lawyer/login");
     } catch (err) {
       setError(
-        err.message || "Unable to connect to the server. Please try again."
+        err.message || t("lawyerRegister.errors.connection")
       );
     } finally {
       setLoading(false);
@@ -63,32 +67,39 @@ export default function LawyerRegister() {
     <main className="auth-page lawyer-auth">
       <div className="auth-card">
         <div className="auth-header">
-          <Link to="/" className="auth-brand" aria-label="APPEEL Home">
-            <span className="auth-brand-icon">⚖️</span>
-            <span className="auth-brand-text">APPEEL</span>
+          <Link
+            to="/"
+            className="auth-brand"
+            aria-label={t("lawyerRegister.homeAria")}
+          >
+            <img
+              src={appeelLogo}
+              alt="APPEEL"
+              className="auth-page-logo"
+            />
+
           </Link>
-          <span className="auth-badge lawyer-badge">Practitioner Enrollment</span>
-          <h1>Lawyer Registration</h1>
-          <p className="auth-subtitle">
-            Join the APPEEL verified legal network to receive qualified client allocations.
-          </p>
+
+          <h1>{t("lawyerRegister.title")}</h1>
         </div>
 
         {error && (
           <div className="alert-banner alert-error" role="alert">
-            <span className="alert-icon">⚠️</span>
+            <span className="alert-icon"><FiAlertTriangle /></span>
             <span>{error}</span>
           </div>
         )}
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="name">Counsel Full Name</label>
+            <label htmlFor="name">
+              {t("lawyerRegister.fullName")}
+            </label>
             <input
               id="name"
               name="name"
               type="text"
-              placeholder="e.g. Adv. Sofia Berg"
+              placeholder={t("lawyerRegister.fullNamePlaceholder")}
               value={formData.name}
               onChange={handleChange}
               required
@@ -96,12 +107,14 @@ export default function LawyerRegister() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">Official Email Address</label>
+            <label htmlFor="email">
+              {t("lawyerRegister.email")}
+            </label>
             <input
               id="email"
               name="email"
               type="email"
-              placeholder="sofia.berg@lawfirm.com"
+              placeholder={t("lawyerRegister.emailPlaceholder")}
               value={formData.email}
               onChange={handleChange}
               required
@@ -109,12 +122,14 @@ export default function LawyerRegister() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="specialization">Primary Practice Area / Specialization</label>
+            <label htmlFor="specialization">
+              {t("lawyerRegister.specialization")}
+            </label>
             <input
               id="specialization"
               name="specialization"
               type="text"
-              placeholder="e.g. Commercial & Contract Law, Family Law"
+              placeholder={t("lawyerRegister.specializationPlaceholder")}
               value={formData.specialization}
               onChange={handleChange}
               required
@@ -122,12 +137,14 @@ export default function LawyerRegister() {
           </div>
 
           <div className="form-group">
-            <label htmlFor="phone">Direct Contact Number</label>
+            <label htmlFor="phone">
+              {t("lawyerRegister.phone")}
+            </label>
             <input
               id="phone"
               name="phone"
               type="tel"
-              placeholder="+46 8 123 4567"
+              placeholder={t("lawyerRegister.phonePlaceholder")}
               value={formData.phone}
               onChange={handleChange}
               required
@@ -136,45 +153,62 @@ export default function LawyerRegister() {
 
           <div className="form-group">
             <div className="form-label-row">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">
+                {t("lawyerRegister.password")}
+              </label>
               <button
                 type="button"
                 className="btn-toggle-pw"
                 onClick={() => setShowPassword(!showPassword)}
                 tabIndex={-1}
               >
-                {showPassword ? "Hide" : "Show"}
+                {showPassword
+                  ? t("lawyerRegister.hidePassword")
+                  : t("lawyerRegister.showPassword")}
               </button>
             </div>
+
             <div className="input-pw-wrapper">
               <input
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
-                placeholder="At least 8 characters"
+                placeholder={t("lawyerRegister.passwordPlaceholder")}
                 minLength={8}
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
             </div>
-            <small className="field-hint">Minimum 8 characters with a mix of letters and numbers</small>
+
+            <small className="field-hint">
+              {t("lawyerRegister.passwordHint")}
+            </small>
           </div>
 
-          <button type="submit" className="btn-primary-block" disabled={loading}>
-            {loading ? "Registering Practitioner..." : "Complete Registration"}
+          <button
+            type="submit"
+            className="btn-primary-block"
+            disabled={loading}
+          >
+            {loading
+              ? t("lawyerRegister.registering")
+              : t("lawyerRegister.submit")}
           </button>
         </form>
 
         <div className="auth-footer">
           <p>
-            Already enrolled as a lawyer?{" "}
+            {t("lawyerRegister.alreadyRegistered")}{" "}
             <Link to="/lawyer/login" className="auth-link">
-              Sign in here
+              {t("lawyerRegister.signIn")}
             </Link>
           </p>
+
           <div className="auth-secondary-links">
-            <Link to="/">Back to APPEEL Home</Link>
+            <Link to="/">
+              {t("lawyerRegister.backHome")}
+            </Link>
           </div>
         </div>
       </div>

@@ -1,0 +1,1083 @@
+
+{
+  "navbar": {
+  "home": "Home",
+  "about": "About Us",
+  "services": "Services",
+  "contact": "Contact Us",
+  "login": "Sign In",
+  "dashboard": "Dashboard",
+  "tagline": "Legal support, made simpler",
+  "openMenu": "Open navigation menu",
+  "closeMenu": "Close navigation menu"
+},
+  "common": {
+    "register": "Register",
+    "logout": "Logout",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "loading": "Loading..."
+  },
+  "login": {
+    "title": "Sign in to APPEEL",
+    "subtitle": "Access your legal workspace securely",
+    "email": "Email address",
+    "password": "Password",
+    "forgotPassword": "Forgot password?",
+    "signIn": "Sign In"
+  },
+  "home": {
+    "heroTitle": "Justice shouldn't cost a fortune.",
+    "heroSubtitle": "Get affordable legal assistance.",
+    "startCase": "Start My Case"
+  },
+
+
+"footer": {
+  "homeAria": "APPEEL home",
+  "description": "Simple, affordable legal support you can trust.",
+  "followUs": "Follow APPEEL",
+  "socialAria": "APPEEL on {{platform}}",
+  "explore": "Explore",
+  "home": "Home",
+  "about": "About",
+  "services": "Service",
+  "contact": "Contact",
+  "rights": "All rights reserved.",
+  "developedBy": "Designed and Developed by",
+  "backToTop": "Back to top"
+},
+"about": {
+  "visualLabel": "LEGAL SUPPORT, MADE SIMPLER",
+  "visualTitle1": "Your situation.",
+  "visualTitle2": "Your options.",
+  "visualTitle3": "Your next step.",
+  "visualDescription": "Clear information and practical guidance to help you move forward with confidence.",
+  "clarityTitle": "Clarity comes first.",
+  "clarityDescription": "Know where you stand before you decide.",
+  "eyebrow": "ABOUT APPEEL",
+  "heading": "Legal support should feel",
+  "headingHighlight": " within reach.",
+  "intro": "Legal issues can feel complicated. Getting clear information about your options shouldn't.",
+  "description": "APPEEL helps make legal processes easier to understand through straightforward communication, transparent pricing and practical next steps. So you can make informed decisions without unnecessary confusion.",
+  "benefit1Title": "Know your options",
+  "benefit1Description": "Understand the possible next steps for your situation.",
+  "benefit2Title": "Understand the process",
+  "benefit2Description": "Get clearer information about what to expect.",
+  "benefit3Title": "Take your next step",
+  "benefit3Description": "Move forward with practical information and support.",
+  "contactButton": "Let's talk"
+},
+"benefits": {
+  "eyebrow": "THE APPEEL APPROACH",
+  "heading": "Legal support made simple",
+  "subtitle": "Simple information, clear pricing, and easy next steps",
+  "card1Title": "Know the Cost Upfront",
+  "card1Description": "See the price and agreed scope before you decide to proceed.",
+  "card2Title": "A Clear Response Timeline",
+  "card2Description": "We aim to provide an initial response within 24 hours.",
+  "card3Title": "Guidance for Your Situation",
+  "card3Description": "Understand your options and get help preparing relevant documents.",
+  "card4Title": "Stay Informed",
+  "card4Description": "Follow your case progress and understand the next steps along the way."
+},
+
+"contact": {
+  "eyebrow": "GET IN TOUCH",
+  "heading": "Let's make your next step",
+  "headingHighlight": " clearer.",
+  "description": "Legal questions can be difficult to navigate. Start by telling us what's on your mind. We're here to help you understand your options.",
+  "highlight1Title": "Start with a conversation",
+  "highlight1Description": "You don't need to know which service you need before contacting us.",
+  "highlight2Title": "Share only what is necessary",
+  "highlight2Description": "Avoid including sensitive personal or confidential case information in this general enquiry form.",
+  "generalEnquiries": "GENERAL ENQUIRIES",
+  "generalEnquiriesDescription": "Use the form to send us your question.",
+  "formEyebrow": "WE'RE HERE TO LISTEN",
+  "formTitle": "Send us a message",
+  "formDescription": "Fill in the details below and tell us how we can help.",
+  "successTitle": "Thank you for your enquiry.",
+  "successDescription": "Your enquiry has been sent successfully. Our team will review your message.",
+  "sendAnother": "Send another enquiry",
+  "fullName": "Full name",
+  "fullNamePlaceholder": "Enter your full name",
+  "email": "Email address",
+  "emailPlaceholder": "you@example.com",
+  "subject": "What is your enquiry about?",
+  "subjectPlaceholder": "Enter a short subject",
+  "message": "Your message",
+  "messagePlaceholder": "Tell us how we can help...",
+  "sending": "Sending...",
+  "sendEnquiry": "Send enquiry",
+  "formNote": "Please don't include confidential case documents or sensitive details.",
+  "errors": {
+    "sendFailed": "Unable to send your enquiry. Please try again.",
+    "general": "Something went wrong. Please try again later."
+  }
+}
+,
+"homeAccess": {
+  "eyebrow": "YOUR NEXT STEP STARTS HERE",
+  "heading": "Your legal matter.",
+  "headingHighlight": "Your next move.",
+  "description": "Get clear on your options and move forward with straightforward, affordable legal support.",
+  "continueCase": "Continue My Case",
+  "dashboard": "Go to Dashboard",
+  "startCase": "Start My Case",
+  "existingAccount": "Already have an account?",
+  "signIn": "Sign in",
+  "transparentPricing": "Transparent pricing",
+  "noObligation": "No obligation",
+  "secureHandling": "Secure case handling",
+  "visualMessage": "A clearer way forward"
+},
+"hero": {
+  "title": "Justice shouldn’t cost a fortune.",
+  "subtitle": "Start from 99 SEK.",
+  "description": "Understand your options and take your next step with straightforward pricing and a simpler way to get legal support.",
+  "benefitsLabel": "Service benefits",
+  "transparentPricing": "Transparent pricing",
+  "noHiddenFees": "No hidden fees",
+  "secureHandling": "Secure case handling"
+},
+"pricing": {
+  "heading": "Legal support, with clear prices.",
+  "subtitle": "Know the cost and support before you proceed.",
+  "startHere": "START HERE",
+  "footerNote": "No hidden fees. Any additional work is discussed with you and requires your approval before proceeding.",
+  "initialReview": {
+    "title": "Initial Case Review",
+    "priceNote": "One-time starting fee",
+    "description": "Share your situation and documents to understand your next steps.",
+    "detail": "A simple place to start",
+    "button": "Start with a review"
+  },
+  "arnComplaint": {
+    "title": "ARN Complaint",
+    "priceNote": "Fixed price",
+    "description": "Get help reviewing your materials and preparing an ARN complaint.",
+    "detail": "For consumer disputes",
+    "button": "Choose ARN support"
+  },
+  "districtCourt": {
+    "title": "District Court Defence",
+    "priceNote": "Based on case scope",
+    "description": "Discuss your case and the support needed to prepare a defence.",
+    "detail": "Scope confirmed before proceeding",
+    "button": "Discuss your case"
+  },
+  "tenancyArbitration": {
+    "title": "Tenancy & Arbitration",
+    "priceNote": "Based on case scope",
+    "description": "Get help with your case, review documents, and plan your next steps.",
+    "detail": "Scope confirmed before proceeding",
+    "button": "Discuss your case"
+  }
+},
+"journey": {
+  "heading": "Your Journey with APPEEL",
+  "subtitle": "Seven simple steps. Clear pricing. Legal support at every stage.",
+  "step": "STEP",
+  "process": "APPEEL PROCESS",
+  "previousSteps": "Previous steps",
+  "nextSteps": "Next steps",
+  "showing": "Showing {{start}}–{{end}} of {{total}} steps",
+  "showStartingAt": "Show steps starting at {{step}}",
+  "steps": {
+    "upload": {
+      "label": "Upload Documents",
+      "description": "Submit your contracts, evidence, and relevant documents."
+    },
+    "payment": {
+      "label": "Pay 99 SEK",
+      "description": "Pay the one-time initial review fee to begin your case."
+    },
+    "started": {
+      "label": "Case Started",
+      "description": "Receive a case reference to track your legal matter."
+    },
+    "review": {
+      "label": "Case Review",
+      "description": "Your information is reviewed to understand your matter."
+    },
+    "offer": {
+      "label": "Fixed-Price Offer",
+      "description": "Review the scope and price for additional legal support."
+    },
+    "approval": {
+      "label": "Your Approval",
+      "description": "Choose whether to proceed with the proposed next steps."
+    },
+    "preparation": {
+      "label": "Document Preparation",
+      "description": "Receive support preparing relevant legal documents."
+    }
+  }
+},
+"login": {
+  "title": "Sign in to APPEEL",
+  "subtitle": "Access your legal workspace securely",
+  "email": "Email address",
+  "password": "Password",
+  "forgotPassword": "Forgot password?",
+  "signIn": "Sign In",
+
+  "accountTitle": "Login to your account",
+  "accountSubtitle": "Enter your registered email and password.",
+  "emailPlaceholder": "Enter your registered email",
+  "passwordPlaceholder": "Enter your password",
+  "showPassword": "Show",
+  "hidePassword": "Hide",
+  "signingIn": "Signing in...",
+  "secureAccess": "Secure access for customers, lawyers and administrators.",
+  "newCustomer": "New customer?",
+  "createAccount": "Create an account",
+  "areYouLawyer": "Are you a lawyer?",
+  "registerHere": "Register here",
+  "backHome": "Back to homepage",
+
+  "errors": {
+    "noToken": "The server did not return an authentication token.",
+    "customerDetails": "Customer account details were not returned.",
+    "lawyerDetails": "Lawyer account details were not returned.",
+    "invalidCredentials": "Invalid email or password. Please check your credentials and try again.",
+    "connection": "Unable to connect to the server. Please try again."
+  }
+},
+"lawyerRegister": {
+  "homeAria": "APPEEL Home",
+  "title": "Lawyer Registration",
+  "fullName": "Lawyer Full Name",
+  "fullNamePlaceholder": "e.g. Adv. Sofia Berg",
+  "email": "Official Email Address",
+  "emailPlaceholder": "sofia.berg@lawfirm.com",
+  "specialization": "Primary Practice Area / Specialization",
+  "specializationPlaceholder": "e.g. Commercial & Contract Law, Family Law",
+  "phone": "Direct Contact Number",
+  "phonePlaceholder": "+46 8 123 4567",
+  "password": "Password",
+  "showPassword": "Show",
+  "hidePassword": "Hide",
+  "passwordPlaceholder": "At least 8 characters",
+  "passwordHint": "Minimum 8 characters with a mix of letters and numbers",
+  "registering": "Registering Practitioner...",
+  "submit": "Complete Registration",
+  "alreadyRegistered": "Already enrolled as a lawyer?",
+  "signIn": "Sign in here",
+  "backHome": "Back to APPEEL Home",
+  "success": "Registration successful! Please log in.",
+  "errors": {
+    "registrationFailed": "Registration failed. Please try again.",
+    "connection": "Unable to connect to the server. Please try again."
+  }
+},
+"customerRegister": {
+  "homeAria": "APPEEL Home",
+  "title": "Create Your Account",
+  "fullName": "Full Name",
+  "fullNamePlaceholder": "e.g. Erik Lindqvist",
+  "email": "Email Address",
+  "emailPlaceholder": "name@example.com",
+  "phone": "Phone Number",
+  "phonePlaceholder": "e.g. +46 70 123 4567",
+  "password": "Create Password",
+  "showPassword": "Show",
+  "hidePassword": "Hide",
+  "passwordPlaceholder": "At least 8 characters",
+  "passwordHint": "Must contain at least 8 characters",
+  "creatingAccount": "Creating Account...",
+  "submit": "Register Account",
+  "alreadyHaveAccount": "Already have an account?",
+  "signIn": "Sign in",
+  "registerAsLawyer": "Register as lawyer",
+  "backHome": "Back to home",
+  "errors": {
+    "registrationFailed": "Unable to register. Please check your information."
+  }
+},
+"logoutDialog": {
+  "title": "Confirm Sign Out",
+  "description": "Are you sure you want to sign out of your account?",
+  "signingOut": "Signing Out...",
+  "confirm": "Yes, Sign Out"
+},
+"table": {
+  "records": "{{count}} records",
+  "loading": "Loading records...",
+  "empty": "No records found."
+},
+
+"tablePagination": {
+  "showing": "Showing",
+  "of": "of",
+  "records": "records",
+  "rows": "Rows",
+  "previous": "Previous",
+  "page": "Page",
+  "next": "Next"
+},
+"tableToolbar": {
+  "searchPlaceholder": "Search records...",
+  "searchLabel": "Search records",
+  "filter": "Filter",
+  "all": "All {{label}}",
+  "done": "Done",
+  "refresh": "Refresh",
+  "refreshing": "Refreshing...",
+  "exportCSV": "Export CSV"
+},
+"adminCases": {
+  "tableTitle": "ALL LEGAL CASES",
+  "viewDetails": "View Details",
+  "notSpecified": "Not specified",
+  "notAvailable": "N/A",
+  "emptyMessage": "No legal cases match your search or filter.",
+  "columns": {
+    "caseId": "Case ID",
+    "caseType": "Case Type",
+    "appliedDate": "Applied Date",
+    "actions": "Actions"
+  },
+  "filters": {
+    "caseStatus": "Case Status",
+    "allStatuses": "All Statuses",
+    "unassignedOnly": "Unassigned Only",
+    "pending": "Pending",
+    "underReview": "Under Review",
+    "inProgress": "In Progress",
+    "completed": "Completed"
+  },
+  "errors": {
+    "accessDenied": "Admin access denied. Please log in again.",
+    "fetchFailed": "Failed to fetch cases ({{status}}).",
+    "unableToLoadCases": "Unable to load cases from the server.",
+    "fetchLawyersFailed": "Failed to fetch lawyers ({{status}}).",
+    "unableToLoadLawyers": "Unable to load lawyers. Please refresh the page."
+  }
+},
+"adminLawyerDetails": {
+  "title": "Lawyer Details",
+  "subtitle": "Manage lawyer information and assigned cases · ID: {{lawyerId}}",
+  "backToLawyers": "Back to Lawyers",
+  "loading": "Loading lawyer details...",
+  "informationTitle": "Lawyer Information",
+  "informationDescription": "Update the lawyer's profile information.",
+  "fullName": "Full Name",
+  "email": "Email",
+  "specialization": "Specialization",
+  "phone": "Phone Number",
+  "newPassword": "New Password (optional)",
+  "passwordPlaceholder": "Leave blank to keep current password",
+  "saving": "Saving...",
+  "saveChanges": "Save Changes",
+  "assignedCases": "Assigned Cases",
+  "assignedCasesDescription": "Cases assigned to {{name}}.",
+  "thisLawyer": "this lawyer",
+  "caseCount_one": "{{count}} case",
+  "caseCount_other": "{{count}} cases",
+  "emptyCases": "No cases assigned to this lawyer.",
+  "view": "View",
+  "success": "Changes saved successfully.",
+  "notAvailable": "N/A",
+  "columns": {
+    "caseId": "Case ID",
+    "customer": "Customer",
+    "caseType": "Case Type",
+    "status": "Status",
+    "action": "Action"
+  },
+  "filters": {
+    "status": "Status",
+    "pending": "Pending",
+    "underReview": "Under Review",
+    "inProgress": "In Progress",
+    "completed": "Completed"
+  },
+  "statuses": {
+    "PENDING": "Pending",
+    "UNDER_REVIEW": "Under Review",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed"
+  },
+  "errors": {
+    "loadLawyer": "Unable to load lawyer information.",
+    "loadCases": "Unable to load assigned cases.",
+    "general": "Something went wrong.",
+    "updateLawyer": "Unable to update lawyer.",
+    "saveChanges": "Unable to save changes."
+  }
+},
+"adminLogin": {
+  "homeAria": "APPEEL Home",
+  "portal": "Administration Portal",
+  "title": "Admin Sign In",
+  "subtitle": "Secure administrative control for lawyer assignment, case management, and system metrics.",
+  "email": "Admin Email Address",
+  "emailPlaceholder": "admin@appeel.se",
+  "password": "Password",
+  "showPassword": "Show",
+  "hidePassword": "Hide",
+  "passwordPlaceholder": "Enter admin password",
+  "authenticating": "Authenticating...",
+  "submit": "Sign In to Admin Portal",
+  "backHome": "Back to APPEEL Home",
+  "errors": {
+    "invalidCredentials": "Invalid admin credentials.",
+    "noToken": "Login succeeded, but the server did not return a token.",
+    "connection": "Unable to connect to the server. Please try again."
+  }
+},
+"adminCaseDetails": {
+  "title": "Case Details",
+  "subtitle": "Manage case information and allocation · ID: {{caseId}}",
+  "loadingSubtitle": "Loading case information · ID: {{caseId}}",
+  "caseIdSubtitle": "Case ID: {{caseId}}",
+  "backToCases": "Back to Cases",
+  "loading": "Loading case details...",
+  "tryAgain": "Try Again",
+  "caseInformation": "Case Information",
+  "clientInformation": "Client Information",
+  "editDetails": "Edit Details",
+  "customerName": "Customer Name",
+  "emailAddress": "Email Address",
+  "phoneNumber": "Phone Number",
+  "notProvided": "Not provided",
+  "caseType": "Case Type",
+  "caseDescription": "Case Description",
+  "assignedLawyer": "Assigned Lawyer",
+  "currentAssignment": "Current Assignment",
+  "notAssigned": "Not assigned",
+  "lawyerEmail": "Lawyer Email",
+  "documents": "Documents ({{count}})",
+  "noDocuments": "No documents uploaded",
+  "opening": "Opening...",
+  "view": "View",
+  "download": "Download",
+  "retry": "Retry",
+  "quickActions": "Quick Actions",
+  "updateStatus": "Update Status",
+  "saving": "Saving...",
+  "saveStatus": "Save Status",
+  "assignLawyer": "Assign Lawyer",
+  "selectLawyer": "Select a lawyer",
+  "assigning": "Assigning...",
+  "assign": "Assign",
+  "saveChanges": "Save Changes",
+  "success": {
+    "customerUpdated": "Customer details updated successfully.",
+    "statusUpdated": "Case status updated successfully.",
+    "lawyerAssigned": "Lawyer assigned successfully."
+  },
+  "statuses": {
+    "PENDING": "Pending",
+    "IN_PROGRESS": "In Progress",
+    "ASSIGNED": "Assigned",
+    "COMPLETED": "Completed",
+    "RESOLVED": "Resolved",
+    "CLOSED": "Closed",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled",
+    "AVAILABLE": "Available",
+    "BUSY": "Busy"
+  },
+  "errors": {
+    "loadCase": "Unable to load case details.",
+    "loadDocuments": "Unable to load case documents.",
+    "loadLawyers": "Unable to load lawyers.",
+    "updateCustomer": "Unable to update customer details.",
+    "updateStatus": "Unable to update case status.",
+    "selectLawyer": "Please select a lawyer before assigning.",
+    "assignLawyer": "Unable to assign lawyer.",
+    "allowPopups": "Please allow pop-ups to view this document.",
+    "openDocument": "Unable to open this document.",
+    "caseNotFound": "Case details could not be found."
+  }
+},
+
+  "customerCases": {
+    "title": "My Cases",
+    "heading": "Your Legal Cases",
+    "description": "View your legal matters and track their progress.",
+    "startNewCase": "Start a New Case",
+    "tryAgain": "Try Again",
+    "generalLegalMatter": "General Legal Matter",
+    "dateUnavailable": "Date unavailable",
+    "viewDetails": "View Details",
+    "emptyMessage": "You have not submitted any cases yet.",
+    "emptyTitle": "No cases submitted yet",
+    "emptyDescription": "Once you submit a legal request, your case will appear here.",
+    "submitFirstCase": "Submit Your First Case",
+    "columns": {
+      "caseId": "Case ID",
+      "caseType": "Case Type",
+      "submitted": "Submitted",
+      "action": "Action"
+    },
+    "filters": {
+      "caseStatus": "Case Status",
+      "allStatuses": "All Statuses",
+      "pending": "Pending",
+      "active": "Active",
+      "completed": "Completed"
+    },
+    "errors": {
+      "loadCases": "Unable to load your cases."
+    }
+  }
+  ,
+  "customerCaseDetails": {
+    "title": "Case Details",
+    "description": "View your case progress and manage its documents.",
+    "backToCases": "Back to My Cases",
+    "loading": "Loading case details...",
+    "legalMatter": "Legal Matter",
+    "caseId": "Case ID",
+    "progressTimeline": "Progress Timeline",
+    "assignedCounsel": "Assigned Counsel",
+    "notAssigned": "Not yet assigned",
+    "submissionDate": "Submission Date",
+    "matterOverview": "Matter Overview & Instructions",
+    "noDescription": "No description provided.",
+    "caseDocuments": "Case Documents",
+    "documentsDescription": "Upload and access your case files.",
+    "selectDocument": "Select a document",
+    "uploadLimits": "PDF, DOC, DOCX, PNG, JPG · Max 10 MB",
+    "uploading": "Uploading...",
+    "uploadDocument": "Upload Document",
+    "uploadedFiles": "Uploaded Files",
+    "noFiles": "No files uploaded to this case yet.",
+    "documentNumber": "Document",
+    "pleaseWait": "Please wait...",
+    "download": "Download",
+    "timeline": {
+      "submitted": "Submitted",
+      "reviewLawyer": "Review & Lawyer",
+      "inProgress": "In Progress",
+      "resolution": "Resolution"
+    },
+    "statuses": {
+      "PENDING": "Pending",
+      "SUBMITTED": "Submitted",
+      "UNDER_REVIEW": "Under Review",
+      "IN_PROGRESS": "In Progress",
+      "ASSIGNED": "Assigned",
+      "COMPLETED": "Completed",
+      "RESOLVED": "Resolved",
+      "CLOSED": "Closed"
+    },
+    "success": {
+      "documentUploaded": "Document uploaded successfully."
+    },
+    "errors": {
+      "loadCase": "Unable to load case details.",
+      "selectDocument": "Please select a document to upload.",
+      "invalidFileType": "Please upload a PDF, DOC, DOCX, PNG, JPG, or JPEG file.",
+      "fileTooLarge": "File size must be 10 MB or less.",
+      "unsupportedFileType": "The selected file type is not supported.",
+      "uploadDocument": "Unable to upload document.",
+      "downloadDocument": "Unable to download document."
+    }
+  },
+  "customerNavigation": {
+    "toggleMenu": "Toggle navigation menu",
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "myCases": "My Cases",
+    "documents": "Documents",
+    "updates": "Updates",
+    "signOut": "Sign Out"
+  }
+,
+"customerDocuments": {
+  "title": "My Documents",
+  "eyebrow": "SECURE DOCUMENT CENTER",
+  "heading": "Document Vault",
+  "description": "Securely access, review, and download documents associated with your legal cases.",
+  "document": "Document",
+  "documents": "Documents",
+  "allDocuments": "All Documents",
+  "tableDescription": "Your uploaded case files in one place.",
+  "emptyMessage": "No documents found. Upload documents to your legal cases to see them here.",
+  "securityNote": "Your case documents are securely associated with your account. You can view or download them whenever you need access.",
+  "untitledDocument": "Untitled document",
+  "caseDocument": "Case document",
+  "opening": "Opening...",
+  "view": "View",
+  "pleaseWait": "Please wait...",
+  "download": "Download",
+  "delete": "Delete",
+  "deleting": "Deleting...",
+  "deleteDocument": "Delete document",
+  "columns": {
+    "documentName": "Document Name",
+    "caseId": "Case ID",
+    "action": "Action"
+  },
+  "filters": {
+    "caseId": "Case ID",
+    "allCases": "All Cases"
+  },
+  "deleteModal": {
+    "title": "Delete document?",
+    "confirmText": "Are you sure you want to delete",
+    "warning": "This action cannot be undone."
+  },
+  "errors": {
+    "load": "Unable to load documents.",
+    "allowPopups": "Please allow pop-ups to view this document.",
+    "view": "Unable to view document.",
+    "download": "Unable to download document.",
+    "delete": "Unable to delete document."
+  }
+},
+"customerLogin": {
+  "homeAria": "APPEEL Home",
+  "portal": "Customer Portal",
+  "title": "Welcome Back",
+  "subtitle": "Sign in to access your cases, documents, and legal updates.",
+  "email": "Email Address",
+  "emailPlaceholder": "name@example.com",
+  "password": "Password",
+  "showPassword": "Show",
+  "hidePassword": "Hide",
+  "passwordPlaceholder": "Enter your password",
+  "signingIn": "Signing In...",
+  "submit": "Sign In to My Account",
+  "noAccount": "Don't have an APPEEL account?",
+  "createAccount": "Create an account",
+  "lawyerSignIn": "Lawyer sign in",
+  "backHome": "Back to home",
+  "errors": {
+    "noCustomerDetails": "The server did not return your customer account details.",
+    "signInFailed": "Unable to sign in. Please check your credentials."
+  }
+},
+"customerUpdates": {
+  "title": "Case Updates",
+  "heading": "Activity & Progress Updates",
+  "description": "Stay fully informed on status changes, counsel assignments, and milestones across all your matters.",
+  "tableTitle": "Your Case Updates",
+  "viewTimeline": "View Timeline",
+  "emptyMessage": "No case updates found.",
+  "emptyTitle": "No updates yet",
+  "emptyDescription": "Once you submit a case, its milestone progress updates will appear right here.",
+  "startCase": "Start a Case",
+  "columns": {
+    "caseId": "Case ID",
+    "currentStatus": "Current Status",
+    "action": "Action"
+  },
+  "filters": {
+    "status": "Status",
+    "allStatuses": "All Statuses"
+  },
+  "statuses": {
+    "PENDING": "Pending",
+    "UNDER_REVIEW": "Under Review",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "ASSIGNED": "Assigned",
+    "RESOLVED": "Resolved",
+    "CLOSED": "Closed",
+    "REJECTED": "Rejected",
+    "CANCELLED": "Cancelled"
+  },
+  "errors": {
+    "load": "Unable to load case updates."
+  }
+},
+"forgotPassword": {
+  "eyebrow": "ACCOUNT RECOVERY",
+  "title": "Forgot your password?",
+  "subtitle": "We'll send you a secure link to reset your password.",
+  "heading": "Reset your password",
+  "description": "Enter the email address registered with APPEEL.",
+  "email": "Email address",
+  "emailPlaceholder": "Enter your registered email",
+  "sending": "Sending...",
+  "submit": "Send Reset Link",
+  "rememberPassword": "Remember your password?",
+  "backToLogin": "Back to login",
+  "backHome": "Back to homepage",
+  "success": {
+    "default": "If an account exists for this email, a reset link has been sent."
+  },
+  "errors": {
+    "requestFailed": "Unable to process your request.",
+    "connection": "Unable to connect to the server."
+  }
+},
+"lawyerDashboard": {
+  "lawyerPortal": "Lawyer Portal",
+  "home": "Home",
+  "signOut": "Sign Out",
+  "welcome": "Welcome",
+  "counsel": "Counsel",
+  "subtitle": "Manage your assigned legal cases, review client evidence, and update case progress.",
+  "allocationStatus": "Allocation Status",
+  "availableForCases": "Available for Cases",
+  "currentlyBusy": "Currently Busy",
+  "saving": "Saving...",
+  "assignedMatters": "Assigned Matters",
+  "activeInProgress": "Active / In Progress",
+  "resolvedCases": "Resolved Cases",
+  "acceptingCases": "Accepting Cases",
+  "yesAvailable": "Yes (Available)",
+  "noBusy": "No (Busy)",
+  "assignedClientMatters": "Assigned Client Matters",
+  "caseTableDescription": "Update case progress and review client documentation.",
+  "matterCount_one": "{{count}} matter",
+  "matterCount_other": "{{count}} matters",
+  "loadingAssignedCases": "Loading assigned cases...",
+  "reload": "Reload",
+  "noCasesAssigned": "No cases currently assigned",
+  "noCasesDescription": "When administrators allocate incoming cases to your specialization, they will appear here.",
+  "noCasesForTable": "No cases are currently assigned to you.",
+  "matterFiles": "Matter Files: {{caseId}}",
+  "documentDescription": "Customer-uploaded evidence and filed documents.",
+  "close": "Close",
+  "loadingDocuments": "Loading documents...",
+  "retry": "Retry",
+  "noDocumentsForCase": "No documents found for case {{caseId}}.",
+  "unnamedDocument": "Unnamed document",
+  "file": "File",
+  "opening": "Opening...",
+  "view": "View",
+  "downloading": "Downloading...",
+  "download": "Download",
+  "loading": "Loading...",
+  "hideFiles": "Hide Files",
+  "viewFiles": "View Files",
+  "filesCount_one": "Files ({{count}})",
+  "filesCount_other": "Files ({{count}})",
+  "updateStatusFor": "Update status for case {{caseId}}",
+  "columns": {
+    "caseId": "Case ID",
+    "customerName": "Customer Name",
+    "matterCategory": "Matter Category",
+    "description": "Description",
+    "status": "Status",
+    "updateStatus": "Update Status",
+    "documents": "Documents"
+  },
+  "filters": {
+    "status": "Status"
+  },
+  "statuses": {
+    "PENDING": "Pending",
+    "SUBMITTED": "Submitted",
+    "UNDER_REVIEW": "Under Review",
+    "IN_PROGRESS": "In Progress",
+    "COMPLETED": "Completed",
+    "UNKNOWN": "Unknown"
+  },
+  "fallback": {
+    "customer": "Customer",
+    "general": "General",
+    "noDescription": "No description"
+  },
+  "openingDocument": "Loading document",
+  "loadingDocument": "Loading document...",
+  "errors": {
+    "invalidSession": "Your session is invalid or expired. Please log in again.",
+    "invalidLawyerSession": "Your lawyer session is not valid. Please log in again.",
+    "fetchLawyer": "Unable to fetch lawyer details.",
+    "fetchCases": "Unable to fetch assigned cases.",
+    "loadDashboard": "Unable to load dashboard.",
+    "updateAvailability": "Unable to update availability.",
+    "updateCaseStatus": "Failed to update case status.",
+    "loadDocuments": "Unable to load documents.",
+    "loadDocumentsWithStatus": "Unable to load documents ({{status}}).",
+    "invalidDocumentList": "Invalid document list received from the server.",
+    "missingDocumentId": "Document ID is missing.",
+    "expiredSession": "Lawyer session expired. Please log in again.",
+    "documentRequestFailed": "Document request failed ({{status}}): {{message}}",
+    "emptyDocument": "The server returned an empty document.",
+    "downloadDocument": "Unable to download the document.",
+    "popupBlocked": "Pop-up blocked. Allow pop-ups for this site and try again.",
+    "documentViewFailed": "Unable to open this document. Return to the dashboard and check the error.",
+    "openDocument": "Unable to open the document."
+  }
+},
+"lawyerLogin": {
+  "homeAria": "APPEEL Home",
+  "workspace": "Practitioner Workspace",
+  "title": "Lawyer Portal Login",
+  "subtitle": "Sign in to access assigned legal cases, review documents, and update case progress.",
+  "email": "Practitioner Email",
+  "emailPlaceholder": "lawyer@firm.com",
+  "password": "Password",
+  "passwordPlaceholder": "Enter your password",
+  "showPassword": "Show",
+  "hidePassword": "Hide",
+  "signingIn": "Signing In...",
+  "submit": "Access Lawyer Workspace",
+  "registerPrompt": "Are you a practicing attorney?",
+  "registerHere": "Register here",
+  "customerSignIn": "Client Sign In",
+  "backHome": "Back to Home",
+  "errors": {
+    "invalidCredentials": "Invalid lawyer email or password.",
+    "missingLawyerId": "Login succeeded, but the lawyer ID was not returned by the server.",
+    "connection": "Unable to connect to the server. Please try again."
+  }
+},
+"payment": {
+  "title": "Payment",
+  "eyebrow": "APPEEL SECURE CHECKOUT",
+  "confirmingTitle": "Confirming Your Payment",
+  "completeTitle": "Complete Your Payment",
+  "description": "Pay the service fee securely using PayPal to continue with your legal case.",
+  "serviceFee": "Case service fee",
+  "caseId": "Case ID",
+  "pleaseWait": "Please wait...",
+  "confirmationInProgress": "Payment Confirmation in Progress",
+  "tryAgain": "Try Payment Again",
+  "payButton": "Pay SEK 99.00 with PayPal",
+  "sandboxNote": "Payments are processed through PayPal Sandbox during testing.",
+  "messages": {
+    "cancelled": "Payment was cancelled. You can return to PayPal when you're ready.",
+    "confirming": "Confirming your payment with PayPal..."
+  },
+  "errors": {
+    "missingCaseId": "Case ID is missing. Please return to your case.",
+    "missingCaseIdDescription": "Case ID is missing. Return to your case and try again.",
+    "missingPaymentDetails": "Payment details are missing. Please return to your case and start checkout again.",
+    "confirmationFailed": "Payment confirmation failed (HTTP {{status}}).",
+    "notCompleted": "PayPal has not confirmed a completed payment.",
+    "confirmationUnavailable": "Payment could not be confirmed. Please try again.",
+    "orderProcessing": "A PayPal order is already being processed. Please reload this page to retry confirmation.",
+    "checkoutFailed": "Could not create or resume PayPal checkout (HTTP {{status}}).",
+    "missingOrderDetails": "The server did not return the required PayPal order details.",
+    "startFailed": "Something went wrong while starting payment."
+  }
+},
+"resetPassword": {
+  "verifying": "Verifying your password reset link...",
+  "eyebrow": "ACCOUNT SECURITY",
+  "pageTitle": "Create a new password",
+  "pageDescription": "Choose a new password for your APPEEL account.",
+  "cardTitle": "Reset your password",
+  "cardDescription": "Enter your new password below.",
+  "invalidLinkDescription": "This reset link is missing, invalid, expired, or already used. Please request a new password reset link.",
+  "requestNewLink": "Request a new link",
+  "newPassword": "New password",
+  "newPasswordPlaceholder": "Enter your new password",
+  "confirmPassword": "Confirm new password",
+  "confirmPasswordPlaceholder": "Confirm your new password",
+  "showPasswords": "Show passwords",
+  "hidePasswords": "Hide passwords",
+  "updating": "Updating password...",
+  "submit": "Reset Password",
+  "continueLogin": "Continue to login",
+  "backToLogin": "Back to login",
+  "success": "Your password has been reset successfully.",
+  "errors": {
+    "missingToken": "The password reset token is missing. Please request a new link.",
+    "invalidToken": "This password reset link is invalid or expired.",
+    "verifyFailed": "Unable to verify the reset link. Please try again.",
+    "passwordLength": "Password must contain between 8 and 100 characters.",
+    "passwordMismatch": "Passwords do not match.",
+    "resetFailed": "Unable to reset your password."
+  }
+},
+"startCase": {
+  "pageTitle": "Start a New Case",
+  "eyebrow": "INTAKE FORM",
+  "heading": "Start a New Legal Case",
+  "description": "Complete the details below so our legal team can assess your requirements and connect you with the appropriate attorney.",
+  "clientSectionTitle": "1. Client Information",
+  "clientSectionDescription": "Verified from your customer profile",
+  "fullName": "Full Name",
+  "registeredEmail": "Registered Email",
+  "caseSectionTitle": "2. Case Information",
+  "caseSectionDescription": "Specify the category and scope of your matter",
+  "caseCategory": "Legal Case Category",
+  "selectCategory": "Select a category...",
+  "categories": {
+    "familyLaw": "Family Law (Divorce, Custody, Estates)",
+    "propertyDispute": "Property Dispute (Real Estate, Leases, Tenancy)",
+    "criminalLaw": "Criminal Law & Defense",
+    "employmentLaw": "Employment Law (Contracts, Disputes, Severance)",
+    "businessLaw": "Business & Corporate Law",
+    "consumerComplaint": "Consumer Rights & Claims",
+    "other": "Other Legal Assistance"
+  },
+  "caseDescription": "Case Description & Background",
+  "descriptionPlaceholder": "Describe your situation in detail. Include dates, opposing parties, current status, and the outcome you are seeking...",
+  "confidentialityNote": "All communications and case details are securely handled under strict confidentiality.",
+  "checkingSession": "Checking Session...",
+  "creatingCase": "Creating Case...",
+  "submit": "Submit Case & Continue to Payment →",
+  "cancel": "Cancel",
+  "errors": {
+    "verifySession": "Unable to verify your session.",
+    "missingCaseId": "The case ID was not returned by the server. Please check your cases before submitting again.",
+    "submitFailed": "Unable to submit your case."
+  }
+},
+  "adminDashboard": {
+    "eyebrow": "SYSTEM OVERVIEW",
+    "description": "Real-time statistics across active legal matters, lawyers, and customer workflows.",
+    "totalCases": "Total Cases",
+    "pendingCases": "Pending / Unallocated",
+    "lawyers": "Lawyers",
+    "payments": "Payments",
+    "quickNavigationTitle": "Fast Navigation & Allocation",
+    "quickNavigationDescription": "Quick access to operational queues",
+    "manageAllCases": "Manage All Cases",
+    "reviewCasesTitle": "Review Incoming Cases",
+    "reviewCasesDescription": "Allocate pending submissions to vetted attorneys.",
+    "manageCases": "Manage Cases",
+    "lawyerAvailabilityTitle": "Lawyer Availability",
+    "lawyerAvailabilityDescription": "Inspect lawyer specialties and availability statuses.",
+    "manageLawyers": "Manage Lawyers",
+    "documentRepositoryTitle": "Document Repository",
+    "documentRepositoryDescription": "Verify customer evidence and manage uploaded legal documents.",
+    "manageDocuments": "Manage Documents",
+    "paymentManagementTitle": "Payment Management",
+    "paymentManagementDescription": "Monitor payment references, gateway transactions and payment statuses.",
+    "viewPayments": "View Payments"
+  }
+  ,
+  "adminLawyers": {
+    "tableTitle": "Lawyer Management",
+    "notSpecified": "Not specified",
+    "refreshing": "Refreshing...",
+    "tryAgain": "Try Again",
+    "emptyMessage": "No lawyers registered yet.",
+    "columns": {
+      "name": "Lawyer Name",
+      "email": "Email",
+      "specialization": "Specialization",
+      "availability": "Availability",
+      "action": "Action"
+    },
+    "filters": {
+      "availability": "Availability"
+    },
+    "availability": {
+      "AVAILABLE": "Available",
+      "BUSY": "Busy"
+    },
+    "errors": {
+      "loadFailed": "Failed to load lawyers.",
+      "connection": "Unable to connect to the server."
+    }
+  },
+  "adminDocuments": {
+    "tableTitle": "Document Vault",
+    "emptyMessage": "No case documents uploaded to the repository yet.",
+    "opening": "Opening...",
+    "view": "View",
+    "processing": "Processing...",
+    "download": "Download",
+    "columns": {
+      "caseId": "Case ID",
+      "action": "Action"
+    },
+    "filters": {
+      "fileFormat": "File Format",
+      "allFormats": "All Formats",
+      "caseReference": "Case Reference",
+      "allCases": "All Cases"
+    },
+    "errors": {
+      "sessionRequired": "Admin session required. Please log in as admin.",
+      "loadFailed": "Failed to load documents.",
+      "connection": "Unable to connect to the backend.",
+      "unauthorizedDownload": "You are not authorized to download this document.",
+      "downloadFailed": "Unable to download document.",
+      "allowPopups": "Please allow pop-ups to view this document.",
+      "previewFailed": "Unable to preview document.",
+      "viewFailed": "Unable to view document."
+    }
+  },
+  "adminPayments": {
+    "tableTitle": "Payments & Billing",
+    "emptyMessage": "No payment records found.",
+    "currencyNotSet": "Currency not set",
+    "notRecorded": "Not recorded",
+    "refreshing": "Refreshing...",
+    "tryAgain": "Try Again",
+    "columns": {
+      "paymentReference": "Payment Reference",
+      "caseId": "Case ID",
+      "amount": "Amount",
+      "provider": "Provider",
+      "gatewayOrderId": "Gateway Order ID",
+      "status": "Status"
+    },
+    "filters": {
+      "paymentStatus": "Payment Status"
+    },
+    "statuses": {
+      "SUCCESS": "Successful",
+      "PENDING": "Pending",
+      "FAILED": "Failed",
+      "UNKNOWN": "Unknown"
+    },
+    "errors": {
+      "sessionMissing": "Admin session missing. Please log in again.",
+      "authorizationFailed": "Admin authorization failed. Please sign in again.",
+      "loadFailed": "Unable to load payment records.",
+      "connection": "Unable to connect to the server."
+    }
+  },
+  "adminLayout": {
+    "toggleSidebar": "Toggle admin sidebar",
+    "portalTitle": "Administration Portal",
+    "administrator": "Administrator"
+  },
+  "customerDashboard": {
+    "customer": "Customer",
+    "loading": "Loading your customer portal...",
+    "title": "Customer Dashboard",
+    "eyebrow": "YOUR LEGAL SPACE",
+    "welcome": "Welcome, {{name}}",
+    "description": "Manage your legal matters, securely share documents, and follow the progress of your cases from one place.",
+    "startNewCase": "Start a New Case",
+    "viewMyCases": "View My Cases",
+    "workspaceTitle": "Your Legal Workspace",
+    "workspaceDescription": "Everything you need to manage your legal matters.",
+    "myCasesTitle": "My Cases",
+    "myCasesDescription": "View your submitted cases, assigned lawyers, and case progress.",
+    "viewCases": "View Cases",
+    "documentVaultTitle": "Document Vault",
+    "documentVaultDescription": "Access your uploaded contracts, evidence, and other legal documents.",
+    "viewDocuments": "View Documents",
+    "activityUpdatesTitle": "Activity Updates",
+    "activityUpdatesDescription": "Check the latest updates about your cases and legal representation.",
+    "checkUpdates": "Check Updates",
+    "billingTitle": "Transparent Legal Billing",
+    "billingDescription": "Review your case-related fees and payment information through a clear billing process.",
+    "securedAccount": "Secured Account",
+    "supportTitle": "Need Assistance with Your Case?",
+    "supportDescription": "Our client services team is ready to help with your questions and filing requirements.",
+    "visitHome": "Visit APPEEL Home"
+  },
+  "adminDetailLayout": {
+  "back": "Back"
+},
+"adminSidebar": {
+  "console": "Admin Console",
+  "closeSidebar": "Close sidebar",
+  "home": "Home",
+  "dashboard": "Dashboard",
+  "casesAllocation": "Cases & Allocation",
+  "lawyerManagement": "Lawyer Management",
+  "documentVault": "Document Vault",
+  "payments": "Payments",
+  "admin": "Admin",
+  "systemController": "System Controller",
+  "signOut": "Sign Out"
+},
+"customerHeader": {
+  "dashboard": "Dashboard",
+  "cases": "My Cases",
+  "documents": "Documents",
+  "updates": "Updates"
+}
+
+}

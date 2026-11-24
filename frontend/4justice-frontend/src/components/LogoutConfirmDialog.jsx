@@ -1,3 +1,4 @@
+import { useTranslation } from "react-i18next";
 
 export default function LogoutConfirmDialog({
   open,
@@ -5,6 +6,8 @@ export default function LogoutConfirmDialog({
   onConfirm,
   loading = false,
 }) {
+  const { t } = useTranslation();
+
   if (!open) return null;
 
   return (
@@ -23,10 +26,12 @@ export default function LogoutConfirmDialog({
           ↪
         </div>
 
-        <h2 id="logout-dialog-title">Confirm Sign Out</h2>
+        <h2 id="logout-dialog-title">
+          {t("logoutDialog.title")}
+        </h2>
 
         <p>
-          Are you sure you want to sign out of your account?
+          {t("logoutDialog.description")}
         </p>
 
         <div className="logout-dialog-actions">
@@ -36,7 +41,7 @@ export default function LogoutConfirmDialog({
             onClick={onCancel}
             disabled={loading}
           >
-            Cancel
+            {t("common.cancel")}
           </button>
 
           <button
@@ -45,7 +50,9 @@ export default function LogoutConfirmDialog({
             onClick={onConfirm}
             disabled={loading}
           >
-            {loading ? "Signing Out..." : "Yes, Sign Out"}
+            {loading
+              ? t("logoutDialog.signingOut")
+              : t("logoutDialog.confirm")}
           </button>
         </div>
       </div>

@@ -1,15 +1,15 @@
-
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
+import { useTranslation } from "react-i18next";
 
 import { CustomerPageHeader } from "./CustomerCases";
 
-const API_BASE_URL = "https://appeel.onrender.com";
+const API_BASE_URL = "http://localhost:8081";
 
 export default function Payment() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { t } = useTranslation();
 
     const params = new URLSearchParams(location.search);
     const paypalOrderId = params.get("token");
@@ -42,14 +42,11 @@ export default function Payment() {
         };
     }
 
-
     // Capture when PayPal returns an order token.
     useEffect(() => {
         if (paypalCancelled) {
             setError("");
-            setMessage(
-                "Payment was cancelled. You can return to PayPal when you're ready."
-            );
+            setMessage(t("payment.messages.cancelled"));
             return;
         }
 
@@ -67,16 +64,14 @@ export default function Payment() {
                 sessionStorage.getItem("currentCaseId");
 
             if (!paymentId || !savedCaseId) {
-                setError(
-                    "Payment details are missing. Please return to your case and start checkout again."
-                );
+                setError(t("payment.errors.missingPaymentDetails"));
                 captureStarted.current = false;
                 return;
             }
 
             setLoading(true);
             setError("");
-            setMessage("Confirming your payment with PayPal...");
+            setMessage(t("payment.messages.confirming"));
 
             try {
                 const response = await fetch(
@@ -97,7 +92,9 @@ export default function Payment() {
                     throw new Error(
                         data.message ||
                         data.error ||
-                        `Payment confirmation failed (HTTP ${response.status}).`
+                        t("payment.errors.confirmationFailed", {
+                            status: response.status,
+                        })
                     );
                 }
 
@@ -107,7 +104,7 @@ export default function Payment() {
                     )
                 ) {
                     throw new Error(
-                        "PayPal has not confirmed a completed payment."
+                        t("payment.errors.notCompleted")
                     );
                 }
 
@@ -126,7 +123,7 @@ export default function Payment() {
             } catch (err) {
                 setError(
                     err.message ||
-                    "Payment could not be confirmed. Please try again."
+                    t("payment.errors.confirmationUnavailable")
                 );
                 setMessage("");
                 captureStarted.current = false;
@@ -136,20 +133,17 @@ export default function Payment() {
         }
 
         capturePayment();
-    }, [paypalOrderId, paypalCancelled, navigate]);
-
+    }, [paypalOrderId, paypalCancelled, navigate, t]);
 
     async function handlePayment() {
         if (!caseId) {
-            setError("Case ID is missing. Please return to your case.");
+            setError(t("payment.errors.missingCaseId"));
             return;
         }
 
         // Don't create another order while handling a PayPal return.
         if (paypalOrderId && !paypalCancelled) {
-            setError(
-                "A PayPal order is already being processed. Please reload this page to retry confirmation."
-            );
+            setError(t("payment.errors.orderProcessing"));
             return;
         }
 
@@ -173,7 +167,9 @@ export default function Payment() {
                 throw new Error(
                     data.message ||
                     data.error ||
-                    `Could not create or resume PayPal checkout (HTTP ${response.status}).`
+                    t("payment.errors.checkoutFailed", {
+                        status: response.status,
+                    })
                 );
             }
 
@@ -183,7 +179,7 @@ export default function Payment() {
                 !data.paymentId
             ) {
                 throw new Error(
-                    "The server did not return the required PayPal order details."
+                    t("payment.errors.missingOrderDetails")
                 );
             }
 
@@ -199,7 +195,7 @@ export default function Payment() {
         } catch (err) {
             setError(
                 err.message ||
-                "Something went wrong while starting payment."
+                t("payment.errors.startFailed")
             );
             setLoading(false);
         }
@@ -209,76 +205,82 @@ export default function Payment() {
 
     return (
         <>
-        <CustomerPageHeader title="Payment" activeTab="" />
-        <main className="payment-page">
-            <section className="payment-card">
-                
-                <p className="payment-eyebrow">
-                    APPEEL SECURE CHECKOUT
-                </p>
+            <CustomerPageHeader
+                title={t("payment.title")}
+                activeTab=""
+            />
 
-                <h1>
-                    {loading && isReturningFromPayPal
-                        ? "Confirming Your Payment"
-                        : "Complete Your Payment"}
-                </h1>
+            <main className="payment-page">
+                <section className="payment-card">
 
-                <p className="payment-description">
-                    Pay the service fee securely using PayPal to continue
-                    with your legal case.
-                </p>
-
-                <div className="payment-amount">
-                    <span>Case service fee</span>
-                    <strong>SEK 99.00</strong>
-                </div>
-
-                {caseId ? (
-                    <p className="payment-case-id">
-                        Case ID: <strong>{caseId}</strong>
+                    <p className="payment-eyebrow">
+                        {t("payment.eyebrow")}
                     </p>
-                ) : (
-                    <p className="payment-error">
-                        Case ID is missing. Return to your case and try again.
-                    </p>
-                )}
 
-                {message && (
-                    <p className="payment-note" role="status">
-                        {message}
-                    </p>
-                )}
+                    <h1>
+                        {loading && isReturningFromPayPal
+                            ? t("payment.confirmingTitle")
+                            : t("payment.completeTitle")}
+                    </h1>
 
-                {error && (
-                    <p className="payment-error" role="alert">
-                        {error}
+                    <p className="payment-description">
+                        {t("payment.description")}
                     </p>
-                )}
 
-                {loading ? (
+                    <div className="payment-amount">
+                        <span>{t("payment.serviceFee")}</span>
+                        <strong>SEK 99.00</strong>
+                    </div>
+
+                    {caseId ? (
+                        <p className="payment-case-id">
+                            {t("payment.caseId")}: <strong>{caseId}</strong>
+                        </p>
+                    ) : (
+                        <p className="payment-error">
+                            {t("payment.errors.missingCaseIdDescription")}
+                        </p>
+                    )}
+
+                    {message && (
+                        <p className="payment-note" role="status">
+                            {message}
+                        </p>
+                    )}
+
+                    {error && (
+                        <p className="payment-error" role="alert">
+                            {error}
+                        </p>
+                    )}
+
+                    {loading ? (
+                        <p className="payment-note">
+                            {t("payment.pleaseWait")}
+                        </p>
+                    ) : (
+                        <button
+                            type="button"
+                            className="payment-button"
+                            onClick={handlePayment}
+                            disabled={
+                                !caseId ||
+                                (isReturningFromPayPal && !paypalCancelled)
+                            }
+                        >
+                            {isReturningFromPayPal && !paypalCancelled
+                                ? t("payment.confirmationInProgress")
+                                : paypalCancelled || error
+                                    ? t("payment.tryAgain")
+                                    : t("payment.payButton")}
+                        </button>
+                    )}
+
                     <p className="payment-note">
-                        Please wait...
+                        {t("payment.sandboxNote")}
                     </p>
-                ) : (
-                    <button
-                        type="button"
-                        className="payment-button"
-                        onClick={handlePayment}
-                        disabled={!caseId || (isReturningFromPayPal && !paypalCancelled)}
-                    >
-                        {isReturningFromPayPal && !paypalCancelled
-                            ? "Payment Confirmation in Progress"
-                            : paypalCancelled || error
-                                ? "Try Payment Again"
-                                : "Pay SEK 99.00 with PayPal"}
-                    </button>
-                )}
-
-                <p className="payment-note">
-                    Payments are processed through PayPal Sandbox during testing.
-                </p>
-            </section>
-        </main>
+                </section>
+            </main>
         </>
     );
 }

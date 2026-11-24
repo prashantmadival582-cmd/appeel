@@ -1,5 +1,7 @@
 
 import { NavLink, useLocation } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import appeelLogo from "../assets/appeel-logo.png";
 
 import {
   FaLinkedinIn,
@@ -7,8 +9,6 @@ import {
   FaFacebookF,
   FaXTwitter,
 } from "react-icons/fa6";
-
-import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 
 const socialLinks = [
   {
@@ -35,26 +35,37 @@ const socialLinks = [
 
 function Footer() {
   const location = useLocation();
+  const { t } = useTranslation();
   const currentYear = new Date().getFullYear();
+
+  // Smooth scroll with navbar offset
+  const scrollToSection = (sectionId) => {
+    const section = document.getElementById(sectionId);
+
+    if (!section) {
+      console.warn(`Footer navigation: #${sectionId} was not found.`);
+      return;
+    }
+
+    const navbarHeight =
+      document.querySelector(".home-header")?.offsetHeight || 80;
+
+    const sectionPosition =
+      section.getBoundingClientRect().top + window.scrollY;
+
+    window.scrollTo({
+      top: sectionPosition - navbarHeight - 20,
+      behavior: "smooth",
+    });
+  };
 
   const navigateToSection = (event, sectionId) => {
     event.preventDefault();
 
     if (location.pathname === "/") {
-      const section = document.getElementById(sectionId);
-
-      if (section) {
-        section.scrollIntoView({
-          behavior: "smooth",
-          block: "start",
-        });
-
-        window.history.replaceState(null, "", `/#${sectionId}`);
-      } else {
-        console.warn(`Footer navigation: #${sectionId} was not found.`);
-      }
+      scrollToSection(sectionId);
+      window.history.replaceState(null, "", `/#${sectionId}`);
     } else {
-      // Navigate to the homepage and its section.
       window.location.href = `/#${sectionId}`;
     }
   };
@@ -63,7 +74,10 @@ function Footer() {
     event.preventDefault();
 
     if (location.pathname === "/") {
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      window.scrollTo({
+        top: 0,
+        behavior: "smooth",
+      });
     } else {
       window.location.href = "/";
     }
@@ -77,71 +91,50 @@ function Footer() {
           <NavLink
             to="/"
             className="footer-logo"
-            aria-label="APPEEL home"
+            aria-label={t("footer.homeAria")}
           >
-            APPEEL<span>.</span>
+            <img
+              src={appeelLogo}
+              alt="APPEEL"
+              className="footer-brand-logo"
+            />
+
           </NavLink>
 
-          <p className="footer-description">
-           “Simple, affordable legal support you can trust.”
-          </p>
+          {/* <p className="footer-description">
+            {t("footer.description")}
+          </p> */}
 
           {/* Social media icons */}
           <div className="footer-social">
-            <h3>Follow APPEEL</h3>
+            <h3>{t("footer.followUs")}</h3>
 
             <div className="footer-social-links">
-              {socialLinks.map(({ name, url, Icon }) =>
-                url.trim() ? (
-                  <a
-                    key={name}
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={`APPEEL on ${name}`}
-                    title={name}
-                  >
-                    <Icon aria-hidden="true" />
-                  </a>
-                ) : (
-                  <span
-                    key={name}
-                    className="footer-social-icon-disabled"
-                    aria-label={name}
-                  >
-                    <Icon aria-hidden="true" />
-                  </span>
-                )
-              )}
+              {socialLinks.map(({ name, url, Icon }) => (
+                <a
+                  key={name}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={t("footer.socialAria", {
+                    platform: name,
+                  })}
+                  title={name}
+                >
+                  <Icon aria-hidden="true" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
 
         {/* Website navigation */}
         <div className="footer-column">
-          <h3>Explore</h3>
+          <h3>{t("footer.explore")}</h3>
 
           <ul>
             <li>
-              <NavLink to="/">Home</NavLink>
-            </li>
-
-            <li>
-              <a
-                href="/#pricing"
-                onClick={(event) => navigateToSection(event, "pricing")}
-              >
-                Services &amp; Pricing
-              </a>
-            </li>
-
-            <li>
-              <a
-                href="/#trust"
-                onClick={(event) => navigateToSection(event, "trust")}
-              >
-                Why APPEEL
-              </a>
+              <NavLink to="/">{t("footer.home")}</NavLink>
             </li>
 
             <li>
@@ -149,39 +142,42 @@ function Footer() {
                 href="/#about"
                 onClick={(event) => navigateToSection(event, "about")}
               >
-                About Us
+                {t("footer.about")}
               </a>
             </li>
 
+            <li>
+              <a
+                href="/#pricing"
+                onClick={(event) => navigateToSection(event, "pricing")}
+              >
+                {t("footer.services")}
+              </a>
+            </li>
 
+            <li>
+              <NavLink to="/contact">
+                {t("footer.contact")}
+              </NavLink>
+            </li>
           </ul>
-        </div>
-
-        {/* One clear call to action */}
-        <div className="footer-cta">
-          <h3>Need help with a legal matter?</h3>
-
-          <NavLink to="/customer/register" className="footer-cta-button">
-            Start My Case
-            <FaArrowUpRightFromSquare aria-hidden="true" />
-          </NavLink>
-
-
-          <NavLink to="/contact" className="footer-contact-link">
-            Have a question? Contact us
-          </NavLink>
         </div>
       </div>
 
       {/* Copyright and bottom navigation */}
       <div className="footer-bottom">
-        <p>© {currentYear} APPEEL. All rights reserved.</p>
+        <p>
+          © {currentYear} APPEEL. {t("footer.rights")}
+        </p>
 
         <div className="footer-bottom-links">
-          <NavLink to="/contact">Contact</NavLink>
+          <span>
+            {t("footer.developedBy")}{" "}
+            <strong>Austratech</strong>
+          </span>
 
           <a href="#top" onClick={backToTop}>
-            Back to top ↑
+            {t("footer.backToTop")} ↑
           </a>
         </div>
       </div>

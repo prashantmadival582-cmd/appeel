@@ -1,8 +1,15 @@
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
+  customerRequest,
   downloadCustomerDocument,
   getCustomerJson,
   isCustomerAuthError,
@@ -10,13 +17,17 @@ import {
 
 import { CustomerPageHeader } from "./CustomerCases";
 import DataTable from "../components/Table/DataTable";
+import { FiFileText, FiFolder, FiAlertTriangle, FiLock } from "react-icons/fi";
 
 export default function CustomerDocuments() {
+  const { t } = useTranslation();
+
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState("");
   const [downloadingId, setDownloadingId] = useState(null);
+  const [documentToDelete, setDocumentToDelete] = useState(null);
 
   const navigate = useNavigate();
 
@@ -42,12 +53,14 @@ export default function CustomerDocuments() {
         return;
       }
 
-      setError(requestError.message || "Unable to load documents.");
+      setError(
+        requestError.message || t("customerDocuments.errors.load")
+      );
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  }, [navigate]);
+  }, [navigate, t]);
 
   useEffect(() => {
     loadDocuments();
@@ -70,8 +83,8 @@ export default function CustomerDocuments() {
     return [
       {
         key: "caseId",
-        label: "Case ID",
-        allLabel: "All Cases",
+        label: "customerDocuments.filters.caseId",
+        allLabel: "customerDocuments.filters.allCases",
         options: caseIds.map((caseId) => ({
           value: caseId,
           label: caseId,
@@ -91,7 +104,7 @@ export default function CustomerDocuments() {
     const newTab = window.open("about:blank", "_blank");
 
     if (!newTab) {
-      setError("Please allow pop-ups to view this document.");
+      setError(t("customerDocuments.errors.allowPopups"));
       return;
     }
 
@@ -103,7 +116,6 @@ export default function CustomerDocuments() {
 
       newTab.location.href = url;
 
-      // Keep the URL available while the new tab loads.
       window.setTimeout(() => {
         URL.revokeObjectURL(url);
       }, 60000);
@@ -115,7 +127,9 @@ export default function CustomerDocuments() {
         return;
       }
 
-      setError(viewError.message || "Unable to view document.");
+      setError(
+        viewError.message || t("customerDocuments.errors.view")
+      );
     } finally {
       setDownloadingId(null);
     }
@@ -148,7 +162,46 @@ export default function CustomerDocuments() {
         return;
       }
 
-      setError(downloadError.message || "Unable to download document.");
+      setError(
+        downloadError.message || t("customerDocuments.errors.download")
+      );
+    } finally {
+      setDownloadingId(null);
+    }
+  };
+
+  // =========================================
+  // DELETE DOCUMENT
+  // =========================================
+
+  const handleDelete = async () => {
+    if (!documentToDelete) return;
+
+    const doc = documentToDelete;
+
+    setError("");
+    setDownloadingId(doc.id);
+
+    try {
+      await customerRequest(
+        `/api/cases/documents/${encodeURIComponent(doc.id)}`,
+        { method: "DELETE" }
+      );
+
+      setDocuments((previous) =>
+        previous.filter((item) => item.id !== doc.id)
+      );
+
+      setDocumentToDelete(null);
+    } catch (deleteError) {
+      if (isCustomerAuthError(deleteError)) {
+        navigate("/customer/login", { replace: true });
+        return;
+      }
+
+      setError(
+        deleteError.message || t("customerDocuments.errors.delete")
+      );
     } finally {
       setDownloadingId(null);
     }
@@ -161,25 +214,28 @@ export default function CustomerDocuments() {
   const columns = [
     {
       key: "fileName",
-      header: "Document Name",
+      header: "customerDocuments.columns.documentName",
       accessor: "fileName",
       sortable: true,
       render: (doc) => (
         <div className="customer-doc-table-file">
-          <span className="customer-doc-table-icon">📄</span>
+          <span className="customer-doc-table-icon"><FiFileText /></span>
 
           <div className="customer-doc-table-file-info">
             <strong title={doc.fileName}>
-              {doc.fileName || "Untitled document"}
+              {doc.fileName || t("customerDocuments.untitledDocument")}
             </strong>
-            <small>Case document</small>
+
+            <small>
+              {t("customerDocuments.caseDocument")}
+            </small>
           </div>
         </div>
       ),
     },
     {
       key: "caseId",
-      header: "Case ID",
+      header: "customerDocuments.columns.caseId",
       accessor: "caseId",
       sortable: true,
       render: (doc) => (
@@ -190,36 +246,102 @@ export default function CustomerDocuments() {
     },
     {
       key: "action",
-      header: "Action",
+      header: "customerDocuments.columns.action",
       sortable: false,
       render: (doc) => (
         <div className="customer-doc-actions">
-  <button
-    type="button"
-    className="customer-doc-action-btn"
-    disabled={downloadingId === doc.id}
-    onClick={() => handleView(doc)}
-  >
-    {downloadingId === doc.id ? "Opening..." : "View"}
-  </button>
+          <button
+            type="button"
+            className="customer-doc-action-btn"
+            disabled={downloadingId === doc.id}
+            onClick={() => handleView(doc)}
+          >
+            {downloadingId === doc.id
+              ? t("customerDocuments.opening")
+              : t("customerDocuments.view")}
+          </button>
 
-  <button
-    type="button"
-    className="customer-doc-action-btn"
-    disabled={downloadingId === doc.id}
-    onClick={() => handleDownload(doc)}
-  >
-    {downloadingId === doc.id ? "Please wait..." : "↓ Download"}
-  </button>
-</div>
+          <button
+            type="button"
+            className="customer-doc-action-btn"
+            disabled={downloadingId === doc.id}
+            onClick={() => handleDownload(doc)}
+          >
+            {downloadingId === doc.id
+              ? t("customerDocuments.pleaseWait")
+              : `↓ ${t("customerDocuments.download")}`}
+          </button>
+
+          <button
+            type="button"
+            className="customer-doc-action-btn"
+            disabled={downloadingId === doc.id}
+            onClick={() => setDocumentToDelete(doc)}
+          >
+            {t("customerDocuments.delete")}
+          </button>
+        </div>
       ),
     },
   ];
 
+  // =========================================
+  // PAGE
+  // =========================================
+
   return (
     <main className="portal-page">
+
+      {/* DELETE CONFIRMATION MODAL */}
+
+      {documentToDelete && (
+        <div className="customer-delete-overlay">
+          <div
+            className="customer-delete-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-modal-title"
+          >
+            <div className="customer-delete-icon">!</div>
+
+            <h2 id="delete-modal-title">
+              {t("customerDocuments.deleteModal.title")}
+            </h2>
+
+            <p>
+              {t("customerDocuments.deleteModal.confirmText")}{" "}
+              <strong>{documentToDelete.fileName}</strong>?
+              {" "}
+              {t("customerDocuments.deleteModal.warning")}
+            </p>
+
+            <div className="customer-delete-actions">
+              <button
+                type="button"
+                className="customer-delete-cancel"
+                disabled={downloadingId !== null}
+                onClick={() => setDocumentToDelete(null)}
+              >
+                {t("common.cancel")}
+              </button>
+
+              <button
+                type="button"
+                className="customer-delete-confirm"
+                disabled={downloadingId !== null}
+                onClick={handleDelete}
+              >
+                {downloadingId === documentToDelete.id
+                  ? t("customerDocuments.deleting")
+                  : t("customerDocuments.deleteDocument")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <CustomerPageHeader
-        title="My Documents"
+        title={t("customerDocuments.title")}
         activeTab="documents"
       />
 
@@ -230,24 +352,25 @@ export default function CustomerDocuments() {
         <div className="portal-page-header customer-documents-heading">
           <div>
             <span className="customer-documents-eyebrow">
-              SECURE DOCUMENT CENTER
+              {t("customerDocuments.eyebrow")}
             </span>
 
-            <h1>Document Vault</h1>
+            <h1>{t("customerDocuments.heading")}</h1>
 
             <p className="portal-subheading">
-              Securely access, review, and download documents associated
-              with your legal cases.
+              {t("customerDocuments.description")}
             </p>
           </div>
 
           <div className="customer-documents-summary">
-            <span className="customer-documents-summary-icon">📁</span>
+            <span className="customer-documents-summary-icon"><FiFolder /></span>
 
             <div>
               <strong>{documents.length}</strong>
               <span>
-                {documents.length === 1 ? "Document" : "Documents"}
+                {documents.length === 1
+                  ? t("customerDocuments.document")
+                  : t("customerDocuments.documents")}
               </span>
             </div>
           </div>
@@ -257,7 +380,7 @@ export default function CustomerDocuments() {
 
         {error && (
           <div className="alert-banner alert-error" role="alert">
-            <span className="alert-icon">⚠️</span>
+            <span className="alert-icon"><FiAlertTriangle /></span>
             <span>{error}</span>
           </div>
         )}
@@ -267,13 +390,13 @@ export default function CustomerDocuments() {
         <section className="customer-document-table-card">
           <div className="customer-document-table-heading">
             <div>
-              <h2>All Documents</h2>
-              <p>Your uploaded case files in one place.</p>
+              <h2>{t("customerDocuments.allDocuments")}</h2>
+              <p>{t("customerDocuments.tableDescription")}</p>
             </div>
           </div>
 
           <DataTable
-            title="Document Vault"
+            title="customerDocuments.heading"
             showHeading={false}
             columns={columns}
             data={documents}
@@ -290,17 +413,16 @@ export default function CustomerDocuments() {
             loading={loading}
             onRefresh={() => loadDocuments(true)}
             refreshing={refreshing}
-            emptyMessage="No documents found. Upload documents to your legal cases to see them here."
+            emptyMessage="customerDocuments.emptyMessage"
           />
         </section>
 
         {/* SECURITY NOTE */}
 
         <div className="customer-documents-note">
-          <span>🔒</span>
+          <span><FiLock /></span>
           <p>
-            Your case documents are securely associated with your account.
-            You can view or download them whenever you need access.
+            {t("customerDocuments.securityNote")}
           </p>
         </div>
 

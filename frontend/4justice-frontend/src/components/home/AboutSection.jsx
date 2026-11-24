@@ -1,6 +1,8 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+
 import {
   ArrowUpRight,
   Check,
@@ -10,6 +12,8 @@ import {
 } from "lucide-react";
 
 function AboutSection() {
+  const { t } = useTranslation();
+
   return (
     <section id="about" className="home-about">
       <div className="home-about-container">
@@ -18,26 +22,21 @@ function AboutSection() {
         <div className="home-about-visual">
           <div className="about-visual-top">
             <span className="about-visual-label">
-              LEGAL SUPPORT, MADE SIMPLER
+              {t("about.visualLabel")}
             </span>
             <span className="about-visual-line" />
           </div>
 
           <div className="about-visual-main">
-            <span className="about-visual-number">01</span>
-
             <h3>
-              Your situation.
+              {t("about.visualTitle1")}
               <br />
-              Your options.
+              {t("about.visualTitle2")}
               <br />
-              <span>Your next step.</span>
+              <span>{t("about.visualTitle3")}</span>
             </h3>
 
-            <p>
-              Clear information and practical guidance
-              to help you move forward with confidence.
-            </p>
+            <p>{t("about.visualDescription")}</p>
           </div>
 
           <div className="about-visual-bottom">
@@ -45,8 +44,8 @@ function AboutSection() {
               <ShieldCheck size={22} />
             </div>
             <div>
-              <strong>Clarity comes first.</strong>
-              <span>Know where you stand before you decide.</span>
+              <strong>{t("about.clarityTitle")}</strong>
+              <span>{t("about.clarityDescription")}</span>
             </div>
           </div>
         </div>
@@ -55,24 +54,20 @@ function AboutSection() {
         <div className="home-about-content">
 
           <span className="section-eyebrow">
-            ABOUT APPEEL
+            {t("about.eyebrow")}
           </span>
 
           <h2>
-            Legal support should feel
-            <span> within reach.</span>
+            {t("about.heading")}
+            <span>{t("about.headingHighlight")}</span>
           </h2>
 
           <p className="home-about-intro">
-            Legal issues can feel complicated. Getting clear
-            information about your options shouldn't.
+            {t("about.intro")}
           </p>
 
           <p className="home-about-description">
-            APPEEL helps make legal processes easier to understand
-            through straightforward communication, transparent
-            pricing and practical next steps. So you can make
-            informed decisions without unnecessary confusion.
+            {t("about.description")}
           </p>
 
           <div className="home-about-benefits">
@@ -82,10 +77,8 @@ function AboutSection() {
                 <Check size={18} />
               </div>
               <div>
-                <strong>Know your options</strong>
-                <span>
-                  Understand the possible next steps for your situation.
-                </span>
+                <strong>{t("about.benefit1Title")}</strong>
+                <span>{t("about.benefit1Description")}</span>
               </div>
             </div>
 
@@ -94,10 +87,8 @@ function AboutSection() {
                 <FileCheck2 size={18} />
               </div>
               <div>
-                <strong>Understand the process</strong>
-                <span>
-                  Get clearer information about what to expect.
-                </span>
+                <strong>{t("about.benefit2Title")}</strong>
+                <span>{t("about.benefit2Description")}</span>
               </div>
             </div>
 
@@ -106,17 +97,15 @@ function AboutSection() {
                 <MessageCircle size={18} />
               </div>
               <div>
-                <strong>Take your next step</strong>
-                <span>
-                  Move forward with practical information and support.
-                </span>
+                <strong>{t("about.benefit3Title")}</strong>
+                <span>{t("about.benefit3Description")}</span>
               </div>
             </div>
 
           </div>
 
           <Link to="/contact" className="home-about-button">
-            Let's talk
+            {t("about.contactButton")}
             <ArrowUpRight size={19} />
           </Link>
 

@@ -1,5 +1,7 @@
 
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import {
   CheckCircle2,
   ShieldCheck,
@@ -10,6 +12,8 @@ import heroImage2 from "../../assets/hero2.png";
 import heroImage3 from "../../assets/hero22.jpg";
 
 function HomeHero() {
+  const { t } = useTranslation();
+
   const heroImages = [heroImage2, heroImage3];
   const [currentHero, setCurrentHero] = useState(0);
 
@@ -41,30 +45,32 @@ function HomeHero() {
       <div className="home-hero-container">
         <div className="home-hero-content">
           <h1>
-            Justice shouldn’t cost a fortune.
+            {t("hero.title")}
             <br />
-            <span>Start from 99 SEK.</span>
+            <span>{t("hero.subtitle")}</span>
           </h1>
 
           <p className="home-hero-description">
-            Understand your options and take your next step with
-            straightforward pricing and a simpler way to get legal support.
+            {t("hero.description")}
           </p>
 
-          <div className="home-hero-trust" aria-label="Service benefits">
+          <div
+            className="home-hero-trust"
+            aria-label={t("hero.benefitsLabel")}
+          >
             <div className="home-hero-trust-item">
               <CheckCircle2 aria-hidden="true" />
-              <span>Transparent pricing</span>
+              <span>{t("hero.transparentPricing")}</span>
             </div>
 
             <div className="home-hero-trust-item">
               <BadgeCheck aria-hidden="true" />
-              <span>No hidden fees</span>
+              <span>{t("hero.noHiddenFees")}</span>
             </div>
 
             <div className="home-hero-trust-item">
               <ShieldCheck aria-hidden="true" />
-              <span>Secure case handling</span>
+              <span>{t("hero.secureHandling")}</span>
             </div>
           </div>
         </div>

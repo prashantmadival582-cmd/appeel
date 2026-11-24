@@ -1,8 +1,11 @@
 
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
+import i18n from "../i18n";
 import API_BASE_URL from "../api/api";
 import { FaEye } from "react-icons/fa";
+import { FiAlertTriangle, FiCheck } from "react-icons/fi";
 import DataTable from "../components/Table/DataTable";
 
 // Search fields used by the reusable DataTable
@@ -14,18 +17,19 @@ const caseSearchFields = [
   "lawyer.name",
 ];
 
-// Custom status filter, including the Unassigned option
+// Filter labels are translation keys.
+// Keep the values unchanged because they are used by the backend data.
 const caseFilters = [
   {
     key: "caseStatus",
-    label: "Case Status",
+    label: "adminCases.filters.caseStatus",
     options: [
-      { label: "All Statuses", value: "ALL" },
-      { label: "Unassigned Only", value: "UNASSIGNED" },
-      { label: "Pending", value: "PENDING" },
-      { label: "Under Review", value: "UNDER_REVIEW" },
-      { label: "In Progress", value: "IN_PROGRESS" },
-      { label: "Completed", value: "COMPLETED" },
+      { label: "adminCases.filters.allStatuses", value: "ALL" },
+      { label: "adminCases.filters.unassignedOnly", value: "UNASSIGNED" },
+      { label: "adminCases.filters.pending", value: "PENDING" },
+      { label: "adminCases.filters.underReview", value: "UNDER_REVIEW" },
+      { label: "adminCases.filters.inProgress", value: "IN_PROGRESS" },
+      { label: "adminCases.filters.completed", value: "COMPLETED" },
     ],
     predicate: (item, selectedValue) => {
       if (selectedValue === "UNASSIGNED") {
@@ -43,6 +47,7 @@ const caseFilters = [
 
 function AdminCases() {
   const navigate = useNavigate();
+  const { t, i18n } = useTranslation();
 
   const [cases, setCases] = useState([]);
   const [lawyers, setLawyers] = useState([]);
@@ -68,11 +73,14 @@ function AdminCases() {
       });
 
       if (!response.ok) {
-        throw new Error(
+        setError(
           response.status === 401 || response.status === 403
-            ? "Admin access denied. Please log in again."
-            : `Failed to fetch cases (${response.status}).`
+            ? t("adminCases.errors.accessDenied")
+            : t("adminCases.errors.fetchFailed", {
+                status: response.status,
+              })
         );
+        return;
       }
 
       const data = await response.json();
@@ -84,7 +92,7 @@ function AdminCases() {
       setCases(sortedCases);
     } catch (err) {
       console.error("Cases error:", err);
-      setError(err.message || "Unable to load cases from the server.");
+      setError(t("adminCases.errors.unableToLoadCases"));
     } finally {
       setLoading(false);
     }
@@ -104,16 +112,20 @@ function AdminCases() {
       });
 
       if (!response.ok) {
-        throw new Error(`Failed to fetch lawyers (${response.status}).`);
+        setMessage(
+          t("adminCases.errors.fetchLawyersFailed", {
+            status: response.status,
+          })
+        );
+        setMessageType("error");
+        return;
       }
 
       const data = await response.json();
       setLawyers(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Lawyers error:", err);
-      setMessage(
-        err.message || "Unable to load lawyers. Please refresh the page."
-      );
+      setMessage(t("adminCases.errors.unableToLoadLawyers"));
       setMessageType("error");
     }
   };
@@ -137,11 +149,14 @@ function AdminCases() {
     (lawyer) => lawyer.availability?.toUpperCase() === "AVAILABLE"
   );
 
+  // Retain the existing calculation for dashboard statistics
+  void availableLawyers;
+
   // DataTable columns
   const caseColumns = [
     {
       key: "caseId",
-      header: "Case ID",
+      header: "adminCases.columns.caseId",
       accessor: "caseId",
       render: (item) => (
         <span className="case-id-tag">{item.caseId}</span>
@@ -149,26 +164,28 @@ function AdminCases() {
     },
     {
       key: "caseType",
-      header: "Case Type",
+      header: "adminCases.columns.caseType",
       accessor: "caseType",
       render: (item) => (
         <span className="table-type-badge">
-          {item.caseType || "Not specified"}
+          {item.caseType || t("adminCases.notSpecified")}
         </span>
       ),
     },
     {
       key: "submittedAt",
-      header: "Applied Date",
+      header: "adminCases.columns.appliedDate",
       accessor: "submittedAt",
       format: (value) =>
         value
-          ? new Date(value).toLocaleDateString("en-GB")
-          : "N/A",
+          ? new Date(value).toLocaleDateString(
+              i18n.language === "sv" ? "sv-SE" : "en-GB"
+            )
+          : t("adminCases.notAvailable"),
     },
     {
       key: "actions",
-      header: "Actions",
+      header: "adminCases.columns.actions",
       sortable: false,
       render: (item) => (
         <div className="case-actions-group">
@@ -182,7 +199,7 @@ function AdminCases() {
             }
           >
             <FaEye aria-hidden="true" />
-            View Details
+            {t("adminCases.viewDetails")}
           </button>
         </div>
       ),
@@ -191,14 +208,17 @@ function AdminCases() {
 
   return (
     <section className="admin-page-content">
-      {/* Page Header */}
       <div className="admin-page-header">
-        
-
         <div className="admin-header-stats"></div>
       </div>
 
-      {/* Success and Error Messages */}
+      {error && (
+        <div className="alert-banner alert-error" role="alert">
+          <span className="alert-icon"><FiAlertTriangle /></span>
+          <span>{error}</span>
+        </div>
+      )}
+
       {message && (
         <div
           className={`alert-banner ${
@@ -207,16 +227,15 @@ function AdminCases() {
           role={messageType === "error" ? "alert" : "status"}
         >
           <span className="alert-icon">
-            {messageType === "success" ? "✓" : "⚠️"}
+            {messageType === "success" ? <FiCheck /> : <FiAlertTriangle />}
           </span>
           <span>{message}</span>
         </div>
       )}
 
-      {/* Cases Table */}
       <div className="admin-card">
         <DataTable
-          title="ALL LEAGAL CASES"
+          title="adminCases.tableTitle"
           columns={caseColumns}
           data={cases}
           rowKey="caseId"
@@ -229,7 +248,7 @@ function AdminCases() {
           loading={loading}
           onRefresh={handleRefresh}
           refreshing={loading}
-          emptyMessage="No legal cases match your search or filter."
+          emptyMessage="adminCases.emptyMessage"
         />
       </div>
     </section>
