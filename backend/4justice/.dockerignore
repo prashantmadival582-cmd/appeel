@@ -1,0 +1,22 @@
+# Secrets and environment files
+.env
+.env.*
+!.env.example
+
+# Uploaded documents and local files
+uploads/
+config-backup/
+
+# Build output (Maven builds a fresh JAR inside Docker)
+target/
+
+# Git and IDE files
+.git/
+.github/
+.idea/
+.vscode/
+
+# Local backups and logs
+*.backup
+*.bak
+*.log

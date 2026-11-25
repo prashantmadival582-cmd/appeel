@@ -16259,3 +16259,13 @@ html {
 .lawyer-dashboard .dashboard-language-switcher {
   align-self: center;
 }
+
+.footer-bottom-links .footer-company-link {
+  color: #d9b77e;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-bottom-links .footer-company-link:hover {
+  color: #ffffff;
+}

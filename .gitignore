@@ -51,3 +51,12 @@ application.properties.backup
 
 # Local uploaded documents
 uploads/
+
+# Local recovery and configuration archives
+/database-backups/
+/backend/4justice/config-backup/
+
+# Local frontend backups and Windows metadata
+/frontend/4justice-frontend/CustomerCases-original.jsx
+/frontend/4justice-frontend/src/App.css.backup-mobile
+**/desktop.ini

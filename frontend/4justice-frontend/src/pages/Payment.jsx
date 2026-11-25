@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 
 import { CustomerPageHeader } from "./CustomerCases";
 
-const API_BASE_URL = "http://localhost:8081";
+// const API_BASE_URL = "http://localhost:8081";
+import API_BASE_URL from "../api/api";
 
 export default function Payment() {
     const navigate = useNavigate();

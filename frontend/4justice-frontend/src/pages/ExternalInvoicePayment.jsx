@@ -2,7 +2,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 
-const API_BASE_URL = "http://localhost:8081";
+// const API_BASE_URL = "http://localhost:8081";
+import API_BASE_URL from "../api/api";
 
 export default function ExternalInvoicePayment() {
   const location = useLocation();

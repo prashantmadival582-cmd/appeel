@@ -171,10 +171,17 @@ function Footer() {
         </p>
 
         <div className="footer-bottom-links">
-          <span>
-            {t("footer.developedBy")}{" "}
-            <strong>Austratech</strong>
-          </span>
+         <span>
+  {t("footer.developedBy")}{" "}
+  <a
+    href="https://austratech.com.au/"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="footer-company-link"
+  >
+    <strong>Austratech</strong>
+  </a>
+</span>
 
           <a href="#top" onClick={backToTop}>
             {t("footer.backToTop")} ↑
