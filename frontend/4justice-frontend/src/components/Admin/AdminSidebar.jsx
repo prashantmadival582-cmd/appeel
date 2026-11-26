@@ -13,6 +13,7 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import LogoutConfirmDialog from "../LogoutConfirmDialog";
+import appeelLogo from "../../assets/appeel-logo.png";
 
 function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
   const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
@@ -29,9 +30,16 @@ function AdminSidebar({ mobileMenuOpen, setMobileMenuOpen }) {
     <aside className={`admin-sidebar ${mobileMenuOpen ? "open" : ""}`}>
     <div className="sidebar-brand-box">
   <Link to="/" className="sidebar-logo" onClick={closeMobileMenu}>
-    <span className="sidebar-sub">
-      {t("adminSidebar.console")}
-    </span>
+    <div className="sidebar-logo-content">
+      <img
+        src={appeelLogo}
+        alt="APPEEL"
+        className="sidebar-brand-logo appeel-logo"
+      />
+      <span className="sidebar-sub">
+        {t("adminSidebar.console")}
+      </span>
+    </div>
   </Link>
 
   <button

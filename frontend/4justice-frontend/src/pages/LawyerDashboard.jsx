@@ -617,7 +617,7 @@ setCases(sortedCases);
               <img
                 src={appeelLogo}
                 alt="APPEEL"
-                className="portal-brand-logo"
+                className="portal-brand-logo appeel-logo"
               />
 
             </div>

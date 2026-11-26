@@ -71,7 +71,7 @@ function AdminLogin() {
             <img
               src={appeelLogo}
               alt="APPEEL"
-              className="auth-page-logo"
+              className="auth-page-logo appeel-logo"
             />
 
           </NavLink>

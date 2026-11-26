@@ -84,7 +84,7 @@ export default function CustomerLogin() {
             <img
               src={appeelLogo}
               alt="APPEEL"
-              className="auth-page-logo"
+              className="auth-page-logo appeel-logo"
             />
 
           </Link>

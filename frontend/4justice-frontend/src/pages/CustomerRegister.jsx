@@ -70,7 +70,7 @@ export default function CustomerRegister() {
             <img
               src={appeelLogo}
               alt="APPEEL"
-              className="auth-page-logo"
+              className="auth-page-logo appeel-logo"
             />
 
           </Link>

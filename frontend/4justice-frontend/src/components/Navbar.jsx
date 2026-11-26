@@ -101,7 +101,7 @@ function Navbar() {
           <img
             src={appeelLogo}
             alt="APPEEL"
-            className="navbar-brand-logo"
+            className="navbar-brand-logo appeel-logo"
           />
 
         </NavLink>

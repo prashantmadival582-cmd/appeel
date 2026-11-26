@@ -12,6 +12,7 @@ import DataTable from "../components/Table/DataTable";
 
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { FiGrid } from "react-icons/fi";
+import appeelLogo from "../assets/appeel-logo.png";
 
 export const formatStatus = (status, t) => {
   if (!status) {
@@ -275,7 +276,7 @@ export function CustomerCases() {
 }
 
 // =========================================================
-import appeelLogo from "../assets/appeel-logo.png";
+
 
 export function CustomerPageHeader() {
   const navigate = useNavigate();
@@ -304,7 +305,7 @@ export function CustomerPageHeader() {
             <img
               src={appeelLogo}
               alt="APPEEL"
-              className="portal-brand-logo"
+              className="portal-brand-logo appeel-logo"
             />
 
           </Link>

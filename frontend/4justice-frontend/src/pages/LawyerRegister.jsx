@@ -75,7 +75,7 @@ export default function LawyerRegister() {
             <img
               src={appeelLogo}
               alt="APPEEL"
-              className="auth-page-logo"
+              className="auth-page-logo appeel-logo"
             />
 
           </Link>

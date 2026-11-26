@@ -96,7 +96,7 @@ function Footer() {
             <img
               src={appeelLogo}
               alt="APPEEL"
-              className="footer-brand-logo"
+              className="footer-brand-logo appeel-logo"
             />
 
           </NavLink>
