@@ -15368,7 +15368,6 @@ html {
   html,
   body,
   #root {
-    width: 100%;
     max-width: 100%;
     overflow-x: hidden;
   }
@@ -16006,6 +16005,10 @@ html {
 
 @media (max-width: 380px) {
 
+  body {
+    min-width: 0;
+  }
+
   .home-header-container {
     padding-left: 14px;
     padding-right: 14px;
@@ -16282,20 +16285,9 @@ html {
 
 .appeel-logo,
 .logo {
-  width: 210px !important;
-  height: 55px !important;
-  max-width: none !important;
-  object-fit: contain !important;
-  background: transparent !important;
-  display: block;
-}
-
-.appeel-logo {
-  width: 210px !important;
-  height: 55px !important;
-  max-width: none !important;
-  object-fit: contain !important;
-  background: transparent !important;
+  max-width: 100%;
+  object-fit: contain;
+  background: transparent;
   display: block;
 }
 
@@ -16386,5 +16378,47 @@ html {
       #4A607D 100%
     ) !important;
   }
+}
+
+
+/* APPEEL HOME ACCESS CTA - FULL WIDTH BUTTON */
+.home-access-section .home-access-actions {
+  width: 100% !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+.home-access-section .home-access-primary {
+  display: flex !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+  justify-content: center !important;
+}
+
+
+/* APPEEL CTA - EXPAND CONTENT AND BLUE BUTTON */
+.home-access-section .home-access-content {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+}
+
+.home-access-section .home-access-actions {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.home-access-section .home-access-primary {
+  display: flex !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+  justify-content: center !important;
 }
 
