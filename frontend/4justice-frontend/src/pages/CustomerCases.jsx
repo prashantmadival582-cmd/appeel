@@ -1,6 +1,6 @@
-
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   getCustomerJson,
@@ -13,6 +13,10 @@ import DataTable from "../components/Table/DataTable";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { FiGrid } from "react-icons/fi";
 import appeelLogo from "../assets/appeel-logo.png";
+
+// =========================================================
+// STATUS FORMATTER
+// =========================================================
 
 export const formatStatus = (status, t) => {
   if (!status) {
@@ -35,6 +39,10 @@ export const formatStatus = (status, t) => {
     : fallback;
 };
 
+// =========================================================
+// STATUS CLASS
+// =========================================================
+
 export const statusClass = (status) => {
   if (!status) return "status-unknown";
 
@@ -43,22 +51,38 @@ export const statusClass = (status) => {
     .replaceAll("_", "-")}`;
 };
 
-export const formatDate = (value) => {
+// =========================================================
+// DATE FORMATTER
+// =========================================================
+
+export const formatDate = (value, language = "en") => {
   if (!value) return "—";
 
   const date = new Date(value);
 
   if (Number.isNaN(date.getTime())) return "—";
 
-  return date.toLocaleDateString();
+  return date.toLocaleDateString(
+    language.startsWith("sv") ? "sv-SE" : "en-GB"
+  );
 };
 
+// =========================================================
+// CUSTOMER CASES
+// =========================================================
+
 export function CustomerCases() {
+  const { t, i18n } = useTranslation();
+
   const [cases, setCases] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
+  // =========================================
+  // FETCH CASES
+  // =========================================
 
   const fetchCases = async () => {
     setLoading(true);
@@ -74,7 +98,8 @@ export function CustomerCases() {
       }
 
       setError(
-        requestError.message || "Unable to load your cases."
+        requestError.message ||
+          t("customerCases.errors.loadCases")
       );
     } finally {
       setLoading(false);
@@ -85,10 +110,14 @@ export function CustomerCases() {
     fetchCases();
   }, []);
 
+  // =========================================
+  // TABLE COLUMNS
+  // =========================================
+
   const caseColumns = [
     {
       key: "caseId",
-      header: "Case ID",
+      header: t("customerCases.columns.caseId"),
       accessor: "caseId",
       render: (customerCase) => (
         <span className="case-id-tag">
@@ -98,17 +127,18 @@ export function CustomerCases() {
     },
     {
       key: "caseType",
-      header: "Case Type",
+      header: t("customerCases.columns.caseType"),
       accessor: "caseType",
       render: (customerCase) => (
         <strong>
-          {customerCase.caseType || "General Legal Matter"}
+          {customerCase.caseType ||
+            t("customerCases.generalLegalMatter")}
         </strong>
       ),
     },
     {
       key: "status",
-      header: "Status",
+      header: t("customerCases.columns.status"),
       accessor: "status",
       render: (customerCase) => (
         <span
@@ -116,31 +146,37 @@ export function CustomerCases() {
             customerCase.status
           )}`}
         >
-          {formatStatus(customerCase.status)}
+          {formatStatus(customerCase.status, t)}
         </span>
       ),
     },
     {
       key: "lawyerName",
-      header: "Assigned Lawyer",
+      header: t("customerCases.columns.assignedLawyer"),
       accessor: "lawyerName",
       render: (customerCase) => (
         <span>
-          {customerCase.lawyerName || "Pending Allocation"}
+          {customerCase.lawyerName ||
+            t("customerCases.pendingAllocation")}
         </span>
       ),
     },
     {
       key: "submittedAt",
-      header: "Submitted",
+      header: t("customerCases.columns.submitted"),
       accessor: "submittedAt",
       render: (customerCase) => (
-        <span>{formatDate(customerCase.submittedAt)}</span>
+        <span>
+          {formatDate(
+            customerCase.submittedAt,
+            i18n.language
+          )}
+        </span>
       ),
     },
     {
       key: "action",
-      header: "Action",
+      header: t("customerCases.columns.action"),
       sortable: false,
       render: (customerCase) => (
         <Link
@@ -149,21 +185,37 @@ export function CustomerCases() {
           )}`}
           className="admin-view-case-button"
         >
-          View Details →
+          {t("customerCases.viewDetails")} →
         </Link>
       ),
     },
   ];
 
+  // =========================================
+  // TABLE FILTERS
+  // =========================================
+
   const caseFilters = [
     {
       key: "status",
-      label: "Case Status",
+      label: "customerCases.filters.caseStatus",
       options: [
-        { label: "All Statuses", value: "ALL" },
-        { label: "Pending", value: "PENDING" },
-        { label: "Active", value: "IN_PROGRESS" },
-        { label: "Completed", value: "COMPLETED" },
+        {
+          label: "customerCases.filters.allStatuses",
+          value: "ALL",
+        },
+        {
+          label: "customerCases.filters.pending",
+          value: "PENDING",
+        },
+        {
+          label: "customerCases.filters.active",
+          value: "IN_PROGRESS",
+        },
+        {
+          label: "customerCases.filters.completed",
+          value: "COMPLETED",
+        },
       ],
       predicate: (customerCase, selectedValue) => {
         const status = String(
@@ -189,6 +241,10 @@ export function CustomerCases() {
     },
   ];
 
+  // =========================================
+  // PAGE
+  // =========================================
+
   return (
     <main className="portal-page">
       <CustomerPageHeader />
@@ -196,9 +252,10 @@ export function CustomerCases() {
       <div className="portal-container">
         <div className="portal-page-header">
           <div>
-            <h1>Your Legal Cases</h1>
+            <h1>{t("customerCases.heading")}</h1>
+
             <p className="portal-subheading">
-              View your legal matters and track their progress.
+              {t("customerCases.description")}
             </p>
           </div>
 
@@ -206,7 +263,7 @@ export function CustomerCases() {
             className="btn-primary-navy"
             to="/customer/start-case"
           >
-            + Start a New Case
+            + {t("customerCases.startNewCase")}
           </Link>
         </div>
 
@@ -223,7 +280,7 @@ export function CustomerCases() {
               onClick={fetchCases}
               disabled={loading}
             >
-              Try Again
+              {t("customerCases.tryAgain")}
             </button>
           </div>
         )}
@@ -231,7 +288,7 @@ export function CustomerCases() {
         {!error && (
           <div className="admin-card customer-cases-table-card">
             <DataTable
-              title="My Cases"
+              title={t("customerCases.title")}
               showHeading={true}
               columns={caseColumns}
               data={cases}
@@ -249,24 +306,24 @@ export function CustomerCases() {
               loading={loading}
               onRefresh={fetchCases}
               refreshing={loading}
-              emptyMessage="You have not submitted any cases yet."
+              emptyMessage={t("customerCases.emptyMessage")}
             />
           </div>
         )}
 
         {!loading && !error && cases.length === 0 && (
           <div className="empty-state-card">
-            <h2>No cases submitted yet</h2>
+            <h2>{t("customerCases.emptyTitle")}</h2>
 
             <p>
-              Once you submit a legal request, your case will appear here.
+              {t("customerCases.emptyDescription")}
             </p>
 
             <Link
               className="btn-primary-navy"
               to="/customer/start-case"
             >
-              Submit Your First Case
+              {t("customerCases.submitFirstCase")}
             </Link>
           </div>
         )}
@@ -276,10 +333,14 @@ export function CustomerCases() {
 }
 
 // =========================================================
-
+// SHARED CUSTOMER PAGE HEADER
+// =========================================================
 
 export function CustomerPageHeader() {
+  const { t } = useTranslation();
+
   const navigate = useNavigate();
+
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
 
   const handleLogout = () => {
@@ -298,6 +359,7 @@ export function CustomerPageHeader() {
         <div className="customer-portal-navbar-inner">
 
           {/* Brand */}
+
           <Link
             to="/customer/dashboard"
             className="customer-portal-brand"
@@ -307,46 +369,55 @@ export function CustomerPageHeader() {
               alt="APPEEL"
               className="portal-brand-logo appeel-logo"
             />
-
           </Link>
 
           {/* Customer Portal Badge */}
+
           <span className="customer-portal-badge">
-            CUSTOMER PORTAL
+            {t("customerNavigation.portal")}
           </span>
 
           {/* Navigation */}
+
           <div className="customer-portal-actions">
             <Link
               to="/"
               className="customer-home-link"
-              aria-label="Home"
+              aria-label={t("customerNavigation.home")}
             >
-              Home
+              {t("customerNavigation.home")}
             </Link>
 
             <Link
               to="/customer/dashboard"
               className="customer-nav-card"
             >
-              <span className="customer-nav-icon"><FiGrid /></span>
-              <span>Dashboard</span>
+              <span className="customer-nav-icon">
+                <FiGrid />
+              </span>
+
+              <span>
+                {t("customerNavigation.dashboard")}
+              </span>
             </Link>
+
             <LanguageSwitcher />
 
             {/* Sign Out Button */}
+
             <button
               type="button"
               className="app-signout-btn customer-signout-btn"
               onClick={() => setShowLogoutDialog(true)}
             >
-              Sign Out
+              {t("customerNavigation.signOut")}
             </button>
           </div>
         </div>
       </header>
 
       {/* Shared Sign Out Confirmation Dialog */}
+
       <LogoutConfirmDialog
         open={showLogoutDialog}
         onCancel={() => setShowLogoutDialog(false)}
