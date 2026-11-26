@@ -16323,3 +16323,17 @@ html {
     ) !important;
   }
 }
+
+/* APPEEL HERO: Override existing navy overlay on desktop */
+@media (min-width: 993px) {
+  .home-hero-section .home-hero-overlay {
+    background: linear-gradient(
+      90deg,
+      #102b49 0%,
+      #102b49 48%,
+      rgba(16, 43, 73, 0.85) 52%,
+      rgba(16, 43, 73, 0) 65%,
+      rgba(16, 43, 73, 0) 100%
+    ) !important;
+  }
+}
