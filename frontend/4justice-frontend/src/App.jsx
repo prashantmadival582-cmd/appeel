@@ -1,4 +1,4 @@
-
+﻿
 import { useEffect, useState } from "react";
 import {
   BrowserRouter,
@@ -1124,7 +1124,7 @@ function CustomerDashboard() {
   const caseColumns = [
     {
       key: "caseId",
-      header: "Case ID",
+      header: "customerCases.columns.caseId",
       accessor: "caseId",
       render: (item) => (
         <span className="case-id-tag">
@@ -1134,13 +1134,13 @@ function CustomerDashboard() {
     },
     {
       key: "submittedAt",
-      header: "Submitted",
+      header: "customerCases.columns.submitted",
       accessor: "submittedAt",
       render: (item) => formatSubmittedDate(item.submittedAt),
     },
     {
       key: "status",
-      header: "Status",
+      header: "customerCases.columns.status",
       accessor: "status",
       render: (item) => (
         <span className={`status-badge ${statusClass(item.status)}`}>
@@ -1150,14 +1150,14 @@ function CustomerDashboard() {
     },
     {
       key: "action",
-      header: "Action",
+      header: "customerCases.columns.action",
       sortable: false,
       render: (item) => (
         <Link
           to={`/customer/my-cases/${encodeURIComponent(item.caseId)}`}
           className="admin-view-case-button"
         >
-          View Case
+          {t("customerCases.viewDetails")}
         </Link>
       ),
     },
@@ -1166,11 +1166,11 @@ function CustomerDashboard() {
   const caseFilters = [
     {
       key: "status",
-      label: "Case Status",
+      label: "customerCases.filters.caseStatus",
       options: [
-        { label: "Pending", value: "PENDING" },
-        { label: "Active", value: "IN_PROGRESS" },
-        { label: "Completed", value: "COMPLETED" },
+        { label: "customerCases.filters.pending", value: "PENDING" },
+        { label: "customerCases.filters.active", value: "IN_PROGRESS" },
+        { label: "customerCases.filters.completed", value: "COMPLETED" },
       ],
       predicate: (item, selectedValue) => {
         const status = getStatus(item);
@@ -1213,12 +1213,9 @@ function CustomerDashboard() {
           <div>
 
 
-            <h1>Welcome, {customerName}</h1>
+            <h1>{t("customerDashboard.welcome", { name: customerName })}</h1>
 
-            <p>
-              Manage your legal matters, review documents and follow your
-              case progress.
-            </p>
+            <p>{t("customerDashboard.description")}</p>
           </div>
 
           <button
@@ -1226,7 +1223,7 @@ function CustomerDashboard() {
             className="btn-primary-navy"
             onClick={() => navigate("/customer/start-case")}
           >
-            + Start New Case
+            {t("customerDashboard.startNewCase")}
           </button>
         </section>
 
@@ -1235,7 +1232,7 @@ function CustomerDashboard() {
           <article className="customer-stat-card">
             <div className="customer-stat-icon"><FiFolder /></div>
             <div>
-              <span>Total Cases</span>
+              <span>{t("customerDashboard.totalCases")}</span>
               <strong>{cases.length}</strong>
             </div>
           </article>
@@ -1243,7 +1240,7 @@ function CustomerDashboard() {
           <article className="customer-stat-card">
             <div className="customer-stat-icon"><FiRefreshCw /></div>
             <div>
-              <span>Active / In Progress</span>
+              <span>{t("customerDashboard.activeCases")}</span>
               <strong>{activeCases}</strong>
             </div>
           </article>
@@ -1251,7 +1248,7 @@ function CustomerDashboard() {
           <article className="customer-stat-card">
             <div className="customer-stat-icon"><FiCheckCircle /></div>
             <div>
-              <span>Resolved Cases</span>
+              <span>{t("customerDashboard.resolvedCases")}</span>
               <strong>{resolvedCases}</strong>
             </div>
           </article>
@@ -1259,7 +1256,7 @@ function CustomerDashboard() {
           <article className="customer-stat-card">
             <div className="customer-stat-icon"><FiClock /></div>
             <div>
-              <span>Pending Cases</span>
+              <span>{t("customerDashboard.pendingCases")}</span>
               <strong>{pendingCases}</strong>
             </div>
           </article>
@@ -1272,13 +1269,13 @@ function CustomerDashboard() {
               <span className="customer-matters-icon"><FiFolder /></span>
 
               <div>
-                <h2>My Legal Matters</h2>
-                <p>Review your cases and track their progress.</p>
+                <h2>{t("customerDashboard.myCasesTitle")}</h2>
+                <p>{t("customerDashboard.mattersDescription")}</p>
               </div>
             </div>
 
             <span className="customer-matters-count">
-              {totalCases} matters
+              {t("customerDashboard.mattersCount", { count: totalCases })}
             </span>
           </div>
 
@@ -1290,7 +1287,7 @@ function CustomerDashboard() {
 
           {!casesError && (
             <DataTable
-              title="My Legal Matters"
+              title={t("customerDashboard.myCasesTitle")}
               showHeading={false}
               columns={caseColumns}
               data={cases}
@@ -1307,7 +1304,7 @@ function CustomerDashboard() {
               pagination={true}
               pageSize={10}
               loading={false}
-              emptyMessage="No legal matters found."
+              emptyMessage={t("customerDashboard.emptyTable")}
             />
           )}
         </section>
@@ -1495,3 +1492,5 @@ function App() {
 }
 
 export default App;
+
+

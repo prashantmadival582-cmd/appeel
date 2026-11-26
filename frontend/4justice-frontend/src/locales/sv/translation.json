@@ -1125,7 +1125,15 @@
                               "securedAccount":  "Säkert konto",
                               "supportTitle":  "Behöver du hjälp med ditt ärende?",
                               "supportDescription":  "Vårt kundserviceteam hjälper dig gärna med frågor och krav kring din ansökan.",
-                              "visitHome":  "Besök APPEELs startsida"
+                              "visitHome":  "Besök APPEELs startsida",
+                              "mattersCount":  "{{count}} ärenden",
+                              "resolvedCases":  "Avslutade ärenden",
+                              "pendingCases":  "Väntande ärenden",
+                              "emptyTable":  "Inga juridiska ärenden hittades.",
+                              "activeCases":  "Aktiva / Pågående",
+                              "totalCases":  "Totalt antal ärenden",
+                              "loadDashboardError":  "Det gick inte att läsa in informationen för din instrumentpanel.",
+                              "mattersDescription":  "Granska dina ärenden och följ deras utveckling."
                           },
     "adminDetailLayout":  {
                               "back":  "Tillbaka"

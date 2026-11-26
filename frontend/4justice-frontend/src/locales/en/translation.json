@@ -1125,7 +1125,15 @@
                               "securedAccount":  "Secured Account",
                               "supportTitle":  "Need Assistance with Your Case?",
                               "supportDescription":  "Our client services team is ready to help with your questions and filing requirements.",
-                              "visitHome":  "Visit APPEEL Home"
+                              "visitHome":  "Visit APPEEL Home",
+                              "mattersCount":  "{{count}} matters",
+                              "resolvedCases":  "Resolved Cases",
+                              "pendingCases":  "Pending Cases",
+                              "emptyTable":  "No legal matters found.",
+                              "activeCases":  "Active / In Progress",
+                              "totalCases":  "Total Cases",
+                              "loadDashboardError":  "Unable to load your dashboard information.",
+                              "mattersDescription":  "Review your cases and track their progress."
                           },
     "adminDetailLayout":  {
                               "back":  "Back"
