@@ -16337,3 +16337,17 @@ html {
     ) !important;
   }
 }
+
+/* APPEEL HERO: Updated slate blue color */
+@media (min-width: 993px) {
+  .home-hero-section .home-hero-overlay {
+    background: linear-gradient(
+      90deg,
+      #4A607D 0%,
+      #4A607D 48%,
+      rgba(74, 96, 125, 0.85) 52%,
+      rgba(74, 96, 125, 0) 65%,
+      rgba(74, 96, 125, 0) 100%
+    ) !important;
+  }
+}
