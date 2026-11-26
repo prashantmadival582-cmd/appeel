@@ -16269,3 +16269,8 @@ html {
 .footer-bottom-links .footer-company-link:hover {
   color: #ffffff;
 }
+
+/* Remove invisible Home link from Admin Sidebar */
+.admin-sidebar .sidebar-menu > .dashboard-home-link {
+  display: none !important;
+}
