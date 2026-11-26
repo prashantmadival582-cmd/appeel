@@ -16351,3 +16351,40 @@ html {
     ) !important;
   }
 }
+
+/* =========================================
+   APPEEL HERO - SLATE BLUE TABLET + MOBILE
+   ========================================= */
+
+/* TABLET: 769px to 992px */
+@media (min-width: 769px) and (max-width: 992px) {
+  .home-hero-section .home-hero-overlay {
+    background: linear-gradient(
+      90deg,
+      #4A607D 0%,
+      rgba(74, 96, 125, 0.88) 55%,
+      rgba(74, 96, 125, 0.35) 100%
+    ) !important;
+  }
+}
+
+/* MOBILE: 768px and below */
+@media (max-width: 768px) {
+  .home-hero-section {
+    background: #4A607D !important;
+  }
+
+  .home-hero-section .home-hero-background {
+    background-color: #4A607D !important;
+  }
+
+  .home-hero-section .home-hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(74, 96, 125, 0.05) 0%,
+      rgba(74, 96, 125, 0.15) 55%,
+      #4A607D 100%
+    ) !important;
+  }
+}
+
