@@ -1,6 +1,7 @@
-
+﻿
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import {
   customerRequest,
@@ -13,13 +14,23 @@ import {
   CustomerPageHeader,
   formatStatus,
 } from "./CustomerCases";
-import { FiFolder, FiFileText, FiUploadCloud, FiMenu, FiCalendar, FiUser } from "react-icons/fi";
+
+import {
+  FiFolder,
+  FiFileText,
+  FiUploadCloud,
+  FiMenu,
+  FiCalendar,
+  FiUser,
+} from "react-icons/fi";
+
 import { FaBalanceScale } from "react-icons/fa";
 
 export default function CustomerCaseDetails() {
   const { caseId } = useParams();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+  const { t, i18n } = useTranslation();
 
   const [customerCase, setCustomerCase] = useState(null);
   const [documents, setDocuments] = useState([]);
@@ -32,8 +43,9 @@ export default function CustomerCaseDetails() {
   const [notice, setNotice] = useState("");
 
   const [busy, setBusy] = useState(false);
-const [isDragging, setIsDragging] = useState(false);
-const [uploadProgress, setUploadProgress] = useState("");
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState("");
+
   const [activeDocumentId, setActiveDocumentId] = useState(null);
   const [documentToDelete, setDocumentToDelete] = useState(null);
 
@@ -65,7 +77,8 @@ const [uploadProgress, setUploadProgress] = useState("");
         }
 
         setError(
-          requestError.message || "Unable to load case details."
+          requestError.message ||
+            t("customerCaseDetails.errors.loadCase")
         );
       } finally {
         if (active) setLoading(false);
@@ -77,7 +90,7 @@ const [uploadProgress, setUploadProgress] = useState("");
     return () => {
       active = false;
     };
-  }, [caseId, navigate]);
+  }, [caseId, navigate, t]);
 
   // =========================================
   // LOAD CUSTOMER DOCUMENTS FOR THIS CASE
@@ -106,12 +119,13 @@ const [uploadProgress, setUploadProgress] = useState("");
       }
 
       setDocumentError(
-        requestError.message || "Unable to load case documents."
+        requestError.message ||
+          t("customerCaseDetails.errors.loadDocuments")
       );
     } finally {
       setDocumentsLoading(false);
     }
-  }, [caseId, navigate]);
+  }, [caseId, navigate, t]);
 
   useEffect(() => {
     loadDocuments();
@@ -122,32 +136,32 @@ const [uploadProgress, setUploadProgress] = useState("");
   // =========================================
 
   const formatDate = (value) => {
-    if (!value) return "Not available";
+    if (!value) {
+      return t("customerCaseDetails.labels.dateUnavailable");
+    }
 
     const date = new Date(value);
 
     if (Number.isNaN(date.getTime())) {
-      return "Not available";
+      return t("customerCaseDetails.labels.dateUnavailable");
     }
 
-    return date.toLocaleString(undefined, {
-      day: "2-digit",
-      month: "long",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    return date.toLocaleString(
+      i18n.language.startsWith("sv") ? "sv-SE" : "en-GB",
+      {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
   };
 
   const getStatusClass = (status) =>
     String(status || "PENDING")
       .toLowerCase()
       .replaceAll("_", "-");
-
-  // =========================================
-  // UPLOAD ANOTHER DOCUMENT
-  // =========================================
-
 
   // =========================================
   // UPLOAD MULTIPLE DOCUMENTS
@@ -183,19 +197,27 @@ const [uploadProgress, setUploadProgress] = useState("");
 
       if (!allowedExtensions.has(extension)) {
         failures.push(
-          `${file.name}: Unsupported file format.`
+          `${file.name}: ${t(
+            "customerCaseDetails.errors.unsupportedFileFormat"
+          )}`
         );
         return;
       }
 
       if (file.size === 0) {
-        failures.push(`${file.name}: The file is empty.`);
+        failures.push(
+          `${file.name}: ${t(
+            "customerCaseDetails.errors.emptyFile"
+          )}`
+        );
         return;
       }
 
       if (file.size > 10 * 1024 * 1024) {
         failures.push(
-          `${file.name}: File size must be 10 MB or less.`
+          `${file.name}: ${t(
+            "customerCaseDetails.errors.fileTooLarge"
+          )}`
         );
         return;
       }
@@ -223,7 +245,11 @@ const [uploadProgress, setUploadProgress] = useState("");
         const file = validFiles[index];
 
         setUploadProgress(
-          `Uploading ${index + 1} of ${validFiles.length}: ${file.name}`
+          t("customerCaseDetails.uploadProgress", {
+            current: index + 1,
+            total: validFiles.length,
+            fileName: file.name,
+          })
         );
 
         const formData = new FormData();
@@ -239,7 +265,6 @@ const [uploadProgress, setUploadProgress] = useState("");
           );
 
           successCount++;
-
         } catch (requestError) {
           if (isCustomerAuthError(requestError)) {
             navigate("/login", { replace: true });
@@ -248,7 +273,8 @@ const [uploadProgress, setUploadProgress] = useState("");
 
           failures.push(
             `${file.name}: ${
-              requestError.message || "Upload failed."
+              requestError.message ||
+              t("customerCaseDetails.errors.uploadFailed")
             }`
           );
         }
@@ -258,14 +284,15 @@ const [uploadProgress, setUploadProgress] = useState("");
         await loadDocuments();
 
         setNotice(
-          `${successCount} document(s) uploaded successfully.`
+          t("customerCaseDetails.uploadSuccessCount", {
+            count: successCount,
+          })
         );
       }
 
       if (failures.length > 0) {
         setDocumentError(failures.join("\n"));
       }
-
     } finally {
       setBusy(false);
       setUploadProgress("");
@@ -322,7 +349,7 @@ const [uploadProgress, setUploadProgress] = useState("");
 
     if (!newTab) {
       setDocumentError(
-        "Please allow pop-ups in your browser to view documents."
+        t("customerCaseDetails.errors.popupBlocked")
       );
       return;
     }
@@ -347,7 +374,8 @@ const [uploadProgress, setUploadProgress] = useState("");
       }
 
       setDocumentError(
-        requestError.message || "Unable to view document."
+        requestError.message ||
+          t("customerCaseDetails.errors.viewDocument")
       );
     } finally {
       setActiveDocumentId(null);
@@ -385,7 +413,8 @@ const [uploadProgress, setUploadProgress] = useState("");
       }
 
       setDocumentError(
-        requestError.message || "Unable to download document."
+        requestError.message ||
+          t("customerCaseDetails.errors.downloadDocument")
       );
     } finally {
       setActiveDocumentId(null);
@@ -418,7 +447,10 @@ const [uploadProgress, setUploadProgress] = useState("");
       );
 
       setDocumentToDelete(null);
-      setNotice("Document deleted successfully.");
+
+      setNotice(
+        t("customerCaseDetails.success.documentDeleted")
+      );
     } catch (requestError) {
       if (isCustomerAuthError(requestError)) {
         navigate("/login", { replace: true });
@@ -426,7 +458,8 @@ const [uploadProgress, setUploadProgress] = useState("");
       }
 
       setDocumentError(
-        requestError.message || "Unable to delete document."
+        requestError.message ||
+          t("customerCaseDetails.errors.deleteDocument")
       );
     } finally {
       setBusy(false);
@@ -453,10 +486,12 @@ const [uploadProgress, setUploadProgress] = useState("");
               aria-modal="true"
               aria-labelledby="case-delete-title"
             >
-              <h3 id="case-delete-title">Delete document?</h3>
+              <h3 id="case-delete-title">
+                {t("customerCaseDetails.confirmDelete.title")}
+              </h3>
 
               <p>
-                Are you sure you want to delete{" "}
+                {t("customerCaseDetails.confirmDelete.message")}{" "}
                 <strong>{documentToDelete.fileName}</strong>?
               </p>
 
@@ -467,7 +502,7 @@ const [uploadProgress, setUploadProgress] = useState("");
                   disabled={busy}
                   onClick={() => setDocumentToDelete(null)}
                 >
-                  Cancel
+                  {t("customerCaseDetails.confirmDelete.cancel")}
                 </button>
 
                 <button
@@ -476,7 +511,9 @@ const [uploadProgress, setUploadProgress] = useState("");
                   disabled={busy}
                   onClick={handleDelete}
                 >
-                  {busy ? "Deleting..." : "Delete"}
+                  {busy
+                    ? t("customerCaseDetails.confirmDelete.deleting")
+                    : t("customerCaseDetails.confirmDelete.delete")}
                 </button>
               </div>
             </div>
@@ -489,13 +526,13 @@ const [uploadProgress, setUploadProgress] = useState("");
           <div className="customer-case-heading-content">
             <div>
               <span className="customer-case-eyebrow">
-                YOUR LEGAL MATTERS
+                {t("customerCaseDetails.labels.eyebrow")}
               </span>
 
-              <h1>Case Details</h1>
+              <h1>{t("customerCaseDetails.title")}</h1>
 
               <p>
-                View your submitted case information and track its progress.
+                {t("customerCaseDetails.description")}
               </p>
             </div>
           </div>
@@ -506,8 +543,14 @@ const [uploadProgress, setUploadProgress] = useState("");
         {loading && (
           <div className="customer-case-state-card">
             <div className="customer-case-loader" />
-            <h3>Loading your case</h3>
-            <p>Please wait while we retrieve your case information.</p>
+
+            <h3>
+              {t("customerCaseDetails.labels.loadingTitle")}
+            </h3>
+
+            <p>
+              {t("customerCaseDetails.pleaseWait")}
+            </p>
           </div>
         )}
 
@@ -516,14 +559,18 @@ const [uploadProgress, setUploadProgress] = useState("");
         {!loading && error && (
           <div className="customer-case-error">
             <div className="customer-case-state-icon">!</div>
-            <h3>Unable to load case details</h3>
+
+            <h3>
+              {t("customerCaseDetails.labels.loadErrorTitle")}
+            </h3>
+
             <p>{error}</p>
 
             <button
               type="button"
               onClick={() => navigate(0)}
             >
-              Try Again
+              {t("customerCaseDetails.labels.tryAgain")}
             </button>
           </div>
         )}
@@ -539,13 +586,13 @@ const [uploadProgress, setUploadProgress] = useState("");
               <div className="customer-case-overview-top">
                 <div>
                   <span className="customer-case-label">
-                    CASE REFERENCE
+                    {t("customerCaseDetails.labels.caseReference")}
                   </span>
 
                   <h2>{customerCase.caseId}</h2>
 
                   <span className="customer-case-reference-note">
-                    Your unique legal case reference
+                    {t("customerCaseDetails.labels.referenceNote")}
                   </span>
                 </div>
 
@@ -555,13 +602,19 @@ const [uploadProgress, setUploadProgress] = useState("");
                   )}`}
                 >
                   <span className="customer-case-status-dot" />
-                  {formatStatus(customerCase.status)}
+
+                  {formatStatus(customerCase.status, t)}
                 </div>
               </div>
 
               <div className="customer-case-overview-footer">
-                <span>APPEEL LEGAL SUPPORT</span>
-                <span>Case information</span>
+                <span>
+                  {t("customerCaseDetails.labels.legalSupport")}
+                </span>
+
+                <span>
+                  {t("customerCaseDetails.labels.caseInformation")}
+                </span>
               </div>
             </section>
 
@@ -574,9 +627,13 @@ const [uploadProgress, setUploadProgress] = useState("");
                 </div>
 
                 <div>
-                  <span className="customer-case-label">CASE TYPE</span>
+                  <span className="customer-case-label">
+                    {t("customerCaseDetails.labels.caseType")}
+                  </span>
+
                   <h3>
-                    {customerCase.caseType || "General Legal Matter"}
+                    {customerCase.caseType ||
+                      t("customerCaseDetails.legalMatter")}
                   </h3>
                 </div>
               </article>
@@ -588,15 +645,20 @@ const [uploadProgress, setUploadProgress] = useState("");
 
                 <div>
                   <span className="customer-case-label">
-                    ASSIGNED LAWYER
+                    {t("customerCaseDetails.labels.assignedLawyerLabel")}
                   </span>
 
                   <h3>
-                    {customerCase.lawyerName || "Pending Allocation"}
+                    {customerCase.lawyerName ||
+                      t("customerCases.pendingAllocation", {
+                        defaultValue: t("customerCaseDetails.notAssigned"),
+                      })}
                   </h3>
 
                   {!customerCase.lawyerName && (
-                    <p>Lawyer assignment is pending.</p>
+                    <p>
+                      {t("customerCaseDetails.labels.lawyerPending")}
+                    </p>
                   )}
                 </div>
               </article>
@@ -608,7 +670,7 @@ const [uploadProgress, setUploadProgress] = useState("");
 
                 <div>
                   <span className="customer-case-label">
-                    SUBMITTED DATE
+                    {t("customerCaseDetails.labels.submittedDateLabel")}
                   </span>
 
                   <h3>{formatDate(customerCase.submittedAt)}</h3>
@@ -622,10 +684,12 @@ const [uploadProgress, setUploadProgress] = useState("");
               <div className="customer-case-section-heading">
                 <div>
                   <span className="customer-case-eyebrow">
-                    CASE OVERVIEW
+                    {t("customerCaseDetails.labels.caseOverview")}
                   </span>
 
-                  <h2>Case Description</h2>
+                  <h2>
+                    {t("customerCaseDetails.labels.caseDescription")}
+                  </h2>
                 </div>
 
                 <span className="customer-case-description-icon">
@@ -635,45 +699,53 @@ const [uploadProgress, setUploadProgress] = useState("");
 
               <div className="customer-case-description-body">
                 {customerCase.description ||
-                  "No case description is currently available."}
+                  t("customerCaseDetails.labels.noCaseDescription")}
               </div>
             </section>
 
-            {/* =================================
-                CUSTOMER DOCUMENTS
-            ================================= */}
+            {/* CUSTOMER DOCUMENTS */}
 
             <section className="customer-case-documents">
 
               <div className="customer-case-documents-heading">
                 <div>
                   <span className="customer-case-eyebrow">
-                    YOUR CASE FILES
+                    {t("customerCaseDetails.labels.yourCaseFiles")}
                   </span>
 
-                  <h2>Customer Documents</h2>
+                  <h2>
+                    {t("customerCaseDetails.labels.customerDocuments")}
+                  </h2>
 
                   <p>
-                    View and manage the documents uploaded for this case.
+                    {t("customerCaseDetails.labels.documentsDescription")}
                   </p>
                 </div>
 
                 <span className="customer-case-document-count">
                   {documents.length}{" "}
-                  {documents.length === 1 ? "File" : "Files"}
+                  {documents.length === 1
+                    ? t("customerCaseDetails.labels.file")
+                    : t("customerCaseDetails.labels.files")}
                 </span>
               </div>
 
               {/* DOCUMENT MESSAGES */}
 
               {documentError && (
-                <div className="customer-case-document-error" role="alert">
+                <div
+                  className="customer-case-document-error"
+                  role="alert"
+                >
                   {documentError}
                 </div>
               )}
 
               {notice && (
-                <div className="customer-case-document-success" role="status">
+                <div
+                  className="customer-case-document-success"
+                  role="status"
+                >
                   {notice}
                 </div>
               )}
@@ -682,15 +754,20 @@ const [uploadProgress, setUploadProgress] = useState("");
 
               {documentsLoading ? (
                 <div className="customer-case-documents-empty">
-                  Loading documents...
+                  {t("customerCaseDetails.labels.loadingDocuments")}
                 </div>
               ) : documents.length === 0 ? (
                 <div className="customer-case-documents-empty">
-                  <span className="customer-case-empty-icon"><FiFolder /></span>
-                  <h3>No documents uploaded yet</h3>
+                  <span className="customer-case-empty-icon">
+                    <FiFolder />
+                  </span>
+
+                  <h3>
+                    {t("customerCaseDetails.labels.noDocumentsTitle")}
+                  </h3>
+
                   <p>
-                    Add documents related to this legal case using the
-                    upload button below.
+                    {t("customerCaseDetails.labels.noDocumentsDescription")}
                   </p>
                 </div>
               ) : (
@@ -707,11 +784,13 @@ const [uploadProgress, setUploadProgress] = useState("");
 
                         <div>
                           <strong title={doc.fileName}>
-                            {doc.fileName || `Document ${doc.id}`}
+                            {doc.fileName ||
+                              `${t("customerCaseDetails.labels.documentFallback")} ${doc.id}`}
                           </strong>
 
                           <small>
-                            {doc.fileType || "Case document"}
+                            {doc.fileType ||
+                              t("customerCaseDetails.legalMatter")}
                           </small>
                         </div>
                       </div>
@@ -722,7 +801,7 @@ const [uploadProgress, setUploadProgress] = useState("");
                           disabled={busy || activeDocumentId !== null}
                           onClick={() => handleView(doc)}
                         >
-                          View
+                          {t("customerCaseDetails.labels.view")}
                         </button>
 
                         <button
@@ -730,7 +809,7 @@ const [uploadProgress, setUploadProgress] = useState("");
                           disabled={busy || activeDocumentId !== null}
                           onClick={() => handleDownload(doc)}
                         >
-                          Download
+                          {t("customerCaseDetails.download")}
                         </button>
 
                         <button
@@ -739,7 +818,7 @@ const [uploadProgress, setUploadProgress] = useState("");
                           disabled={busy || activeDocumentId !== null}
                           onClick={() => setDocumentToDelete(doc)}
                         >
-                          Delete
+                          {t("customerCaseDetails.labels.delete")}
                         </button>
                       </div>
                     </article>
@@ -747,63 +826,61 @@ const [uploadProgress, setUploadProgress] = useState("");
                 </div>
               )}
 
-              {/* UPLOAD DOCUMENT */}
+              {/* MULTIPLE DOCUMENT UPLOAD */}
 
+              <div
+                className={`customer-case-upload-area ${
+                  isDragging ? "is-dragging" : ""
+                }`}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.csv,.xls,.xlsx"
+                  multiple
+                  onChange={handleUpload}
+                  hidden
+                />
 
-  {/* MULTIPLE DOCUMENT UPLOAD */}
+                <div className="customer-case-upload-icon">
+                  <FiUploadCloud />
+                </div>
 
-  <div
-    className={`customer-case-upload-area ${
-      isDragging ? "is-dragging" : ""
-    }`}
-    onDragOver={handleDragOver}
-    onDragLeave={handleDragLeave}
-    onDrop={handleDrop}
-  >
-    <input
-      ref={fileInputRef}
-      type="file"
-      accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.csv,.xls,.xlsx"
-      multiple
-      onChange={handleUpload}
-      hidden
-    />
+                <div className="customer-case-upload-text">
+                  <strong>
+                    {isDragging
+                      ? t("customerCaseDetails.labels.dropFiles")
+                      : t("customerCaseDetails.labels.addDocuments")}
+                  </strong>
 
-    <div className="customer-case-upload-icon">
-      <FiUploadCloud />
-    </div>
+                  <span>
+                    {t("customerCaseDetails.labels.dragDropFiles")}
+                  </span>
 
-    <div className="customer-case-upload-text">
-      <strong>
-        {isDragging
-          ? "Drop your documents here"
-          : "Add documents to your case"}
-      </strong>
+                  <span>
+                    {t("customerCaseDetails.labels.uploadFormats")}
+                  </span>
 
-      <span>
-        Drag and drop files here, or select multiple files.
-      </span>
+                  {uploadProgress && (
+                    <span className="customer-case-upload-progress">
+                      {uploadProgress}
+                    </span>
+                  )}
+                </div>
 
-      <span>
-        PDF, DOC, DOCX, JPG, JPEG, PNG, CSV, XLS and XLSX ·
-        Maximum 10 MB per file
-      </span>
-
-      {uploadProgress && (
-        <span className="customer-case-upload-progress">
-          {uploadProgress}
-        </span>
-      )}
-    </div>
-
-    <button
-      type="button"
-      disabled={busy}
-      onClick={() => fileInputRef.current?.click()}
-    >
-      {busy ? "Uploading..." : "+ Select Files"}
-    </button>
-  </div>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  {busy
+                    ? t("customerCaseDetails.uploading")
+                    : `+ ${t("customerCaseDetails.labels.selectFiles")}`}
+                </button>
+              </div>
 
             </section>
 
@@ -813,13 +890,9 @@ const [uploadProgress, setUploadProgress] = useState("");
               <div className="customer-case-help-icon">i</div>
 
               <p>
-                Your case information and documents are available in your
-                personal dashboard. For assistance, please contact the
-                APPEEL support team.
+                {t("customerCaseDetails.labels.helpNote")}
               </p>
             </div>
-
-
 
           </div>
         )}
@@ -827,3 +900,4 @@ const [uploadProgress, setUploadProgress] = useState("");
     </main>
   );
 }
+

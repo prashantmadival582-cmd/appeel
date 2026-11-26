@@ -1,1139 +1,1152 @@
-
-{
-  "navbar": {
-  "home": "Hem",
-  "about": "Om oss",
-  "services": "Tjänster",
-  "contact": "Kontakta oss",
-  "login": "Logga in",
-  "dashboard": "Instrumentpanel",
-  "tagline": "Juridisk hjälp på ett enklare sätt",
-  "openMenu": "Öppna navigeringsmenyn",
-  "closeMenu": "Stäng navigeringsmenyn"
-},
-  "common": {
-    "register": "Registrera dig",
-    "logout": "Logga ut",
-    "submit": "Skicka",
-    "cancel": "Avbryt",
-    "save": "Spara",
-    "loading": "Laddar..."
-  },
-  "login": {
-    "title": "Logga in på APPEEL",
-    "subtitle": "Få säker åtkomst till din juridiska arbetsyta",
-    "email": "E-postadress",
-    "password": "Lösenord",
-    "forgotPassword": "Glömt lösenordet?",
-    "signIn": "Logga in"
-  },
-  "home": {
-    "heroTitle": "Rättvisa ska inte behöva kosta en förmögenhet.",
-    "heroSubtitle": "Få juridisk hjälp till ett överkomligt pris.",
-    "startCase": "Starta mitt ärende"
-  },
-
-"footer": {
-  "homeAria": "APPEELs startsida",
-  "description": "Enkel och prisvärd juridisk hjälp som du kan lita på.",
-  "followUs": "Följ APPSEEL",
-  "socialAria": "APPEEL på {{platform}}",
-  "explore": "Utforska",
-  "home": "Hem",
-  "about": "Om oss",
-  "services": "Tjänster",
-  "contact": "Kontakt",
-  "rights": "Alla rättigheter förbehållna.",
-  "developedBy": "Designad och utvecklad av",
-  "backToTop": "Tillbaka till toppen"
-},
-"about": {
-  "visualLabel": "JURIDISK HJÄLP, PÅ ETT ENKLARE SÄTT",
-  "visualTitle1": "Din situation.",
-  "visualTitle2": "Dina alternativ.",
-  "visualTitle3": "Ditt nästa steg.",
-  "visualDescription": "Tydlig information och praktisk vägledning som hjälper dig att gå vidare med självförtroende.",
-  "clarityTitle": "Tydlighet kommer först.",
-  "clarityDescription": "Förstå din situation innan du fattar ett beslut.",
-  "eyebrow": "OM APPEEL",
-  "heading": "Juridisk hjälp ska kännas",
-  "headingHighlight": " nära och tillgänglig.",
-  "intro": "Juridiska frågor kan kännas komplicerade. Att få tydlig information om dina alternativ ska inte behöva vara det.",
-  "description": "APPEEL gör juridiska processer enklare att förstå genom tydlig kommunikation, transparent prissättning och praktiska nästa steg. Så att du kan fatta välgrundade beslut utan onödig förvirring.",
-  "benefit1Title": "Lär känna dina alternativ",
-  "benefit1Description": "Förstå vilka nästa steg som är möjliga i din situation.",
-  "benefit2Title": "Förstå processen",
-  "benefit2Description": "Få tydligare information om vad du kan förvänta dig.",
-  "benefit3Title": "Ta nästa steg",
-  "benefit3Description": "Gå vidare med praktisk information och stöd.",
-  "contactButton": "Låt oss prata"
-},
-"benefits": {
-  "eyebrow": "APPEELS ARBETSSÄTT",
-  "heading": "Juridisk hjälp på ett enkelt sätt",
-  "subtitle": "Enkel information, tydliga priser och smidiga nästa steg",
-  "card1Title": "Känn till kostnaden i förväg",
-  "card1Description": "Se priset och vad som ingår innan du bestämmer dig för att gå vidare.",
-  "card2Title": "Tydlig tidsram för svar",
-  "card2Description": "Vi strävar efter att ge ett första svar inom 24 timmar.",
-  "card3Title": "Vägledning för din situation",
-  "card3Description": "Förstå dina alternativ och få hjälp med att förbereda relevanta dokument.",
-  "card4Title": "Håll dig uppdaterad",
-  "card4Description": "Följ utvecklingen i ditt ärende och förstå nästa steg längs vägen."
-},
-
-"contact": {
-  "eyebrow": "KONTAKTA OSS",
-  "heading": "Låt oss göra ditt nästa steg",
-  "headingHighlight": " tydligare.",
-  "description": "Juridiska frågor kan vara svåra att hantera. Börja med att berätta vad du funderar på. Vi finns här för att hjälpa dig förstå dina alternativ.",
-  "highlight1Title": "Börja med ett samtal",
-  "highlight1Description": "Du behöver inte veta vilken tjänst du behöver innan du kontaktar oss.",
-  "highlight2Title": "Dela endast det som behövs",
-  "highlight2Description": "Undvik att inkludera känsliga personuppgifter eller konfidentiell information om ditt ärende i detta allmänna kontaktformulär.",
-  "generalEnquiries": "ALLMÄNNA FÖRFRÅGNINGAR",
-  "generalEnquiriesDescription": "Använd formuläret för att skicka din fråga till oss.",
-  "formEyebrow": "VI FINNS HÄR FÖR ATT LYSSNA",
-  "formTitle": "Skicka ett meddelande",
-  "formDescription": "Fyll i uppgifterna nedan och berätta hur vi kan hjälpa dig.",
-  "successTitle": "Tack för din förfrågan.",
-  "successDescription": "Din förfrågan har skickats. Vårt team kommer att granska ditt meddelande.",
-  "sendAnother": "Skicka en ny förfrågan",
-  "fullName": "Fullständigt namn",
-  "fullNamePlaceholder": "Ange ditt fullständiga namn",
-  "email": "E-postadress",
-  "emailPlaceholder": "du@exempel.se",
-  "subject": "Vad gäller din förfrågan?",
-  "subjectPlaceholder": "Ange ett kort ämne",
-  "message": "Ditt meddelande",
-  "messagePlaceholder": "Berätta hur vi kan hjälpa dig...",
-  "sending": "Skickar...",
-  "sendEnquiry": "Skicka förfrågan",
-  "formNote": "Inkludera inte konfidentiella ärendedokument eller känsliga uppgifter.",
-  "errors": {
-    "sendFailed": "Det gick inte att skicka din förfrågan. Försök igen.",
-    "general": "Något gick fel. Försök igen senare."
-  }
-},
-"homeAccess": {
-  "eyebrow": "DITT NÄSTA STEG BÖRJAR HÄR",
-  "heading": "Ditt juridiska ärende.",
-  "headingHighlight": "Ditt nästa steg.",
-  "description": "Få klarhet i dina alternativ och gå vidare med tydlig och prisvärd juridisk hjälp.",
-  "continueCase": "Fortsätt mitt ärende",
-  "dashboard": "Gå till instrumentpanelen",
-  "startCase": "Starta mitt ärende",
-  "existingAccount": "Har du redan ett konto?",
-  "signIn": "Logga in",
-  "transparentPricing": "Tydliga priser",
-  "noObligation": "Utan förpliktelser",
-  "secureHandling": "Säker ärendehantering",
-  "visualMessage": "En tydligare väg framåt"
-},
-"hero": {
-  "title": "Juridisk hjälp ska inte kosta en förmögenhet.",
-  "subtitle": "Börja från 99 SEK.",
-  "description": "Förstå dina alternativ och ta nästa steg med tydliga priser och ett enklare sätt att få juridisk hjälp.",
-  "benefitsLabel": "Fördelar med tjänsten",
-  "transparentPricing": "Tydliga priser",
-  "noHiddenFees": "Inga dolda avgifter",
-  "secureHandling": "Säker ärendehantering"
-},
-"pricing": {
-  "heading": "Juridisk hjälp med tydliga priser.",
-  "subtitle": "Ta reda på kostnaden och vilket stöd du får innan du går vidare.",
-  "startHere": "BÖRJA HÄR",
-  "footerNote": "Inga dolda avgifter. Eventuellt ytterligare arbete diskuteras med dig och kräver ditt godkännande innan det påbörjas.",
-  "initialReview": {
-    "title": "Inledande granskning av ärendet",
-    "priceNote": "Engångsavgift för att komma igång",
-    "description": "Berätta om din situation och dela dina dokument för att förstå nästa steg.",
-    "detail": "En enkel startpunkt",
-    "button": "Börja med en granskning"
-  },
-  "arnComplaint": {
-    "title": "ARN-anmälan",
-    "priceNote": "Fast pris",
-    "description": "Få hjälp med att granska ditt underlag och förbereda en anmälan till ARN.",
-    "detail": "För konsumenttvister",
-    "button": "Välj ARN-hjälp"
-  },
-  "districtCourt": {
-    "title": "Försvar i tingsrätten",
-    "priceNote": "Baserat på ärendets omfattning",
-    "description": "Diskutera ditt ärende och vilket stöd som behövs för att förbereda ett försvar.",
-    "detail": "Omfattningen bekräftas innan arbetet påbörjas",
-    "button": "Diskutera ditt ärende"
-  },
-  "tenancyArbitration": {
-    "title": "Hyresfrågor och skiljeförfarande",
-    "priceNote": "Baserat på ärendets omfattning",
-    "description": "Få hjälp med ditt ärende, granska dokument och planera nästa steg.",
-    "detail": "Omfattningen bekräftas innan arbetet påbörjas",
-    "button": "Diskutera ditt ärende"
-  }
-},
-"journey": {
-  "heading": "Din resa med APPEEL",
-  "subtitle": "Sju enkla steg. Tydliga priser. Juridiskt stöd genom hela processen.",
-  "step": "STEG",
-  "process": "APPEELS PROCESS",
-  "previousSteps": "Föregående steg",
-  "nextSteps": "Nästa steg",
-  "showing": "Visar {{start}}–{{end}} av {{total}} steg",
-  "showStartingAt": "Visa steg från {{step}}",
-  "steps": {
-    "upload": {
-      "label": "Ladda upp dokument",
-      "description": "Skicka in dina avtal, bevis och relevanta dokument."
-    },
-    "payment": {
-      "label": "Betala 99 SEK",
-      "description": "Betala engångsavgiften för den inledande granskningen för att starta ditt ärende."
-    },
-    "started": {
-      "label": "Ärendet har startats",
-      "description": "Få ett ärendereferensnummer för att följa ditt juridiska ärende."
-    },
-    "review": {
-      "label": "Granskning av ärendet",
-      "description": "Din information granskas för att förstå ditt ärende."
-    },
-    "offer": {
-      "label": "Erbjudande till fast pris",
-      "description": "Granska omfattningen och priset för ytterligare juridisk hjälp."
-    },
-    "approval": {
-      "label": "Ditt godkännande",
-      "description": "Välj om du vill gå vidare med de föreslagna nästa stegen."
-    },
-    "preparation": {
-      "label": "Dokumentförberedelse",
-      "description": "Få hjälp med att förbereda relevanta juridiska dokument."
-    }
-  }
-},
-"login": {
-  "title": "Logga in på APPEEL",
-  "subtitle": "Få säker åtkomst till din juridiska arbetsyta",
-  "email": "E-postadress",
-  "password": "Lösenord",
-  "forgotPassword": "Glömt lösenordet?",
-  "signIn": "Logga in",
-
-  "accountTitle": "Logga in på ditt konto",
-  "accountSubtitle": "Ange din registrerade e-postadress och ditt lösenord.",
-  "emailPlaceholder": "Ange din registrerade e-postadress",
-  "passwordPlaceholder": "Ange ditt lösenord",
-  "showPassword": "Visa",
-  "hidePassword": "Dölj",
-  "signingIn": "Loggar in...",
-  "secureAccess": "Säker åtkomst för kunder, jurister och administratörer.",
-  "newCustomer": "Ny kund?",
-  "createAccount": "Skapa ett konto",
-  "areYouLawyer": "Är du jurist?",
-  "registerHere": "Registrera dig här",
-  "backHome": "Tillbaka till startsidan",
-
-  "errors": {
-    "noToken": "Servern returnerade ingen autentiseringstoken.",
-    "customerDetails": "Kundens kontouppgifter returnerades inte.",
-    "lawyerDetails": "Juristens kontouppgifter returnerades inte.",
-    "invalidCredentials": "Ogiltig e-postadress eller lösenord. Kontrollera dina inloggningsuppgifter och försök igen.",
-    "connection": "Det gick inte att ansluta till servern. Försök igen."
-  }
-},
-"lawyerRegister": {
-  "homeAria": "APPEELs startsida",
-  "title": "Juristregistrering",
-  "fullName": "Juristens fullständiga namn",
-  "fullNamePlaceholder": "t.ex. Adv. Sofia Berg",
-  "email": "Officiell e-postadress",
-  "emailPlaceholder": "sofia.berg@lawfirm.com",
-  "specialization": "Huvudsakligt rättsområde / Specialisering",
-  "specializationPlaceholder": "t.ex. Affärs- och avtalsrätt, familjerätt",
-  "phone": "Direkt telefonnummer",
-  "phonePlaceholder": "+46 8 123 4567",
-  "password": "Lösenord",
-  "showPassword": "Visa",
-  "hidePassword": "Dölj",
-  "passwordPlaceholder": "Minst 8 tecken",
-  "passwordHint": "Minst 8 tecken med en blandning av bokstäver och siffror",
-  "registering": "Registrerar jurist...",
-  "submit": "Slutför registreringen",
-  "alreadyRegistered": "Redan registrerad som jurist?",
-  "signIn": "Logga in här",
-  "backHome": "Tillbaka till APPEELs startsida",
-  "success": "Registreringen lyckades! Logga in.",
-  "errors": {
-    "registrationFailed": "Registreringen misslyckades. Försök igen.",
-    "connection": "Det gick inte att ansluta till servern. Försök igen."
-  }
-},
-"customerRegister": {
-  "homeAria": "APPEELs startsida",
-  "title": "Skapa ditt konto",
-  "fullName": "Fullständigt namn",
-  "fullNamePlaceholder": "t.ex. Erik Lindqvist",
-  "email": "E-postadress",
-  "emailPlaceholder": "namn@exempel.se",
-  "phone": "Telefonnummer",
-  "phonePlaceholder": "t.ex. +46 70 123 4567",
-  "password": "Skapa lösenord",
-  "showPassword": "Visa",
-  "hidePassword": "Dölj",
-  "passwordPlaceholder": "Minst 8 tecken",
-  "passwordHint": "Måste innehålla minst 8 tecken",
-  "creatingAccount": "Skapar konto...",
-  "submit": "Registrera konto",
-  "alreadyHaveAccount": "Har du redan ett konto?",
-  "signIn": "Logga in",
-  "registerAsLawyer": "Registrera dig som jurist",
-  "backHome": "Tillbaka till startsidan",
-  "errors": {
-    "registrationFailed": "Det gick inte att registrera dig. Kontrollera dina uppgifter."
-  }
-},
-"adminLogin": {
-  "homeAria": "APPEELs startsida",
-  "portal": "Administrationsportal",
-  "title": "Administratörsinloggning",
-  "subtitle": "Säker administration av juristtilldelning, ärendehantering och systemstatistik.",
-  "email": "Administratörens e-postadress",
-  "emailPlaceholder": "admin@appeel.se",
-  "password": "Lösenord",
-  "showPassword": "Visa",
-  "hidePassword": "Dölj",
-  "passwordPlaceholder": "Ange administratörens lösenord",
-  "authenticating": "Autentiserar...",
-  "submit": "Logga in på administrationsportalen",
-  "backHome": "Tillbaka till APPEELs startsida",
-  "errors": {
-    "invalidCredentials": "Ogiltiga administratörsuppgifter.",
-    "noToken": "Inloggningen lyckades, men servern returnerade ingen token.",
-    "connection": "Det gick inte att ansluta till servern. Försök igen."
-  }
-},
-"logoutDialog": {
-  "title": "Bekräfta utloggning",
-  "description": "Är du säker på att du vill logga ut från ditt konto?",
-  "signingOut": "Loggar ut...",
-  "confirm": "Ja, logga ut"
-},
-"table": {
-  "records": "{{count}} poster",
-  "loading": "Laddar poster...",
-  "empty": "Inga poster hittades."
-},
-"table": {
-  "records": "{{count}} poster",
-  "loading": "Laddar poster...",
-  "empty": "Inga poster hittades."
-},
-"tablePagination": {
-  "showing": "Visar",
-  "of": "av",
-  "records": "poster",
-  "rows": "Rader",
-  "previous": "Föregående",
-  "page": "Sida",
-  "next": "Nästa"
-},
-"tableToolbar": {
-  "searchPlaceholder": "Sök poster...",
-  "searchLabel": "Sök poster",
-  "filter": "Filtrera",
-  "all": "Alla {{label}}",
-  "done": "Klart",
-  "refresh": "Uppdatera",
-  "refreshing": "Uppdaterar...",
-  "exportCSV": "Exportera CSV"
-},
-"adminCases": {
-  "tableTitle": "ALLA JURIDISKA ÄRENDEN",
-  "viewDetails": "Visa detaljer",
-  "notSpecified": "Ej angivet",
-  "notAvailable": "Ej tillgängligt",
-  "emptyMessage": "Inga juridiska ärenden matchar din sökning eller ditt filter.",
-  "columns": {
-    "caseId": "Ärende-ID",
-    "caseType": "Ärendetyp",
-    "appliedDate": "Ansökningsdatum",
-    "actions": "Åtgärder"
-  },
-  "filters": {
-    "caseStatus": "Ärendestatus",
-    "allStatuses": "Alla statusar",
-    "unassignedOnly": "Endast ej tilldelade",
-    "pending": "Väntande",
-    "underReview": "Under granskning",
-    "inProgress": "Pågående",
-    "completed": "Slutförda"
-  },
-  "errors": {
-    "accessDenied": "Administratörsåtkomst nekad. Logga in igen.",
-    "fetchFailed": "Det gick inte att hämta ärenden ({{status}}).",
-    "unableToLoadCases": "Det gick inte att läsa in ärenden från servern.",
-    "fetchLawyersFailed": "Det gick inte att hämta jurister ({{status}}).",
-    "unableToLoadLawyers": "Det gick inte att läsa in jurister. Uppdatera sidan."
-  }
-},
-"adminLawyerDetails": {
-  "title": "Juristuppgifter",
-  "subtitle": "Hantera juristuppgifter och tilldelade ärenden · ID: {{lawyerId}}",
-  "backToLawyers": "Tillbaka till jurister",
-  "loading": "Laddar juristuppgifter...",
-  "informationTitle": "Juristinformation",
-  "informationDescription": "Uppdatera juristens profiluppgifter.",
-  "fullName": "Fullständigt namn",
-  "email": "E-post",
-  "specialization": "Specialisering",
-  "phone": "Telefonnummer",
-  "newPassword": "Nytt lösenord (valfritt)",
-  "passwordPlaceholder": "Lämna tomt för att behålla nuvarande lösenord",
-  "saving": "Sparar...",
-  "saveChanges": "Spara ändringar",
-  "assignedCases": "Tilldelade ärenden",
-  "assignedCasesDescription": "Ärenden som tilldelats {{name}}.",
-  "thisLawyer": "denna jurist",
-  "caseCount_one": "{{count}} ärende",
-  "caseCount_other": "{{count}} ärenden",
-  "emptyCases": "Inga ärenden har tilldelats denna jurist.",
-  "view": "Visa",
-  "success": "Ändringarna har sparats.",
-  "notAvailable": "Ej tillgängligt",
-  "columns": {
-    "caseId": "Ärende-ID",
-    "customer": "Kund",
-    "caseType": "Ärendetyp",
-    "status": "Status",
-    "action": "Åtgärd"
-  },
-  "filters": {
-    "status": "Status",
-    "pending": "Väntande",
-    "underReview": "Under granskning",
-    "inProgress": "Pågående",
-    "completed": "Slutförda"
-  },
-  "statuses": {
-    "PENDING": "Väntande",
-    "UNDER_REVIEW": "Under granskning",
-    "IN_PROGRESS": "Pågående",
-    "COMPLETED": "Slutförda"
-  },
-  "errors": {
-    "loadLawyer": "Det gick inte att läsa in juristuppgifterna.",
-    "loadCases": "Det gick inte att läsa in tilldelade ärenden.",
-    "general": "Något gick fel.",
-    "updateLawyer": "Det gick inte att uppdatera juristen.",
-    "saveChanges": "Det gick inte att spara ändringarna."
-  }
-},
-"adminLogin": {
-  "homeAria": "APPEELs startsida",
-  "portal": "Administrationsportal",
-  "title": "Administratörsinloggning",
-  "subtitle": "Säker administration av juristtilldelning, ärendehantering och systemstatistik.",
-  "email": "Administratörens e-postadress",
-  "emailPlaceholder": "admin@appeel.se",
-  "password": "Lösenord",
-  "showPassword": "Visa",
-  "hidePassword": "Dölj",
-  "passwordPlaceholder": "Ange administratörens lösenord",
-  "authenticating": "Autentiserar...",
-  "submit": "Logga in på administrationsportalen",
-  "backHome": "Tillbaka till APPEELs startsida",
-  "errors": {
-    "invalidCredentials": "Ogiltiga administratörsuppgifter.",
-    "noToken": "Inloggningen lyckades, men servern returnerade ingen token.",
-    "connection": "Det gick inte att ansluta till servern. Försök igen."
-  }
-},
-"adminCaseDetails": {
-  "title": "Ärendeuppgifter",
-  "subtitle": "Hantera ärendeinformation och tilldelning · ID: {{caseId}}",
-  "loadingSubtitle": "Läser in ärendeinformation · ID: {{caseId}}",
-  "caseIdSubtitle": "Ärende-ID: {{caseId}}",
-  "backToCases": "Tillbaka till ärenden",
-  "loading": "Läser in ärendeuppgifter...",
-  "tryAgain": "Försök igen",
-  "caseInformation": "Ärendeinformation",
-  "clientInformation": "Kundinformation",
-  "editDetails": "Redigera uppgifter",
-  "customerName": "Kundens namn",
-  "emailAddress": "E-postadress",
-  "phoneNumber": "Telefonnummer",
-  "notProvided": "Inte angivet",
-  "caseType": "Ärendetyp",
-  "caseDescription": "Ärendebeskrivning",
-  "assignedLawyer": "Tilldelad jurist",
-  "currentAssignment": "Nuvarande tilldelning",
-  "notAssigned": "Inte tilldelad",
-  "lawyerEmail": "Juristens e-postadress",
-  "documents": "Dokument ({{count}})",
-  "noDocuments": "Inga dokument har laddats upp",
-  "opening": "Öppnar...",
-  "view": "Visa",
-  "download": "Ladda ner",
-  "retry": "Försök igen",
-  "quickActions": "Snabbåtgärder",
-  "updateStatus": "Uppdatera status",
-  "saving": "Sparar...",
-  "saveStatus": "Spara status",
-  "assignLawyer": "Tilldela jurist",
-  "selectLawyer": "Välj en jurist",
-  "assigning": "Tilldelar...",
-  "assign": "Tilldela",
-  "saveChanges": "Spara ändringar",
-  "newPassword": "Nytt lösenord",
-"newPasswordPlaceholder": "Ange nytt lösenord (valfritt)",
-"passwordHint": "Lämna tomt för att behålla det nuvarande lösenordet.",
-
-"externalInvoices": {
-  "title": "Externa fakturor",
-  "description": "Skapa och skicka ytterligare betalningsfakturor till kunden.",
-  "amount": "Fakturabelopp (SEK)",
-  "amountPlaceholder": "Ange fakturabelopp",
-  "customerEmail": "Kundens e-postadress",
-  "emailUnavailable": "E-postadress saknas",
-  "creating": "Skapar och skickar...",
-  "send": "Skicka extern faktura",
-  "paymentNotice": "Kunden får ett e-postmeddelande med en PayPal Sandbox-betalningslänk.",
-  "history": "Fakturahistorik ({{count}})",
-  "refreshing": "Uppdaterar...",
-  "refresh": "Uppdatera",
-  "loading": "Läser in externa fakturor...",
-  "empty": "Inga externa fakturor har skapats för detta ärende.",
-  "createdAt": "Skapad",
-  "caseId": "Ärende-ID",
-  "invoiceId": "Faktura-ID",
-  "paidAt": "Betald",
-  "notPaid": "Inte betald ännu",
-  "invalidAmount": "Ange ett giltigt fakturabelopp som är större än noll.",
-  "missingEmail": "Kundens e-postadress saknas.",
-  "loadFailed": "Det gick inte att läsa in externa fakturor.",
-  "sendFailed": "Det gick inte att skicka den externa fakturan.",
-  "success": "Den externa fakturan {{reference}} skapades och skickades till {{email}}.",
-  "statuses": {
-    "SUCCESS": "Betald",
-    "PENDING": "Väntande",
-    "FAILED": "Misslyckad",
-    "CANCELLED": "Avbruten"
-  }
-},
-
-
-  "success": {
-    "customerUpdated": "Kunduppgifterna har uppdaterats.",
-    "statusUpdated": "Ärendestatusen har uppdaterats.",
-    "lawyerAssigned": "Juristen har tilldelats ärendet."
-  },
-  "statuses": {
-    "PENDING": "Väntande",
-    "IN_PROGRESS": "Pågående",
-    "ASSIGNED": "Tilldelat",
-    "COMPLETED": "Slutfört",
-    "RESOLVED": "Löst",
-    "CLOSED": "Stängt",
-    "REJECTED": "Avvisat",
-    "CANCELLED": "Avbrutet",
-    "AVAILABLE": "Tillgänglig",
-    "BUSY": "Upptagen"
-  },
-  "errors": {
-    "loadCase": "Det gick inte att läsa in ärendeuppgifterna.",
-    "loadDocuments": "Det gick inte att läsa in ärendedokumenten.",
-    "loadLawyers": "Det gick inte att läsa in jurister.",
-    "updateCustomer": "Det gick inte att uppdatera kunduppgifterna.",
-    "updateStatus": "Det gick inte att uppdatera ärendestatusen.",
-    "selectLawyer": "Välj en jurist innan du tilldelar ärendet.",
-    "assignLawyer": "Det gick inte att tilldela juristen.",
-    "allowPopups": "Tillåt popup-fönster för att visa dokumentet.",
-    "openDocument": "Det gick inte att öppna dokumentet.",
-    "caseNotFound": "Ärendeuppgifterna kunde inte hittas."
-  }
-},
-  "customerCases": {
-    "title": "Mina ärenden",
-    "heading": "Dina juridiska ärenden",
-    "description": "Visa dina juridiska ärenden och följ deras framsteg.",
-    "startNewCase": "Starta ett nytt ärende",
-    "tryAgain": "Försök igen",
-    "generalLegalMatter": "Allmänt juridiskt ärende",
-    "dateUnavailable": "Datum ej tillgängligt",
-    "viewDetails": "Visa uppgifter",
-    "emptyMessage": "Du har inte skickat in några ärenden ännu.",
-    "emptyTitle": "Inga ärenden har skickats in ännu",
-    "emptyDescription": "När du skickar in en juridisk förfrågan visas ditt ärende här.",
-    "submitFirstCase": "Skicka in ditt första ärende",
-    "columns": {
-      "caseId": "Ärende-ID",
-      "caseType": "Ärendetyp",
-      "submitted": "Inskickat",
-      "action": "Åtgärd"
-    },
-    "filters": {
-      "caseStatus": "Ärendestatus",
-      "allStatuses": "Alla statusar",
-      "pending": "Väntande",
-      "active": "Aktivt",
-      "completed": "Slutfört"
-    },
-    "errors": {
-      "loadCases": "Det gick inte att läsa in dina ärenden."
-    }
-  },
-  "customerCaseDetails": {
-    "title": "Ärendeuppgifter",
-    "description": "Visa ärendets framsteg och hantera dina dokument.",
-    "backToCases": "Tillbaka till mina ärenden",
-    "loading": "Läser in ärendeuppgifter...",
-    "legalMatter": "Juridiskt ärende",
-    "caseId": "Ärende-ID",
-    "progressTimeline": "Tidslinje för ärendet",
-    "assignedCounsel": "Tilldelad jurist",
-    "notAssigned": "Ännu inte tilldelad",
-    "submissionDate": "Inskickningsdatum",
-    "matterOverview": "Ärendeöversikt och instruktioner",
-    "noDescription": "Ingen beskrivning har angetts.",
-    "caseDocuments": "Ärendedokument",
-    "documentsDescription": "Ladda upp och få åtkomst till dina ärendedokument.",
-    "selectDocument": "Välj ett dokument",
-    "uploadLimits": "PDF, DOC, DOCX, PNG, JPG · Max 10 MB",
-    "uploading": "Laddar upp...",
-    "uploadDocument": "Ladda upp dokument",
-    "uploadedFiles": "Uppladdade filer",
-    "noFiles": "Inga filer har laddats upp till detta ärende ännu.",
-    "documentNumber": "Dokument",
-    "pleaseWait": "Vänta...",
-    "download": "Ladda ner",
-    "timeline": {
-      "submitted": "Inskickat",
-      "reviewLawyer": "Granskning och jurist",
-      "inProgress": "Pågående",
-      "resolution": "Lösning"
-    },
-    "statuses": {
-      "PENDING": "Väntande",
-      "SUBMITTED": "Inskickat",
-      "UNDER_REVIEW": "Under granskning",
-      "IN_PROGRESS": "Pågående",
-      "ASSIGNED": "Tilldelat",
-      "COMPLETED": "Slutfört",
-      "RESOLVED": "Löst",
-      "CLOSED": "Stängt"
-    },
-    "success": {
-      "documentUploaded": "Dokumentet har laddats upp."
-    },
-    "errors": {
-      "loadCase": "Det gick inte att läsa in ärendeuppgifterna.",
-      "selectDocument": "Välj ett dokument att ladda upp.",
-      "invalidFileType": "Ladda upp en PDF-, DOC-, DOCX-, PNG-, JPG- eller JPEG-fil.",
-      "fileTooLarge": "Filstorleken får vara högst 10 MB.",
-      "unsupportedFileType": "Den valda filtypen stöds inte.",
-      "uploadDocument": "Det gick inte att ladda upp dokumentet.",
-      "downloadDocument": "Det gick inte att ladda ner dokumentet."
-    }
-  },
-  "customerNavigation": {
-    "toggleMenu": "Visa eller dölj navigeringsmenyn",
-    "home": "Hem",
-    "dashboard": "Instrumentpanel",
-    "myCases": "Mina ärenden",
-    "documents": "Dokument",
-    "updates": "Uppdateringar",
-    "signOut": "Logga ut"
-
-},
-"customerDocuments": {
-  "title": "Mina dokument",
-  "eyebrow": "SÄKERT DOKUMENTCENTER",
-  "heading": "Dokumentarkiv",
-  "description": "Få säker åtkomst till, granska och ladda ner dokument som hör till dina juridiska ärenden.",
-  "document": "Dokument",
-  "documents": "Dokument",
-  "allDocuments": "Alla dokument",
-  "tableDescription": "Dina uppladdade ärendedokument samlade på ett ställe.",
-  "emptyMessage": "Inga dokument hittades. Ladda upp dokument till dina juridiska ärenden för att se dem här.",
-  "securityNote": "Dina ärendedokument är säkert kopplade till ditt konto. Du kan visa eller ladda ner dem när du behöver åtkomst.",
-  "untitledDocument": "Dokument utan namn",
-  "caseDocument": "Äendedokument",
-  "opening": "Öppnar...",
-  "view": "Visa",
-  "pleaseWait": "Vänta...",
-  "download": "Ladda ner",
-  "delete": "Ta bort",
-  "deleting": "Tar bort...",
-  "deleteDocument": "Ta bort dokument",
-  "columns": {
-    "documentName": "Dokumentnamn",
-    "caseId": "Ärende-ID",
-    "action": "Åtgärd"
-  },
-  "filters": {
-    "caseId": "Ärende-ID",
-    "allCases": "Alla ärenden"
-  },
-  "deleteModal": {
-    "title": "Ta bort dokument?",
-    "confirmText": "Är du säker på att du vill ta bort",
-    "warning": "Den här åtgärden kan inte ångras."
-  },
-  "errors": {
-    "load": "Det gick inte att läsa in dokumenten.",
-    "allowPopups": "Tillåt popup-fönster för att visa dokumentet.",
-    "view": "Det gick inte att visa dokumentet.",
-    "download": "Det gick inte att ladda ner dokumentet.",
-    "delete": "Det gick inte att ta bort dokumentet."
-  }
-},
-"customerLogin": {
-  "homeAria": "APPEELs startsida",
-  "portal": "Kundportal",
-  "title": "Välkommen tillbaka",
-  "subtitle": "Logga in för att komma åt dina ärenden, dokument och juridiska uppdateringar.",
-  "email": "E-postadress",
-  "emailPlaceholder": "namn@exempel.se",
-  "password": "Lösenord",
-  "showPassword": "Visa",
-  "hidePassword": "Dölj",
-  "passwordPlaceholder": "Ange ditt lösenord",
-  "signingIn": "Loggar in...",
-  "submit": "Logga in på mitt konto",
-  "noAccount": "Har du inget APPEEL-konto?",
-  "createAccount": "Skapa ett konto",
-  "lawyerSignIn": "Juristinloggning",
-  "backHome": "Tillbaka till startsidan",
-  "errors": {
-    "noCustomerDetails": "Servern returnerade inte dina kundkontouppgifter.",
-    "signInFailed": "Det gick inte att logga in. Kontrollera dina inloggningsuppgifter."
-  }
-},
-"customerUpdates": {
-  "title": "Ärendeuppdateringar",
-  "heading": "Aktivitet och framsteg",
-  "description": "Håll dig uppdaterad om statusändringar, tilldelning av jurister och viktiga milstolpar i alla dina ärenden.",
-  "tableTitle": "Dina ärendeuppdateringar",
-  "viewTimeline": "Visa tidslinje",
-  "emptyMessage": "Inga ärendeuppdateringar hittades.",
-  "emptyTitle": "Inga uppdateringar ännu",
-  "emptyDescription": "När du skickar in ett ärende visas uppdateringar om dess framsteg här.",
-  "startCase": "Starta ett ärende",
-  "columns": {
-    "caseId": "Ärende-ID",
-    "currentStatus": "Nuvarande status",
-    "action": "Åtgärd"
-  },
-  "filters": {
-    "status": "Status",
-    "allStatuses": "Alla statusar"
-  },
-  "statuses": {
-    "PENDING": "Väntande",
-    "UNDER_REVIEW": "Under granskning",
-    "IN_PROGRESS": "Pågående",
-    "COMPLETED": "Slutfört",
-    "ASSIGNED": "Tilldelat",
-    "RESOLVED": "Löst",
-    "CLOSED": "Stängt",
-    "REJECTED": "Avvisat",
-    "CANCELLED": "Avbrutet"
-  },
-  "errors": {
-    "load": "Det gick inte att läsa in ärendeuppdateringarna."
-  }
-},
-"forgotPassword": {
-  "eyebrow": "KONTOÅTERSTÄLLNING",
-  "title": "Har du glömt ditt lösenord?",
-  "subtitle": "Vi skickar en säker länk så att du kan återställa ditt lösenord.",
-  "heading": "Återställ ditt lösenord",
-  "description": "Ange e-postadressen som är registrerad hos APPEEL.",
-  "email": "E-postadress",
-  "emailPlaceholder": "Ange din registrerade e-postadress",
-  "sending": "Skickar...",
-  "submit": "Skicka återställningslänk",
-  "rememberPassword": "Kommer du ihåg ditt lösenord?",
-  "backToLogin": "Tillbaka till inloggningen",
-  "backHome": "Tillbaka till startsidan",
-  "success": {
-    "default": "Om det finns ett konto med den här e-postadressen har en återställningslänk skickats."
-  },
-  "errors": {
-    "requestFailed": "Det gick inte att behandla din begäran.",
-    "connection": "Det gick inte att ansluta till servern."
-  }
-},
-"lawyerDashboard": {
-  "lawyerPortal": "Juristportal",
-  "home": "Hem",
-  "signOut": "Logga ut",
-  "welcome": "Välkommen",
-  "counsel": "Jurist",
-  "subtitle": "Hantera dina tilldelade juridiska ärenden, granska klientunderlag och uppdatera ärendenas framsteg.",
-  "allocationStatus": "Tilldelningsstatus",
-  "availableForCases": "Tillgänglig för ärenden",
-  "currentlyBusy": "Upptagen just nu",
-  "saving": "Sparar...",
-  "assignedMatters": "Tilldelade ärenden",
-  "activeInProgress": "Aktiva / Pågående",
-  "resolvedCases": "Avslutade ärenden",
-  "acceptingCases": "Tar emot ärenden",
-  "yesAvailable": "Ja (Tillgänglig)",
-  "noBusy": "Nej (Upptagen)",
-  "assignedClientMatters": "Tilldelade klientärenden",
-  "caseTableDescription": "Uppdatera ärendenas framsteg och granska klientdokumentation.",
-  "matterCount_one": "{{count}} ärende",
-  "matterCount_other": "{{count}} ärenden",
-  "loadingAssignedCases": "Läser in tilldelade ärenden...",
-  "reload": "Ladda om",
-  "noCasesAssigned": "Inga ärenden har tilldelats ännu",
-  "noCasesDescription": "När administratörer tilldelar inkommande ärenden inom ditt specialistområde visas de här.",
-  "noCasesForTable": "Du har för närvarande inga tilldelade ärenden.",
-  "matterFiles": "Äendedokument: {{caseId}}",
-  "documentDescription": "Underlag och dokument som klienten har laddat upp.",
-  "close": "Stäng",
-  "loadingDocuments": "Läser in dokument...",
-  "retry": "Försök igen",
-  "noDocumentsForCase": "Inga dokument hittades för ärende {{caseId}}.",
-  "unnamedDocument": "Dokument utan namn",
-  "file": "Fil",
-  "opening": "Öppnar...",
-  "view": "Visa",
-  "downloading": "Laddar ner...",
-  "download": "Ladda ner",
-  "loading": "Läser in...",
-  "hideFiles": "Dölj filer",
-  "viewFiles": "Visa filer",
-  "filesCount_one": "Filer ({{count}})",
-  "filesCount_other": "Filer ({{count}})",
-  "updateStatusFor": "Uppdatera status för ärende {{caseId}}",
-  "columns": {
-    "caseId": "Ärende-ID",
-    "customerName": "Kundens namn",
-    "matterCategory": "Ärendekategori",
-    "description": "Beskrivning",
-    "status": "Status",
-    "updateStatus": "Uppdatera status",
-    "documents": "Dokument"
-  },
-  "filters": {
-    "status": "Status"
-  },
-  "statuses": {
-    "PENDING": "Väntande",
-    "SUBMITTED": "Inskickat",
-    "UNDER_REVIEW": "Under granskning",
-    "IN_PROGRESS": "Pågående",
-    "COMPLETED": "Slutfört",
-    "UNKNOWN": "Okänd"
-  },
-  "fallback": {
-    "customer": "Kund",
-    "general": "Allmänt",
-    "noDescription": "Ingen beskrivning"
-  },
-  "openingDocument": "Läser in dokument",
-  "loadingDocument": "Läser in dokument...",
-  "errors": {
-    "invalidSession": "Din session är ogiltig eller har upphört. Logga in igen.",
-    "invalidLawyerSession": "Din juristsession är ogiltig. Logga in igen.",
-    "fetchLawyer": "Det gick inte att hämta juristuppgifterna.",
-    "fetchCases": "Det gick inte att hämta tilldelade ärenden.",
-    "loadDashboard": "Det gick inte att läsa in kontrollpanelen.",
-    "updateAvailability": "Det gick inte att uppdatera tillgängligheten.",
-    "updateCaseStatus": "Det gick inte att uppdatera ärendestatusen.",
-    "loadDocuments": "Det gick inte att läsa in dokumenten.",
-    "loadDocumentsWithStatus": "Det gick inte att läsa in dokumenten ({{status}}).",
-    "invalidDocumentList": "Servern returnerade en ogiltig dokumentlista.",
-    "missingDocumentId": "Dokument-ID saknas.",
-    "expiredSession": "Juristsessionen har upphört. Logga in igen.",
-    "documentRequestFailed": "Dokumentförfrågan misslyckades ({{status}}): {{message}}",
-    "emptyDocument": "Servern returnerade ett tomt dokument.",
-    "downloadDocument": "Det gick inte att ladda ner dokumentet.",
-    "popupBlocked": "Popup-fönstret blockerades. Tillåt popup-fönster för webbplatsen och försök igen.",
-    "documentViewFailed": "Det gick inte att öppna dokumentet. Gå tillbaka till kontrollpanelen och kontrollera felet.",
-    "openDocument": "Det gick inte att öppna dokumentet."
-  }
-},
-"lawyerLogin": {
-  "homeAria": "APPEELs startsida",
-  "workspace": "Arbetsyta för jurister",
-  "title": "Inloggning till juristportalen",
-  "subtitle": "Logga in för att komma åt tilldelade juridiska ärenden, granska dokument och uppdatera ärendenas framsteg.",
-  "email": "Juristens e-postadress",
-  "emailPlaceholder": "jurist@byra.se",
-  "password": "Lösenord",
-  "passwordPlaceholder": "Ange ditt lösenord",
-  "showPassword": "Visa",
-  "hidePassword": "Dölj",
-  "signingIn": "Loggar in...",
-  "submit": "Öppna juristens arbetsyta",
-  "registerPrompt": "Är du en yrkesverksam jurist?",
-  "registerHere": "Registrera dig här",
-  "customerSignIn": "Klientinloggning",
-  "backHome": "Tillbaka till startsidan",
-  "errors": {
-    "invalidCredentials": "Ogiltig e-postadress eller lösenord för jurist.",
-    "missingLawyerId": "Inloggningen lyckades, men servern returnerade inget jurist-ID.",
-    "connection": "Det gick inte att ansluta till servern. Försök igen."
-  }
-},
-"payment": {
-  "title": "Betalning",
-  "eyebrow": "SÄKER BETALNING HOS APPEEL",
-  "confirmingTitle": "Bekräftar din betalning",
-  "completeTitle": "Slutför din betalning",
-  "description": "Betala serviceavgiften säkert med PayPal för att fortsätta med ditt juridiska ärende.",
-  "serviceFee": "Serviceavgift för ärendet",
-  "caseId": "Ärende-ID",
-  "pleaseWait": "Vänta...",
-  "confirmationInProgress": "Betalningsbekräftelse pågår",
-  "tryAgain": "Försök betala igen",
-  "payButton": "Betala 99,00 SEK med PayPal",
-  "sandboxNote": "Betalningar behandlas via PayPals sandlådemiljö under testningen.",
-  "messages": {
-    "cancelled": "Betalningen avbröts. Du kan återvända till PayPal när du är redo.",
-    "confirming": "Bekräftar din betalning med PayPal..."
-  },
-  "errors": {
-    "missingCaseId": "Ärende-ID saknas. Gå tillbaka till ditt ärende.",
-    "missingCaseIdDescription": "Ärende-ID saknas. Gå tillbaka till ditt ärende och försök igen.",
-    "missingPaymentDetails": "Betalningsuppgifter saknas. Gå tillbaka till ditt ärende och starta betalningen igen.",
-    "confirmationFailed": "Det gick inte att bekräfta betalningen (HTTP {{status}}).",
-    "notCompleted": "PayPal har inte bekräftat att betalningen har slutförts.",
-    "confirmationUnavailable": "Det gick inte att bekräfta betalningen. Försök igen.",
-    "orderProcessing": "En PayPal-beställning behandlas redan. Ladda om sidan för att försöka bekräfta igen.",
-    "checkoutFailed": "Det gick inte att skapa eller återuppta PayPal-betalningen (HTTP {{status}}).",
-    "missingOrderDetails": "Servern returnerade inte de obligatoriska PayPal-beställningsuppgifterna.",
-    "startFailed": "Ett fel uppstod när betalningen skulle startas."
-  }
-},
-"resetPassword": {
-  "verifying": "Verifierar länken för lösenordsåterställning...",
-  "eyebrow": "KONTOSECURITY",
-  "pageTitle": "Skapa ett nytt lösenord",
-  "pageDescription": "Välj ett nytt lösenord för ditt APPEEL-konto.",
-  "cardTitle": "Återställ ditt lösenord",
-  "cardDescription": "Ange ditt nya lösenord nedan.",
-  "invalidLinkDescription": "Den här återställningslänken saknas, är ogiltig, har upphört att gälla eller har redan använts. Begär en ny länk för lösenordsåterställning.",
-  "requestNewLink": "Begär en ny länk",
-  "newPassword": "Nytt lösenord",
-  "newPasswordPlaceholder": "Ange ditt nya lösenord",
-  "confirmPassword": "Bekräfta nytt lösenord",
-  "confirmPasswordPlaceholder": "Bekräfta ditt nya lösenord",
-  "showPasswords": "Visa lösenord",
-  "hidePasswords": "Dölj lösenord",
-  "updating": "Uppdaterar lösenord...",
-  "submit": "Återställ lösenord",
-  "continueLogin": "Fortsätt till inloggning",
-  "backToLogin": "Tillbaka till inloggning",
-  "success": "Ditt lösenord har återställts.",
-  "errors": {
-    "missingToken": "Token för lösenordsåterställning saknas. Begär en ny länk.",
-    "invalidToken": "Den här länken för lösenordsåterställning är ogiltig eller har upphört att gälla.",
-    "verifyFailed": "Det gick inte att verifiera återställningslänken. Försök igen.",
-    "passwordLength": "Lösenordet måste innehålla mellan 8 och 100 tecken.",
-    "passwordMismatch": "Lösenorden stämmer inte överens.",
-    "resetFailed": "Det gick inte att återställa lösenordet."
-  }
-},
-"startCase": {
-  "pageTitle": "Starta ett nytt ärende",
-  "eyebrow": "ÄRENDEFORMULÄR",
-  "heading": "Starta ett nytt juridiskt ärende",
-  "description": "Fyll i uppgifterna nedan så att vårt juridiska team kan bedöma dina behov och hjälpa dig att komma i kontakt med rätt jurist.",
-  "clientSectionTitle": "1. Klientinformation",
-  "clientSectionDescription": "Verifierad från din kundprofil",
-  "fullName": "Fullständigt namn",
-  "registeredEmail": "Registrerad e-postadress",
-  "caseSectionTitle": "2. Ärendeinformation",
-  "caseSectionDescription": "Ange ärendets kategori och omfattning",
-  "caseCategory": "Juridisk ärendekategori",
-  "selectCategory": "Välj en kategori...",
-  "categories": {
-    "familyLaw": "Familjerätt (Skilsmässa, vårdnad, arv)",
-    "propertyDispute": "Fastighetstvist (Fastigheter, hyresavtal, hyresförhållanden)",
-    "criminalLaw": "Straffrätt och försvar",
-    "employmentLaw": "Arbetsrätt (Avtal, tvister, avgångsvederlag)",
-    "businessLaw": "Affärs- och bolagsrätt",
-    "consumerComplaint": "Konsumenträtt och krav",
-    "other": "Annan juridisk hjälp"
-  },
-  "caseDescription": "Ärendebeskrivning och bakgrund",
-  "descriptionPlaceholder": "Beskriv din situation i detalj. Ange datum, motparter, nuvarande status och vilket resultat du önskar...",
-  "confidentialityNote": "All kommunikation och ärendeinformation hanteras säkert och under strikt sekretess.",
-  "checkingSession": "Kontrollerar sessionen...",
-  "creatingCase": "Skapar ärende...",
-  "submit": "Skicka ärende och fortsätt till betalning →",
-  "cancel": "Avbryt",
-  "errors": {
-    "verifySession": "Det gick inte att verifiera din session.",
-    "missingCaseId": "Servern returnerade inget ärende-ID. Kontrollera dina ärenden innan du skickar in igen.",
-    "submitFailed": "Det gick inte att skicka in ditt ärende."
-  }
-},
-  "adminDashboard": {
-    "eyebrow": "SYSTEMÖVERSIKT",
-    "description": "Aktuell statistik över juridiska ärenden, jurister och kundärenden.",
-    "totalCases": "Totalt antal ärenden",
-    "pendingCases": "Väntande / Ej tilldelade",
-    "lawyers": "Jurister",
-    "payments": "Betalningar",
-    "quickNavigationTitle": "Snabbnavigering och tilldelning",
-    "quickNavigationDescription": "Snabb åtkomst till arbetsköer",
-    "manageAllCases": "Hantera alla ärenden",
-    "reviewCasesTitle": "Granska inkommande ärenden",
-    "reviewCasesDescription": "Tilldela väntande ärenden till kvalificerade jurister.",
-    "manageCases": "Hantera ärenden",
-    "lawyerAvailabilityTitle": "Juristtillgänglighet",
-    "lawyerAvailabilityDescription": "Granska juristers specialområden och tillgänglighet.",
-    "manageLawyers": "Hantera jurister",
-    "documentRepositoryTitle": "Dokumentarkiv",
-    "documentRepositoryDescription": "Verifiera kundunderlag och hantera uppladdade juridiska dokument.",
-    "manageDocuments": "Hantera dokument",
-    "paymentManagementTitle": "Betalningshantering",
-    "paymentManagementDescription": "Övervaka betalningsreferenser, betalningstransaktioner och betalningsstatus.",
-    "viewPayments": "Visa betalningar"
-  },
-  "adminLawyers": {
-    "tableTitle": "Juristhantering",
-    "notSpecified": "Inte angivet",
-    "refreshing": "Uppdaterar...",
-    "tryAgain": "Försök igen",
-    "emptyMessage": "Inga jurister har registrerats ännu.",
-    "columns": {
-      "name": "Juristens namn",
-      "email": "E-post",
-      "specialization": "Specialområde",
-      "availability": "Tillgänglighet",
-      "action": "Åtgärd"
-    },
-    "filters": {
-      "availability": "Tillgänglighet"
-    },
-    "availability": {
-      "AVAILABLE": "Tillgänglig",
-      "BUSY": "Upptagen"
-    },
-    "errors": {
-      "loadFailed": "Det gick inte att hämta jurister.",
-      "connection": "Det gick inte att ansluta till servern."
-    }
-  },
-  "adminDocuments": {
-    "tableTitle": "Dokumentarkiv",
-    "emptyMessage": "Inga ärendedokument har laddats upp till arkivet ännu.",
-    "opening": "Öppnar...",
-    "view": "Visa",
-    "processing": "Bearbetar...",
-    "download": "Ladda ner",
-    "columns": {
-      "caseId": "Ärende-ID",
-      "action": "Åtgärd"
-    },
-    "filters": {
-      "fileFormat": "Filformat",
-      "allFormats": "Alla format",
-      "caseReference": "Äendereferens",
-      "allCases": "Alla ärenden"
-    },
-    "errors": {
-      "sessionRequired": "Administratörssession krävs. Logga in som administratör.",
-      "loadFailed": "Det gick inte att hämta dokument.",
-      "connection": "Det gick inte att ansluta till backend-servern.",
-      "unauthorizedDownload": "Du har inte behörighet att ladda ner detta dokument.",
-      "downloadFailed": "Det gick inte att ladda ner dokumentet.",
-      "allowPopups": "Tillåt popup-fönster för att visa dokumentet.",
-      "previewFailed": "Det gick inte att förhandsgranska dokumentet.",
-      "viewFailed": "Det gick inte att visa dokumentet."
-    }
-  },
-  "adminPayments": {
-    "tableTitle": "Betalningar och fakturering",
-    "emptyMessage": "Inga betalningsuppgifter hittades.",
-    "currencyNotSet": "Valuta inte angiven",
-    "notRecorded": "Inte registrerad",
-    "refreshing": "Uppdaterar...",
-    "tryAgain": "Försök igen",
-    "columns": {
-      "paymentReference": "Betalningsreferens",
-      "caseId": "Ärende-ID",
-      "amount": "Belopp",
-      "provider": "Betalningsleverantör",
-      "gatewayOrderId": "Betalningsgatewayens order-ID",
-      "status": "Status"
-    },
-    "filters": {
-      "paymentStatus": "Betalningsstatus"
-    },
-    "statuses": {
-      "SUCCESS": "Genomförd",
-      "PENDING": "Väntande",
-      "FAILED": "Misslyckad",
-      "UNKNOWN": "Okänd"
-    },
-    "errors": {
-      "sessionMissing": "Administratörssession saknas. Logga in igen.",
-      "authorizationFailed": "Administratörsbehörigheten kunde inte verifieras. Logga in igen.",
-      "loadFailed": "Det gick inte att hämta betalningsuppgifter.",
-      "connection": "Det gick inte att ansluta till servern."
-    }
-  },
-  "adminLayout": {
-    "toggleSidebar": "Visa eller dölj administratörsmenyn",
-    "portalTitle": "Administratörsportal",
-    "administrator": "Administratör"
-  },
-  "customerDashboard": {
-    "customer": "Kund",
-    "loading": "Laddar din kundportal...",
-    "title": "Kundöversikt",
-    "eyebrow": "DIN JURIDISKA PLATS",
-    "welcome": "Välkommen, {{name}}",
-    "description": "Hantera dina juridiska ärenden, dela dokument säkert och följ dina ärendens utveckling på ett och samma ställe.",
-    "startNewCase": "Starta ett nytt ärende",
-    "viewMyCases": "Visa mina ärenden",
-    "workspaceTitle": "Din juridiska arbetsyta",
-    "workspaceDescription": "Allt du behöver för att hantera dina juridiska ärenden.",
-    "myCasesTitle": "Mina ärenden",
-    "myCasesDescription": "Visa dina inskickade ärenden, tilldelade jurister och ärendenas utveckling.",
-    "viewCases": "Visa ärenden",
-    "documentVaultTitle": "Dokumentarkiv",
-    "documentVaultDescription": "Kom åt dina uppladdade avtal, bevis och andra juridiska dokument.",
-    "viewDocuments": "Visa dokument",
-    "activityUpdatesTitle": "Aktivitetsuppdateringar",
-    "activityUpdatesDescription": "Se de senaste uppdateringarna om dina ärenden och din juridiska representation.",
-    "checkUpdates": "Visa uppdateringar",
-    "billingTitle": "Transparent juridisk fakturering",
-    "billingDescription": "Granska ärenderelaterade avgifter och betalningsinformation genom en tydlig faktureringsprocess.",
-    "securedAccount": "Säkert konto",
-    "supportTitle": "Behöver du hjälp med ditt ärende?",
-    "supportDescription": "Vårt kundserviceteam hjälper dig gärna med frågor och krav kring din ansökan.",
-    "visitHome": "Besök APPEELs startsida"
-  },
-  "adminDetailLayout": {
-  "back": "Tillbaka"
-},
-"adminSidebar": {
-  "console": "Administratörspanel",
-  "closeSidebar": "Stäng sidofältet",
-  "home": "Hem",
-  "dashboard": "Översikt",
-  "casesAllocation": "Ärenden och tilldelning",
-  "lawyerManagement": "Juristhantering",
-  "documentVault": "Dokumentarkiv",
-  "payments": "Betalningar",
-  "admin": "Administratör",
-  "systemController": "Systemansvarig",
-  "signOut": "Logga ut"
-},
-"customerHeader": {
-  "dashboard": "Översikt",
-  "cases": "Mina ärenden",
-  "documents": "Dokument",
-  "updates": "Uppdateringar"
-}
+﻿{
+    "navbar":  {
+                   "home":  "Hem",
+                   "about":  "Om oss",
+                   "services":  "Tjänster",
+                   "contact":  "Kontakta oss",
+                   "login":  "Logga in",
+                   "dashboard":  "Instrumentpanel",
+                   "tagline":  "Juridisk hjälp på ett enklare sätt",
+                   "openMenu":  "Öppna navigeringsmenyn",
+                   "closeMenu":  "Stäng navigeringsmenyn"
+               },
+    "common":  {
+                   "register":  "Registrera dig",
+                   "logout":  "Logga ut",
+                   "submit":  "Skicka",
+                   "cancel":  "Avbryt",
+                   "save":  "Spara",
+                   "loading":  "Laddar..."
+               },
+    "login":  {
+                  "title":  "Logga in på APPEEL",
+                  "subtitle":  "Få säker åtkomst till din juridiska arbetsyta",
+                  "email":  "E-postadress",
+                  "password":  "Lösenord",
+                  "forgotPassword":  "Glömt lösenordet?",
+                  "signIn":  "Logga in",
+                  "accountTitle":  "Logga in på ditt konto",
+                  "accountSubtitle":  "Ange din registrerade e-postadress och ditt lösenord.",
+                  "emailPlaceholder":  "Ange din registrerade e-postadress",
+                  "passwordPlaceholder":  "Ange ditt lösenord",
+                  "showPassword":  "Visa",
+                  "hidePassword":  "Dölj",
+                  "signingIn":  "Loggar in...",
+                  "secureAccess":  "Säker åtkomst för kunder, jurister och administratörer.",
+                  "newCustomer":  "Ny kund?",
+                  "createAccount":  "Skapa ett konto",
+                  "areYouLawyer":  "Är du jurist?",
+                  "registerHere":  "Registrera dig här",
+                  "backHome":  "Tillbaka till startsidan",
+                  "errors":  {
+                                 "noToken":  "Servern returnerade ingen autentiseringstoken.",
+                                 "customerDetails":  "Kundens kontouppgifter returnerades inte.",
+                                 "lawyerDetails":  "Juristens kontouppgifter returnerades inte.",
+                                 "invalidCredentials":  "Ogiltig e-postadress eller lösenord. Kontrollera dina inloggningsuppgifter och försök igen.",
+                                 "connection":  "Det gick inte att ansluta till servern. Försök igen."
+                             }
+              },
+    "home":  {
+                 "heroTitle":  "Rättvisa ska inte behöva kosta en förmögenhet.",
+                 "heroSubtitle":  "Få juridisk hjälp till ett överkomligt pris.",
+                 "startCase":  "Starta mitt ärende"
+             },
+    "footer":  {
+                   "homeAria":  "APPEELs startsida",
+                   "description":  "Enkel och prisvärd juridisk hjälp som du kan lita på.",
+                   "followUs":  "Följ APPSEEL",
+                   "socialAria":  "APPEEL på {{platform}}",
+                   "explore":  "Utforska",
+                   "home":  "Hem",
+                   "about":  "Om oss",
+                   "services":  "Tjänster",
+                   "contact":  "Kontakt",
+                   "rights":  "Alla rättigheter förbehållna.",
+                   "developedBy":  "Designad och utvecklad av",
+                   "backToTop":  "Tillbaka till toppen"
+               },
+    "about":  {
+                  "visualLabel":  "JURIDISK HJÄLP, PÅ ETT ENKLARE SÄTT",
+                  "visualTitle1":  "Din situation.",
+                  "visualTitle2":  "Dina alternativ.",
+                  "visualTitle3":  "Ditt nästa steg.",
+                  "visualDescription":  "Tydlig information och praktisk vägledning som hjälper dig att gå vidare med självförtroende.",
+                  "clarityTitle":  "Tydlighet kommer först.",
+                  "clarityDescription":  "Förstå din situation innan du fattar ett beslut.",
+                  "eyebrow":  "OM APPEEL",
+                  "heading":  "Juridisk hjälp ska kännas",
+                  "headingHighlight":  " nära och tillgänglig.",
+                  "intro":  "Juridiska frågor kan kännas komplicerade. Att få tydlig information om dina alternativ ska inte behöva vara det.",
+                  "description":  "APPEEL gör juridiska processer enklare att förstå genom tydlig kommunikation, transparent prissättning och praktiska nästa steg. Så att du kan fatta välgrundade beslut utan onödig förvirring.",
+                  "benefit1Title":  "Lär känna dina alternativ",
+                  "benefit1Description":  "Förstå vilka nästa steg som är möjliga i din situation.",
+                  "benefit2Title":  "Förstå processen",
+                  "benefit2Description":  "Få tydligare information om vad du kan förvänta dig.",
+                  "benefit3Title":  "Ta nästa steg",
+                  "benefit3Description":  "Gå vidare med praktisk information och stöd.",
+                  "contactButton":  "Låt oss prata"
+              },
+    "benefits":  {
+                     "eyebrow":  "APPEELS ARBETSSÄTT",
+                     "heading":  "Juridisk hjälp på ett enkelt sätt",
+                     "subtitle":  "Enkel information, tydliga priser och smidiga nästa steg",
+                     "card1Title":  "Känn till kostnaden i förväg",
+                     "card1Description":  "Se priset och vad som ingår innan du bestämmer dig för att gå vidare.",
+                     "card2Title":  "Tydlig tidsram för svar",
+                     "card2Description":  "Vi strävar efter att ge ett första svar inom 24 timmar.",
+                     "card3Title":  "Vägledning för din situation",
+                     "card3Description":  "Förstå dina alternativ och få hjälp med att förbereda relevanta dokument.",
+                     "card4Title":  "Håll dig uppdaterad",
+                     "card4Description":  "Följ utvecklingen i ditt ärende och förstå nästa steg längs vägen."
+                 },
+    "contact":  {
+                    "eyebrow":  "KONTAKTA OSS",
+                    "heading":  "Låt oss göra ditt nästa steg",
+                    "headingHighlight":  " tydligare.",
+                    "description":  "Juridiska frågor kan vara svåra att hantera. Börja med att berätta vad du funderar på. Vi finns här för att hjälpa dig förstå dina alternativ.",
+                    "highlight1Title":  "Börja med ett samtal",
+                    "highlight1Description":  "Du behöver inte veta vilken tjänst du behöver innan du kontaktar oss.",
+                    "highlight2Title":  "Dela endast det som behövs",
+                    "highlight2Description":  "Undvik att inkludera känsliga personuppgifter eller konfidentiell information om ditt ärende i detta allmänna kontaktformulär.",
+                    "generalEnquiries":  "ALLMÄNNA FÖRFRÅGNINGAR",
+                    "generalEnquiriesDescription":  "Använd formuläret för att skicka din fråga till oss.",
+                    "formEyebrow":  "VI FINNS HÄR FÖR ATT LYSSNA",
+                    "formTitle":  "Skicka ett meddelande",
+                    "formDescription":  "Fyll i uppgifterna nedan och berätta hur vi kan hjälpa dig.",
+                    "successTitle":  "Tack för din förfrågan.",
+                    "successDescription":  "Din förfrågan har skickats. Vårt team kommer att granska ditt meddelande.",
+                    "sendAnother":  "Skicka en ny förfrågan",
+                    "fullName":  "Fullständigt namn",
+                    "fullNamePlaceholder":  "Ange ditt fullständiga namn",
+                    "email":  "E-postadress",
+                    "emailPlaceholder":  "du@exempel.se",
+                    "subject":  "Vad gäller din förfrågan?",
+                    "subjectPlaceholder":  "Ange ett kort ämne",
+                    "message":  "Ditt meddelande",
+                    "messagePlaceholder":  "Berätta hur vi kan hjälpa dig...",
+                    "sending":  "Skickar...",
+                    "sendEnquiry":  "Skicka förfrågan",
+                    "formNote":  "Inkludera inte konfidentiella ärendedokument eller känsliga uppgifter.",
+                    "errors":  {
+                                   "sendFailed":  "Det gick inte att skicka din förfrågan. Försök igen.",
+                                   "general":  "Något gick fel. Försök igen senare."
+                               }
+                },
+    "homeAccess":  {
+                       "eyebrow":  "DITT NÄSTA STEG BÖRJAR HÄR",
+                       "heading":  "Ditt juridiska ärende.",
+                       "headingHighlight":  "Ditt nästa steg.",
+                       "description":  "Få klarhet i dina alternativ och gå vidare med tydlig och prisvärd juridisk hjälp.",
+                       "continueCase":  "Fortsätt mitt ärende",
+                       "dashboard":  "Gå till instrumentpanelen",
+                       "startCase":  "Starta mitt ärende",
+                       "existingAccount":  "Har du redan ett konto?",
+                       "signIn":  "Logga in",
+                       "transparentPricing":  "Tydliga priser",
+                       "noObligation":  "Utan förpliktelser",
+                       "secureHandling":  "Säker ärendehantering",
+                       "visualMessage":  "En tydligare väg framåt"
+                   },
+    "hero":  {
+                 "title":  "Juridisk hjälp ska inte kosta en förmögenhet.",
+                 "subtitle":  "Börja från 99 SEK.",
+                 "description":  "Förstå dina alternativ och ta nästa steg med tydliga priser och ett enklare sätt att få juridisk hjälp.",
+                 "benefitsLabel":  "Fördelar med tjänsten",
+                 "transparentPricing":  "Tydliga priser",
+                 "noHiddenFees":  "Inga dolda avgifter",
+                 "secureHandling":  "Säker ärendehantering"
+             },
+    "pricing":  {
+                    "heading":  "Juridisk hjälp med tydliga priser.",
+                    "subtitle":  "Ta reda på kostnaden och vilket stöd du får innan du går vidare.",
+                    "startHere":  "BÖRJA HÄR",
+                    "footerNote":  "Inga dolda avgifter. Eventuellt ytterligare arbete diskuteras med dig och kräver ditt godkännande innan det påbörjas.",
+                    "initialReview":  {
+                                          "title":  "Inledande granskning av ärendet",
+                                          "priceNote":  "Engångsavgift för att komma igång",
+                                          "description":  "Berätta om din situation och dela dina dokument för att förstå nästa steg.",
+                                          "detail":  "En enkel startpunkt",
+                                          "button":  "Börja med en granskning"
+                                      },
+                    "arnComplaint":  {
+                                         "title":  "ARN-anmälan",
+                                         "priceNote":  "Fast pris",
+                                         "description":  "Få hjälp med att granska ditt underlag och förbereda en anmälan till ARN.",
+                                         "detail":  "För konsumenttvister",
+                                         "button":  "Välj ARN-hjälp"
+                                     },
+                    "districtCourt":  {
+                                          "title":  "Försvar i tingsrätten",
+                                          "priceNote":  "Baserat på ärendets omfattning",
+                                          "description":  "Diskutera ditt ärende och vilket stöd som behövs för att förbereda ett försvar.",
+                                          "detail":  "Omfattningen bekräftas innan arbetet påbörjas",
+                                          "button":  "Diskutera ditt ärende"
+                                      },
+                    "tenancyArbitration":  {
+                                               "title":  "Hyresfrågor och skiljeförfarande",
+                                               "priceNote":  "Baserat på ärendets omfattning",
+                                               "description":  "Få hjälp med ditt ärende, granska dokument och planera nästa steg.",
+                                               "detail":  "Omfattningen bekräftas innan arbetet påbörjas",
+                                               "button":  "Diskutera ditt ärende"
+                                           }
+                },
+    "journey":  {
+                    "heading":  "Din resa med APPEEL",
+                    "subtitle":  "Sju enkla steg. Tydliga priser. Juridiskt stöd genom hela processen.",
+                    "step":  "STEG",
+                    "process":  "APPEELS PROCESS",
+                    "previousSteps":  "Föregående steg",
+                    "nextSteps":  "Nästa steg",
+                    "showing":  "Visar {{start}}–{{end}} av {{total}} steg",
+                    "showStartingAt":  "Visa steg från {{step}}",
+                    "steps":  {
+                                  "upload":  {
+                                                 "label":  "Ladda upp dokument",
+                                                 "description":  "Skicka in dina avtal, bevis och relevanta dokument."
+                                             },
+                                  "payment":  {
+                                                  "label":  "Betala 99 SEK",
+                                                  "description":  "Betala engångsavgiften för den inledande granskningen för att starta ditt ärende."
+                                              },
+                                  "started":  {
+                                                  "label":  "Ärendet har startats",
+                                                  "description":  "Få ett ärendereferensnummer för att följa ditt juridiska ärende."
+                                              },
+                                  "review":  {
+                                                 "label":  "Granskning av ärendet",
+                                                 "description":  "Din information granskas för att förstå ditt ärende."
+                                             },
+                                  "offer":  {
+                                                "label":  "Erbjudande till fast pris",
+                                                "description":  "Granska omfattningen och priset för ytterligare juridisk hjälp."
+                                            },
+                                  "approval":  {
+                                                   "label":  "Ditt godkännande",
+                                                   "description":  "Välj om du vill gå vidare med de föreslagna nästa stegen."
+                                               },
+                                  "preparation":  {
+                                                      "label":  "Dokumentförberedelse",
+                                                      "description":  "Få hjälp med att förbereda relevanta juridiska dokument."
+                                                  }
+                              }
+                },
+    "lawyerRegister":  {
+                           "homeAria":  "APPEELs startsida",
+                           "title":  "Juristregistrering",
+                           "fullName":  "Juristens fullständiga namn",
+                           "fullNamePlaceholder":  "t.ex. Adv. Sofia Berg",
+                           "email":  "Officiell e-postadress",
+                           "emailPlaceholder":  "sofia.berg@lawfirm.com",
+                           "specialization":  "Huvudsakligt rättsområde / Specialisering",
+                           "specializationPlaceholder":  "t.ex. Affärs- och avtalsrätt, familjerätt",
+                           "phone":  "Direkt telefonnummer",
+                           "phonePlaceholder":  "+46 8 123 4567",
+                           "password":  "Lösenord",
+                           "showPassword":  "Visa",
+                           "hidePassword":  "Dölj",
+                           "passwordPlaceholder":  "Minst 8 tecken",
+                           "passwordHint":  "Minst 8 tecken med en blandning av bokstäver och siffror",
+                           "registering":  "Registrerar jurist...",
+                           "submit":  "Slutför registreringen",
+                           "alreadyRegistered":  "Redan registrerad som jurist?",
+                           "signIn":  "Logga in här",
+                           "backHome":  "Tillbaka till APPEELs startsida",
+                           "success":  "Registreringen lyckades! Logga in.",
+                           "errors":  {
+                                          "registrationFailed":  "Registreringen misslyckades. Försök igen.",
+                                          "connection":  "Det gick inte att ansluta till servern. Försök igen."
+                                      }
+                       },
+    "customerRegister":  {
+                             "homeAria":  "APPEELs startsida",
+                             "title":  "Skapa ditt konto",
+                             "fullName":  "Fullständigt namn",
+                             "fullNamePlaceholder":  "t.ex. Erik Lindqvist",
+                             "email":  "E-postadress",
+                             "emailPlaceholder":  "namn@exempel.se",
+                             "phone":  "Telefonnummer",
+                             "phonePlaceholder":  "t.ex. +46 70 123 4567",
+                             "password":  "Skapa lösenord",
+                             "showPassword":  "Visa",
+                             "hidePassword":  "Dölj",
+                             "passwordPlaceholder":  "Minst 8 tecken",
+                             "passwordHint":  "Måste innehålla minst 8 tecken",
+                             "creatingAccount":  "Skapar konto...",
+                             "submit":  "Registrera konto",
+                             "alreadyHaveAccount":  "Har du redan ett konto?",
+                             "signIn":  "Logga in",
+                             "registerAsLawyer":  "Registrera dig som jurist",
+                             "backHome":  "Tillbaka till startsidan",
+                             "errors":  {
+                                            "registrationFailed":  "Det gick inte att registrera dig. Kontrollera dina uppgifter."
+                                        }
+                         },
+    "adminLogin":  {
+                       "homeAria":  "APPEELs startsida",
+                       "portal":  "Administrationsportal",
+                       "title":  "Administratörsinloggning",
+                       "subtitle":  "Säker administration av juristtilldelning, ärendehantering och systemstatistik.",
+                       "email":  "Administratörens e-postadress",
+                       "emailPlaceholder":  "admin@appeel.se",
+                       "password":  "Lösenord",
+                       "showPassword":  "Visa",
+                       "hidePassword":  "Dölj",
+                       "passwordPlaceholder":  "Ange administratörens lösenord",
+                       "authenticating":  "Autentiserar...",
+                       "submit":  "Logga in på administrationsportalen",
+                       "backHome":  "Tillbaka till APPEELs startsida",
+                       "errors":  {
+                                      "invalidCredentials":  "Ogiltiga administratörsuppgifter.",
+                                      "noToken":  "Inloggningen lyckades, men servern returnerade ingen token.",
+                                      "connection":  "Det gick inte att ansluta till servern. Försök igen."
+                                  }
+                   },
+    "logoutDialog":  {
+                         "title":  "Bekräfta utloggning",
+                         "description":  "Är du säker på att du vill logga ut från ditt konto?",
+                         "signingOut":  "Loggar ut...",
+                         "confirm":  "Ja, logga ut"
+                     },
+    "table":  {
+                  "records":  "{{count}} poster",
+                  "loading":  "Laddar poster...",
+                  "empty":  "Inga poster hittades."
+              },
+    "tablePagination":  {
+                            "showing":  "Visar",
+                            "of":  "av",
+                            "records":  "poster",
+                            "rows":  "Rader",
+                            "previous":  "Föregående",
+                            "page":  "Sida",
+                            "next":  "Nästa"
+                        },
+    "tableToolbar":  {
+                         "searchPlaceholder":  "Sök poster...",
+                         "searchLabel":  "Sök poster",
+                         "filter":  "Filtrera",
+                         "all":  "Alla {{label}}",
+                         "done":  "Klart",
+                         "refresh":  "Uppdatera",
+                         "refreshing":  "Uppdaterar...",
+                         "exportCSV":  "Exportera CSV"
+                     },
+    "adminCases":  {
+                       "tableTitle":  "ALLA JURIDISKA ÄRENDEN",
+                       "viewDetails":  "Visa detaljer",
+                       "notSpecified":  "Ej angivet",
+                       "notAvailable":  "Ej tillgängligt",
+                       "emptyMessage":  "Inga juridiska ärenden matchar din sökning eller ditt filter.",
+                       "columns":  {
+                                       "caseId":  "Ärende-ID",
+                                       "caseType":  "Ärendetyp",
+                                       "appliedDate":  "Ansökningsdatum",
+                                       "actions":  "Åtgärder"
+                                   },
+                       "filters":  {
+                                       "caseStatus":  "Ärendestatus",
+                                       "allStatuses":  "Alla statusar",
+                                       "unassignedOnly":  "Endast ej tilldelade",
+                                       "pending":  "Väntande",
+                                       "underReview":  "Under granskning",
+                                       "inProgress":  "Pågående",
+                                       "completed":  "Slutförda"
+                                   },
+                       "errors":  {
+                                      "accessDenied":  "Administratörsåtkomst nekad. Logga in igen.",
+                                      "fetchFailed":  "Det gick inte att hämta ärenden ({{status}}).",
+                                      "unableToLoadCases":  "Det gick inte att läsa in ärenden från servern.",
+                                      "fetchLawyersFailed":  "Det gick inte att hämta jurister ({{status}}).",
+                                      "unableToLoadLawyers":  "Det gick inte att läsa in jurister. Uppdatera sidan."
+                                  }
+                   },
+    "adminLawyerDetails":  {
+                               "title":  "Juristuppgifter",
+                               "subtitle":  "Hantera juristuppgifter och tilldelade ärenden · ID: {{lawyerId}}",
+                               "backToLawyers":  "Tillbaka till jurister",
+                               "loading":  "Laddar juristuppgifter...",
+                               "informationTitle":  "Juristinformation",
+                               "informationDescription":  "Uppdatera juristens profiluppgifter.",
+                               "fullName":  "Fullständigt namn",
+                               "email":  "E-post",
+                               "specialization":  "Specialisering",
+                               "phone":  "Telefonnummer",
+                               "newPassword":  "Nytt lösenord (valfritt)",
+                               "passwordPlaceholder":  "Lämna tomt för att behålla nuvarande lösenord",
+                               "saving":  "Sparar...",
+                               "saveChanges":  "Spara ändringar",
+                               "assignedCases":  "Tilldelade ärenden",
+                               "assignedCasesDescription":  "Ärenden som tilldelats {{name}}.",
+                               "thisLawyer":  "denna jurist",
+                               "caseCount_one":  "{{count}} ärende",
+                               "caseCount_other":  "{{count}} ärenden",
+                               "emptyCases":  "Inga ärenden har tilldelats denna jurist.",
+                               "view":  "Visa",
+                               "success":  "Ändringarna har sparats.",
+                               "notAvailable":  "Ej tillgängligt",
+                               "columns":  {
+                                               "caseId":  "Ärende-ID",
+                                               "customer":  "Kund",
+                                               "caseType":  "Ärendetyp",
+                                               "status":  "Status",
+                                               "action":  "Åtgärd"
+                                           },
+                               "filters":  {
+                                               "status":  "Status",
+                                               "pending":  "Väntande",
+                                               "underReview":  "Under granskning",
+                                               "inProgress":  "Pågående",
+                                               "completed":  "Slutförda"
+                                           },
+                               "statuses":  {
+                                                "PENDING":  "Väntande",
+                                                "UNDER_REVIEW":  "Under granskning",
+                                                "IN_PROGRESS":  "Pågående",
+                                                "COMPLETED":  "Slutförda"
+                                            },
+                               "errors":  {
+                                              "loadLawyer":  "Det gick inte att läsa in juristuppgifterna.",
+                                              "loadCases":  "Det gick inte att läsa in tilldelade ärenden.",
+                                              "general":  "Något gick fel.",
+                                              "updateLawyer":  "Det gick inte att uppdatera juristen.",
+                                              "saveChanges":  "Det gick inte att spara ändringarna."
+                                          }
+                           },
+    "adminCaseDetails":  {
+                             "title":  "Ärendeuppgifter",
+                             "subtitle":  "Hantera ärendeinformation och tilldelning · ID: {{caseId}}",
+                             "loadingSubtitle":  "Läser in ärendeinformation · ID: {{caseId}}",
+                             "caseIdSubtitle":  "Ärende-ID: {{caseId}}",
+                             "backToCases":  "Tillbaka till ärenden",
+                             "loading":  "Läser in ärendeuppgifter...",
+                             "tryAgain":  "Försök igen",
+                             "caseInformation":  "Ärendeinformation",
+                             "clientInformation":  "Kundinformation",
+                             "editDetails":  "Redigera uppgifter",
+                             "customerName":  "Kundens namn",
+                             "emailAddress":  "E-postadress",
+                             "phoneNumber":  "Telefonnummer",
+                             "notProvided":  "Inte angivet",
+                             "caseType":  "Ärendetyp",
+                             "caseDescription":  "Ärendebeskrivning",
+                             "assignedLawyer":  "Tilldelad jurist",
+                             "currentAssignment":  "Nuvarande tilldelning",
+                             "notAssigned":  "Inte tilldelad",
+                             "lawyerEmail":  "Juristens e-postadress",
+                             "documents":  "Dokument ({{count}})",
+                             "noDocuments":  "Inga dokument har laddats upp",
+                             "opening":  "Öppnar...",
+                             "view":  "Visa",
+                             "download":  "Ladda ner",
+                             "retry":  "Försök igen",
+                             "quickActions":  "Snabbåtgärder",
+                             "updateStatus":  "Uppdatera status",
+                             "saving":  "Sparar...",
+                             "saveStatus":  "Spara status",
+                             "assignLawyer":  "Tilldela jurist",
+                             "selectLawyer":  "Välj en jurist",
+                             "assigning":  "Tilldelar...",
+                             "assign":  "Tilldela",
+                             "saveChanges":  "Spara ändringar",
+                             "newPassword":  "Nytt lösenord",
+                             "newPasswordPlaceholder":  "Ange nytt lösenord (valfritt)",
+                             "passwordHint":  "Lämna tomt för att behålla det nuvarande lösenordet.",
+                             "externalInvoices":  {
+                                                      "title":  "Externa fakturor",
+                                                      "description":  "Skapa och skicka ytterligare betalningsfakturor till kunden.",
+                                                      "amount":  "Fakturabelopp (SEK)",
+                                                      "amountPlaceholder":  "Ange fakturabelopp",
+                                                      "customerEmail":  "Kundens e-postadress",
+                                                      "emailUnavailable":  "E-postadress saknas",
+                                                      "creating":  "Skapar och skickar...",
+                                                      "send":  "Skicka extern faktura",
+                                                      "paymentNotice":  "Kunden får ett e-postmeddelande med en PayPal Sandbox-betalningslänk.",
+                                                      "history":  "Fakturahistorik ({{count}})",
+                                                      "refreshing":  "Uppdaterar...",
+                                                      "refresh":  "Uppdatera",
+                                                      "loading":  "Läser in externa fakturor...",
+                                                      "empty":  "Inga externa fakturor har skapats för detta ärende.",
+                                                      "createdAt":  "Skapad",
+                                                      "caseId":  "Ärende-ID",
+                                                      "invoiceId":  "Faktura-ID",
+                                                      "paidAt":  "Betald",
+                                                      "notPaid":  "Inte betald ännu",
+                                                      "invalidAmount":  "Ange ett giltigt fakturabelopp som är större än noll.",
+                                                      "missingEmail":  "Kundens e-postadress saknas.",
+                                                      "loadFailed":  "Det gick inte att läsa in externa fakturor.",
+                                                      "sendFailed":  "Det gick inte att skicka den externa fakturan.",
+                                                      "success":  "Den externa fakturan {{reference}} skapades och skickades till {{email}}.",
+                                                      "statuses":  {
+                                                                       "SUCCESS":  "Betald",
+                                                                       "PENDING":  "Väntande",
+                                                                       "FAILED":  "Misslyckad",
+                                                                       "CANCELLED":  "Avbruten"
+                                                                   }
+                                                  },
+                             "success":  {
+                                             "customerUpdated":  "Kunduppgifterna har uppdaterats.",
+                                             "statusUpdated":  "Ärendestatusen har uppdaterats.",
+                                             "lawyerAssigned":  "Juristen har tilldelats ärendet."
+                                         },
+                             "statuses":  {
+                                              "PENDING":  "Väntande",
+                                              "IN_PROGRESS":  "Pågående",
+                                              "ASSIGNED":  "Tilldelat",
+                                              "COMPLETED":  "Slutfört",
+                                              "RESOLVED":  "Löst",
+                                              "CLOSED":  "Stängt",
+                                              "REJECTED":  "Avvisat",
+                                              "CANCELLED":  "Avbrutet",
+                                              "AVAILABLE":  "Tillgänglig",
+                                              "BUSY":  "Upptagen"
+                                          },
+                             "errors":  {
+                                            "loadCase":  "Det gick inte att läsa in ärendeuppgifterna.",
+                                            "loadDocuments":  "Det gick inte att läsa in ärendedokumenten.",
+                                            "loadLawyers":  "Det gick inte att läsa in jurister.",
+                                            "updateCustomer":  "Det gick inte att uppdatera kunduppgifterna.",
+                                            "updateStatus":  "Det gick inte att uppdatera ärendestatusen.",
+                                            "selectLawyer":  "Välj en jurist innan du tilldelar ärendet.",
+                                            "assignLawyer":  "Det gick inte att tilldela juristen.",
+                                            "allowPopups":  "Tillåt popup-fönster för att visa dokumentet.",
+                                            "openDocument":  "Det gick inte att öppna dokumentet.",
+                                            "caseNotFound":  "Ärendeuppgifterna kunde inte hittas."
+                                        }
+                         },
+    "customerCases":  {
+                          "title":  "Mina ärenden",
+                          "heading":  "Dina juridiska ärenden",
+                          "description":  "Visa dina juridiska ärenden och följ deras framsteg.",
+                          "startNewCase":  "Starta ett nytt ärende",
+                          "tryAgain":  "Försök igen",
+                          "generalLegalMatter":  "Allmänt juridiskt ärende",
+                          "dateUnavailable":  "Datum ej tillgängligt",
+                          "viewDetails":  "Visa uppgifter",
+                          "emptyMessage":  "Du har inte skickat in några ärenden ännu.",
+                          "emptyTitle":  "Inga ärenden har skickats in ännu",
+                          "emptyDescription":  "När du skickar in en juridisk förfrågan visas ditt ärende här.",
+                          "submitFirstCase":  "Skicka in ditt första ärende",
+                          "columns":  {
+                                          "caseId":  "Ärende-ID",
+                                          "caseType":  "Ärendetyp",
+                                          "submitted":  "Inskickat",
+                                          "action":  "Åtgärd",
+                                          "status":  "Status",
+                                          "assignedLawyer":  "Tilldelad jurist"
+                                      },
+                          "filters":  {
+                                          "caseStatus":  "Ärendestatus",
+                                          "allStatuses":  "Alla statusar",
+                                          "pending":  "Väntande",
+                                          "active":  "Aktivt",
+                                          "completed":  "Slutfört"
+                                      },
+                          "errors":  {
+                                         "loadCases":  "Det gick inte att läsa in dina ärenden."
+                                     }
+                      },
+    "customerCaseDetails":  {
+                                "title":  "Ärendeuppgifter",
+                                "description":  "Visa ärendets framsteg och hantera dina dokument.",
+                                "backToCases":  "Tillbaka till mina ärenden",
+                                "loading":  "Läser in ärendeuppgifter...",
+                                "legalMatter":  "Juridiskt ärende",
+                                "caseId":  "Ärende-ID",
+                                "progressTimeline":  "Tidslinje för ärendet",
+                                "assignedCounsel":  "Tilldelad jurist",
+                                "notAssigned":  "Ännu inte tilldelad",
+                                "submissionDate":  "Inskickningsdatum",
+                                "matterOverview":  "Ärendeöversikt och instruktioner",
+                                "noDescription":  "Ingen beskrivning har angetts.",
+                                "caseDocuments":  "Ärendedokument",
+                                "documentsDescription":  "Ladda upp och få åtkomst till dina ärendedokument.",
+                                "selectDocument":  "Välj ett dokument",
+                                "uploadLimits":  "PDF, DOC, DOCX, PNG, JPG · Max 10 MB",
+                                "uploading":  "Laddar upp...",
+                                "uploadDocument":  "Ladda upp dokument",
+                                "uploadedFiles":  "Uppladdade filer",
+                                "noFiles":  "Inga filer har laddats upp till detta ärende ännu.",
+                                "documentNumber":  "Dokument",
+                                "pleaseWait":  "Vänta...",
+                                "download":  "Ladda ner",
+                                "timeline":  {
+                                                 "submitted":  "Inskickat",
+                                                 "reviewLawyer":  "Granskning och jurist",
+                                                 "inProgress":  "Pågående",
+                                                 "resolution":  "Lösning"
+                                             },
+                                "statuses":  {
+                                                 "PENDING":  "Väntande",
+                                                 "SUBMITTED":  "Inskickat",
+                                                 "UNDER_REVIEW":  "Under granskning",
+                                                 "IN_PROGRESS":  "Pågående",
+                                                 "ASSIGNED":  "Tilldelat",
+                                                 "COMPLETED":  "Slutfört",
+                                                 "RESOLVED":  "Löst",
+                                                 "CLOSED":  "Stängt"
+                                             },
+                                "success":  {
+                                                "documentUploaded":  "Dokumentet har laddats upp.",
+                                                "documentDeleted":  "Dokumentet har tagits bort."
+                                            },
+                                "errors":  {
+                                               "loadCase":  "Det gick inte att läsa in ärendeuppgifterna.",
+                                               "selectDocument":  "Välj ett dokument att ladda upp.",
+                                               "invalidFileType":  "Ladda upp en PDF-, DOC-, DOCX-, PNG-, JPG- eller JPEG-fil.",
+                                               "fileTooLarge":  "Filstorleken får vara högst 10 MB.",
+                                               "unsupportedFileType":  "Den valda filtypen stöds inte.",
+                                               "uploadDocument":  "Det gick inte att ladda upp dokumentet.",
+                                               "downloadDocument":  "Det gick inte att ladda ner dokumentet.",
+                                               "loadDocuments":  "Det gick inte att läsa in ärendedokumenten.",
+                                               "uploadFailed":  "Uppladdningen misslyckades.",
+                                               "viewDocument":  "Det gick inte att visa dokumentet.",
+                                               "emptyFile":  "Filen är tom.",
+                                               "deleteDocument":  "Det gick inte att ta bort dokumentet.",
+                                               "unsupportedFileFormat":  "Filformatet stöds inte.",
+                                               "popupBlocked":  "Tillåt popup-fönster i webbläsaren för att visa dokument."
+                                           },
+                                "labels":  {
+                                               "addDocuments":  "Lägg till dokument i ditt ärende",
+                                               "delete":  "Ta bort",
+                                               "uploadFormats":  "PDF, DOC, DOCX, JPG, JPEG, PNG, CSV, XLS och XLSX · Högst 10 MB per fil",
+                                               "yourCaseFiles":  "DINA ÄRENDEHANDLINGAR",
+                                               "dragDropFiles":  "Dra och släpp filer här eller välj flera filer.",
+                                               "assignedLawyerLabel":  "TILLDELAD JURIST",
+                                               "view":  "Visa",
+                                               "file":  "Fil",
+                                               "tryAgain":  "Försök igen",
+                                               "eyebrow":  "DINA JURIDISKA ÄRENDEN",
+                                               "caseInformation":  "Ärendeinformation",
+                                               "noDocumentsTitle":  "Inga dokument har laddats upp ännu",
+                                               "dropFiles":  "Släpp dina dokument här",
+                                               "noCaseDescription":  "Ingen ärendebeskrivning är tillgänglig just nu.",
+                                               "selectFiles":  "Välj filer",
+                                               "submittedDateLabel":  "INLÄMNINGSDATUM",
+                                               "caseDescription":  "Ärendebeskrivning",
+                                               "noDocumentsDescription":  "Lägg till dokument som hör till detta ärende med uppladdningsknappen nedan.",
+                                               "lawyerPending":  "Tilldelning av jurist väntar.",
+                                               "loadingTitle":  "Läser in ditt ärende",
+                                               "documentFallback":  "Ärendedokument",
+                                               "loadErrorTitle":  "Det gick inte att läsa in ärendeuppgifterna",
+                                               "helpNote":  "Din ärendeinformation och dina dokument finns tillgängliga i din personliga instrumentpanel. Kontakta APPEEL:s supportteam om du behöver hjälp.",
+                                               "files":  "Filer",
+                                               "loadingDocuments":  "Läser in dokument...",
+                                               "referenceNote":  "Din unika ärendereferens",
+                                               "caseReference":  "ÄRENDEREFERENS",
+                                               "customerDocuments":  "Kunddokument",
+                                               "legalSupport":  "APPEEL JURIDISK SUPPORT",
+                                               "caseType":  "ÄRENDETYP",
+                                               "caseOverview":  "ÄRENDEÖVERSIKT",
+                                               "dateUnavailable":  "Inte tillgängligt",
+                                               "documentsDescription":  "Visa och hantera dokumenten som har laddats upp för detta ärende."
+                                           },
+                                "confirmDelete":  {
+                                                      "cancel":  "Avbryt",
+                                                      "title":  "Ta bort dokument?",
+                                                      "deleting":  "Tar bort...",
+                                                      "message":  "Är du säker på att du vill ta bort detta dokument?",
+                                                      "delete":  "Ta bort"
+                                                  },
+                                "uploadProgress":  "Laddar upp {{current}} av {{total}}: {{fileName}}",
+                                "uploadSuccessCount":  "{{count}} dokument har laddats upp."
+                            },
+    "customerNavigation":  {
+                               "toggleMenu":  "Visa eller dölj navigeringsmenyn",
+                               "home":  "Hem",
+                               "dashboard":  "Instrumentpanel",
+                               "myCases":  "Mina ärenden",
+                               "documents":  "Dokument",
+                               "updates":  "Uppdateringar",
+                               "signOut":  "Logga ut",
+                               "portal":  "KUNDPORTAL"
+                           },
+    "customerDocuments":  {
+                              "title":  "Mina dokument",
+                              "eyebrow":  "SÄKERT DOKUMENTCENTER",
+                              "heading":  "Dokumentarkiv",
+                              "description":  "Få säker åtkomst till, granska och ladda ner dokument som hör till dina juridiska ärenden.",
+                              "document":  "Dokument",
+                              "documents":  "Dokument",
+                              "allDocuments":  "Alla dokument",
+                              "tableDescription":  "Dina uppladdade ärendedokument samlade på ett ställe.",
+                              "emptyMessage":  "Inga dokument hittades. Ladda upp dokument till dina juridiska ärenden för att se dem här.",
+                              "securityNote":  "Dina ärendedokument är säkert kopplade till ditt konto. Du kan visa eller ladda ner dem när du behöver åtkomst.",
+                              "untitledDocument":  "Dokument utan namn",
+                              "caseDocument":  "Äendedokument",
+                              "opening":  "Öppnar...",
+                              "view":  "Visa",
+                              "pleaseWait":  "Vänta...",
+                              "download":  "Ladda ner",
+                              "delete":  "Ta bort",
+                              "deleting":  "Tar bort...",
+                              "deleteDocument":  "Ta bort dokument",
+                              "columns":  {
+                                              "documentName":  "Dokumentnamn",
+                                              "caseId":  "Ärende-ID",
+                                              "action":  "Åtgärd"
+                                          },
+                              "filters":  {
+                                              "caseId":  "Ärende-ID",
+                                              "allCases":  "Alla ärenden"
+                                          },
+                              "deleteModal":  {
+                                                  "title":  "Ta bort dokument?",
+                                                  "confirmText":  "Är du säker på att du vill ta bort",
+                                                  "warning":  "Den här åtgärden kan inte ångras."
+                                              },
+                              "errors":  {
+                                             "load":  "Det gick inte att läsa in dokumenten.",
+                                             "allowPopups":  "Tillåt popup-fönster för att visa dokumentet.",
+                                             "view":  "Det gick inte att visa dokumentet.",
+                                             "download":  "Det gick inte att ladda ner dokumentet.",
+                                             "delete":  "Det gick inte att ta bort dokumentet."
+                                         }
+                          },
+    "customerLogin":  {
+                          "homeAria":  "APPEELs startsida",
+                          "portal":  "Kundportal",
+                          "title":  "Välkommen tillbaka",
+                          "subtitle":  "Logga in för att komma åt dina ärenden, dokument och juridiska uppdateringar.",
+                          "email":  "E-postadress",
+                          "emailPlaceholder":  "namn@exempel.se",
+                          "password":  "Lösenord",
+                          "showPassword":  "Visa",
+                          "hidePassword":  "Dölj",
+                          "passwordPlaceholder":  "Ange ditt lösenord",
+                          "signingIn":  "Loggar in...",
+                          "submit":  "Logga in på mitt konto",
+                          "noAccount":  "Har du inget APPEEL-konto?",
+                          "createAccount":  "Skapa ett konto",
+                          "lawyerSignIn":  "Juristinloggning",
+                          "backHome":  "Tillbaka till startsidan",
+                          "errors":  {
+                                         "noCustomerDetails":  "Servern returnerade inte dina kundkontouppgifter.",
+                                         "signInFailed":  "Det gick inte att logga in. Kontrollera dina inloggningsuppgifter."
+                                     }
+                      },
+    "customerUpdates":  {
+                            "title":  "Ärendeuppdateringar",
+                            "heading":  "Aktivitet och framsteg",
+                            "description":  "Håll dig uppdaterad om statusändringar, tilldelning av jurister och viktiga milstolpar i alla dina ärenden.",
+                            "tableTitle":  "Dina ärendeuppdateringar",
+                            "viewTimeline":  "Visa tidslinje",
+                            "emptyMessage":  "Inga ärendeuppdateringar hittades.",
+                            "emptyTitle":  "Inga uppdateringar ännu",
+                            "emptyDescription":  "När du skickar in ett ärende visas uppdateringar om dess framsteg här.",
+                            "startCase":  "Starta ett ärende",
+                            "columns":  {
+                                            "caseId":  "Ärende-ID",
+                                            "currentStatus":  "Nuvarande status",
+                                            "action":  "Åtgärd"
+                                        },
+                            "filters":  {
+                                            "status":  "Status",
+                                            "allStatuses":  "Alla statusar"
+                                        },
+                            "statuses":  {
+                                             "PENDING":  "Väntande",
+                                             "UNDER_REVIEW":  "Under granskning",
+                                             "IN_PROGRESS":  "Pågående",
+                                             "COMPLETED":  "Slutfört",
+                                             "ASSIGNED":  "Tilldelat",
+                                             "RESOLVED":  "Löst",
+                                             "CLOSED":  "Stängt",
+                                             "REJECTED":  "Avvisat",
+                                             "CANCELLED":  "Avbrutet"
+                                         },
+                            "errors":  {
+                                           "load":  "Det gick inte att läsa in ärendeuppdateringarna."
+                                       }
+                        },
+    "forgotPassword":  {
+                           "eyebrow":  "KONTOÅTERSTÄLLNING",
+                           "title":  "Har du glömt ditt lösenord?",
+                           "subtitle":  "Vi skickar en säker länk så att du kan återställa ditt lösenord.",
+                           "heading":  "Återställ ditt lösenord",
+                           "description":  "Ange e-postadressen som är registrerad hos APPEEL.",
+                           "email":  "E-postadress",
+                           "emailPlaceholder":  "Ange din registrerade e-postadress",
+                           "sending":  "Skickar...",
+                           "submit":  "Skicka återställningslänk",
+                           "rememberPassword":  "Kommer du ihåg ditt lösenord?",
+                           "backToLogin":  "Tillbaka till inloggningen",
+                           "backHome":  "Tillbaka till startsidan",
+                           "success":  {
+                                           "default":  "Om det finns ett konto med den här e-postadressen har en återställningslänk skickats."
+                                       },
+                           "errors":  {
+                                          "requestFailed":  "Det gick inte att behandla din begäran.",
+                                          "connection":  "Det gick inte att ansluta till servern."
+                                      }
+                       },
+    "lawyerDashboard":  {
+                            "lawyerPortal":  "Juristportal",
+                            "home":  "Hem",
+                            "signOut":  "Logga ut",
+                            "welcome":  "Välkommen",
+                            "counsel":  "Jurist",
+                            "subtitle":  "Hantera dina tilldelade juridiska ärenden, granska klientunderlag och uppdatera ärendenas framsteg.",
+                            "allocationStatus":  "Tilldelningsstatus",
+                            "availableForCases":  "Tillgänglig för ärenden",
+                            "currentlyBusy":  "Upptagen just nu",
+                            "saving":  "Sparar...",
+                            "assignedMatters":  "Tilldelade ärenden",
+                            "activeInProgress":  "Aktiva / Pågående",
+                            "resolvedCases":  "Avslutade ärenden",
+                            "acceptingCases":  "Tar emot ärenden",
+                            "yesAvailable":  "Ja (Tillgänglig)",
+                            "noBusy":  "Nej (Upptagen)",
+                            "assignedClientMatters":  "Tilldelade klientärenden",
+                            "caseTableDescription":  "Uppdatera ärendenas framsteg och granska klientdokumentation.",
+                            "matterCount_one":  "{{count}} ärende",
+                            "matterCount_other":  "{{count}} ärenden",
+                            "loadingAssignedCases":  "Läser in tilldelade ärenden...",
+                            "reload":  "Ladda om",
+                            "noCasesAssigned":  "Inga ärenden har tilldelats ännu",
+                            "noCasesDescription":  "När administratörer tilldelar inkommande ärenden inom ditt specialistområde visas de här.",
+                            "noCasesForTable":  "Du har för närvarande inga tilldelade ärenden.",
+                            "matterFiles":  "Äendedokument: {{caseId}}",
+                            "documentDescription":  "Underlag och dokument som klienten har laddat upp.",
+                            "close":  "Stäng",
+                            "loadingDocuments":  "Läser in dokument...",
+                            "retry":  "Försök igen",
+                            "noDocumentsForCase":  "Inga dokument hittades för ärende {{caseId}}.",
+                            "unnamedDocument":  "Dokument utan namn",
+                            "file":  "Fil",
+                            "opening":  "Öppnar...",
+                            "view":  "Visa",
+                            "downloading":  "Laddar ner...",
+                            "download":  "Ladda ner",
+                            "loading":  "Läser in...",
+                            "hideFiles":  "Dölj filer",
+                            "viewFiles":  "Visa filer",
+                            "filesCount_one":  "Filer ({{count}})",
+                            "filesCount_other":  "Filer ({{count}})",
+                            "updateStatusFor":  "Uppdatera status för ärende {{caseId}}",
+                            "columns":  {
+                                            "caseId":  "Ärende-ID",
+                                            "customerName":  "Kundens namn",
+                                            "matterCategory":  "Ärendekategori",
+                                            "description":  "Beskrivning",
+                                            "status":  "Status",
+                                            "updateStatus":  "Uppdatera status",
+                                            "documents":  "Dokument"
+                                        },
+                            "filters":  {
+                                            "status":  "Status"
+                                        },
+                            "statuses":  {
+                                             "PENDING":  "Väntande",
+                                             "SUBMITTED":  "Inskickat",
+                                             "UNDER_REVIEW":  "Under granskning",
+                                             "IN_PROGRESS":  "Pågående",
+                                             "COMPLETED":  "Slutfört",
+                                             "UNKNOWN":  "Okänd"
+                                         },
+                            "fallback":  {
+                                             "customer":  "Kund",
+                                             "general":  "Allmänt",
+                                             "noDescription":  "Ingen beskrivning"
+                                         },
+                            "openingDocument":  "Läser in dokument",
+                            "loadingDocument":  "Läser in dokument...",
+                            "errors":  {
+                                           "invalidSession":  "Din session är ogiltig eller har upphört. Logga in igen.",
+                                           "invalidLawyerSession":  "Din juristsession är ogiltig. Logga in igen.",
+                                           "fetchLawyer":  "Det gick inte att hämta juristuppgifterna.",
+                                           "fetchCases":  "Det gick inte att hämta tilldelade ärenden.",
+                                           "loadDashboard":  "Det gick inte att läsa in kontrollpanelen.",
+                                           "updateAvailability":  "Det gick inte att uppdatera tillgängligheten.",
+                                           "updateCaseStatus":  "Det gick inte att uppdatera ärendestatusen.",
+                                           "loadDocuments":  "Det gick inte att läsa in dokumenten.",
+                                           "loadDocumentsWithStatus":  "Det gick inte att läsa in dokumenten ({{status}}).",
+                                           "invalidDocumentList":  "Servern returnerade en ogiltig dokumentlista.",
+                                           "missingDocumentId":  "Dokument-ID saknas.",
+                                           "expiredSession":  "Juristsessionen har upphört. Logga in igen.",
+                                           "documentRequestFailed":  "Dokumentförfrågan misslyckades ({{status}}): {{message}}",
+                                           "emptyDocument":  "Servern returnerade ett tomt dokument.",
+                                           "downloadDocument":  "Det gick inte att ladda ner dokumentet.",
+                                           "popupBlocked":  "Popup-fönstret blockerades. Tillåt popup-fönster för webbplatsen och försök igen.",
+                                           "documentViewFailed":  "Det gick inte att öppna dokumentet. Gå tillbaka till kontrollpanelen och kontrollera felet.",
+                                           "openDocument":  "Det gick inte att öppna dokumentet."
+                                       }
+                        },
+    "lawyerLogin":  {
+                        "homeAria":  "APPEELs startsida",
+                        "workspace":  "Arbetsyta för jurister",
+                        "title":  "Inloggning till juristportalen",
+                        "subtitle":  "Logga in för att komma åt tilldelade juridiska ärenden, granska dokument och uppdatera ärendenas framsteg.",
+                        "email":  "Juristens e-postadress",
+                        "emailPlaceholder":  "jurist@byra.se",
+                        "password":  "Lösenord",
+                        "passwordPlaceholder":  "Ange ditt lösenord",
+                        "showPassword":  "Visa",
+                        "hidePassword":  "Dölj",
+                        "signingIn":  "Loggar in...",
+                        "submit":  "Öppna juristens arbetsyta",
+                        "registerPrompt":  "Är du en yrkesverksam jurist?",
+                        "registerHere":  "Registrera dig här",
+                        "customerSignIn":  "Klientinloggning",
+                        "backHome":  "Tillbaka till startsidan",
+                        "errors":  {
+                                       "invalidCredentials":  "Ogiltig e-postadress eller lösenord för jurist.",
+                                       "missingLawyerId":  "Inloggningen lyckades, men servern returnerade inget jurist-ID.",
+                                       "connection":  "Det gick inte att ansluta till servern. Försök igen."
+                                   }
+                    },
+    "payment":  {
+                    "title":  "Betalning",
+                    "eyebrow":  "SÄKER BETALNING HOS APPEEL",
+                    "confirmingTitle":  "Bekräftar din betalning",
+                    "completeTitle":  "Slutför din betalning",
+                    "description":  "Betala serviceavgiften säkert med PayPal för att fortsätta med ditt juridiska ärende.",
+                    "serviceFee":  "Serviceavgift för ärendet",
+                    "caseId":  "Ärende-ID",
+                    "pleaseWait":  "Vänta...",
+                    "confirmationInProgress":  "Betalningsbekräftelse pågår",
+                    "tryAgain":  "Försök betala igen",
+                    "payButton":  "Betala 99,00 SEK med PayPal",
+                    "sandboxNote":  "Betalningar behandlas via PayPals sandlådemiljö under testningen.",
+                    "messages":  {
+                                     "cancelled":  "Betalningen avbröts. Du kan återvända till PayPal när du är redo.",
+                                     "confirming":  "Bekräftar din betalning med PayPal..."
+                                 },
+                    "errors":  {
+                                   "missingCaseId":  "Ärende-ID saknas. Gå tillbaka till ditt ärende.",
+                                   "missingCaseIdDescription":  "Ärende-ID saknas. Gå tillbaka till ditt ärende och försök igen.",
+                                   "missingPaymentDetails":  "Betalningsuppgifter saknas. Gå tillbaka till ditt ärende och starta betalningen igen.",
+                                   "confirmationFailed":  "Det gick inte att bekräfta betalningen (HTTP {{status}}).",
+                                   "notCompleted":  "PayPal har inte bekräftat att betalningen har slutförts.",
+                                   "confirmationUnavailable":  "Det gick inte att bekräfta betalningen. Försök igen.",
+                                   "orderProcessing":  "En PayPal-beställning behandlas redan. Ladda om sidan för att försöka bekräfta igen.",
+                                   "checkoutFailed":  "Det gick inte att skapa eller återuppta PayPal-betalningen (HTTP {{status}}).",
+                                   "missingOrderDetails":  "Servern returnerade inte de obligatoriska PayPal-beställningsuppgifterna.",
+                                   "startFailed":  "Ett fel uppstod när betalningen skulle startas."
+                               }
+                },
+    "resetPassword":  {
+                          "verifying":  "Verifierar länken för lösenordsåterställning...",
+                          "eyebrow":  "KONTOSECURITY",
+                          "pageTitle":  "Skapa ett nytt lösenord",
+                          "pageDescription":  "Välj ett nytt lösenord för ditt APPEEL-konto.",
+                          "cardTitle":  "Återställ ditt lösenord",
+                          "cardDescription":  "Ange ditt nya lösenord nedan.",
+                          "invalidLinkDescription":  "Den här återställningslänken saknas, är ogiltig, har upphört att gälla eller har redan använts. Begär en ny länk för lösenordsåterställning.",
+                          "requestNewLink":  "Begär en ny länk",
+                          "newPassword":  "Nytt lösenord",
+                          "newPasswordPlaceholder":  "Ange ditt nya lösenord",
+                          "confirmPassword":  "Bekräfta nytt lösenord",
+                          "confirmPasswordPlaceholder":  "Bekräfta ditt nya lösenord",
+                          "showPasswords":  "Visa lösenord",
+                          "hidePasswords":  "Dölj lösenord",
+                          "updating":  "Uppdaterar lösenord...",
+                          "submit":  "Återställ lösenord",
+                          "continueLogin":  "Fortsätt till inloggning",
+                          "backToLogin":  "Tillbaka till inloggning",
+                          "success":  "Ditt lösenord har återställts.",
+                          "errors":  {
+                                         "missingToken":  "Token för lösenordsåterställning saknas. Begär en ny länk.",
+                                         "invalidToken":  "Den här länken för lösenordsåterställning är ogiltig eller har upphört att gälla.",
+                                         "verifyFailed":  "Det gick inte att verifiera återställningslänken. Försök igen.",
+                                         "passwordLength":  "Lösenordet måste innehålla mellan 8 och 100 tecken.",
+                                         "passwordMismatch":  "Lösenorden stämmer inte överens.",
+                                         "resetFailed":  "Det gick inte att återställa lösenordet."
+                                     }
+                      },
+    "startCase":  {
+                      "pageTitle":  "Starta ett nytt ärende",
+                      "eyebrow":  "ÄRENDEFORMULÄR",
+                      "heading":  "Starta ett nytt juridiskt ärende",
+                      "description":  "Fyll i uppgifterna nedan så att vårt juridiska team kan bedöma dina behov och hjälpa dig att komma i kontakt med rätt jurist.",
+                      "clientSectionTitle":  "1. Klientinformation",
+                      "clientSectionDescription":  "Verifierad från din kundprofil",
+                      "fullName":  "Fullständigt namn",
+                      "registeredEmail":  "Registrerad e-postadress",
+                      "caseSectionTitle":  "2. Ärendeinformation",
+                      "caseSectionDescription":  "Ange ärendets kategori och omfattning",
+                      "caseCategory":  "Juridisk ärendekategori",
+                      "selectCategory":  "Välj en kategori...",
+                      "categories":  {
+                                         "familyLaw":  "Familjerätt (Skilsmässa, vårdnad, arv)",
+                                         "propertyDispute":  "Fastighetstvist (Fastigheter, hyresavtal, hyresförhållanden)",
+                                         "criminalLaw":  "Straffrätt och försvar",
+                                         "employmentLaw":  "Arbetsrätt (Avtal, tvister, avgångsvederlag)",
+                                         "businessLaw":  "Affärs- och bolagsrätt",
+                                         "consumerComplaint":  "Konsumenträtt och krav",
+                                         "other":  "Annan juridisk hjälp"
+                                     },
+                      "caseDescription":  "Ärendebeskrivning och bakgrund",
+                      "descriptionPlaceholder":  "Beskriv din situation i detalj. Ange datum, motparter, nuvarande status och vilket resultat du önskar...",
+                      "confidentialityNote":  "All kommunikation och ärendeinformation hanteras säkert och under strikt sekretess.",
+                      "checkingSession":  "Kontrollerar sessionen...",
+                      "creatingCase":  "Skapar ärende...",
+                      "submit":  "Skicka ärende och fortsätt till betalning →",
+                      "cancel":  "Avbryt",
+                      "errors":  {
+                                     "verifySession":  "Det gick inte att verifiera din session.",
+                                     "missingCaseId":  "Servern returnerade inget ärende-ID. Kontrollera dina ärenden innan du skickar in igen.",
+                                     "submitFailed":  "Det gick inte att skicka in ditt ärende."
+                                 }
+                  },
+    "adminDashboard":  {
+                           "eyebrow":  "SYSTEMÖVERSIKT",
+                           "description":  "Aktuell statistik över juridiska ärenden, jurister och kundärenden.",
+                           "totalCases":  "Totalt antal ärenden",
+                           "pendingCases":  "Väntande / Ej tilldelade",
+                           "lawyers":  "Jurister",
+                           "payments":  "Betalningar",
+                           "quickNavigationTitle":  "Snabbnavigering och tilldelning",
+                           "quickNavigationDescription":  "Snabb åtkomst till arbetsköer",
+                           "manageAllCases":  "Hantera alla ärenden",
+                           "reviewCasesTitle":  "Granska inkommande ärenden",
+                           "reviewCasesDescription":  "Tilldela väntande ärenden till kvalificerade jurister.",
+                           "manageCases":  "Hantera ärenden",
+                           "lawyerAvailabilityTitle":  "Juristtillgänglighet",
+                           "lawyerAvailabilityDescription":  "Granska juristers specialområden och tillgänglighet.",
+                           "manageLawyers":  "Hantera jurister",
+                           "documentRepositoryTitle":  "Dokumentarkiv",
+                           "documentRepositoryDescription":  "Verifiera kundunderlag och hantera uppladdade juridiska dokument.",
+                           "manageDocuments":  "Hantera dokument",
+                           "paymentManagementTitle":  "Betalningshantering",
+                           "paymentManagementDescription":  "Övervaka betalningsreferenser, betalningstransaktioner och betalningsstatus.",
+                           "viewPayments":  "Visa betalningar"
+                       },
+    "adminLawyers":  {
+                         "tableTitle":  "Juristhantering",
+                         "notSpecified":  "Inte angivet",
+                         "refreshing":  "Uppdaterar...",
+                         "tryAgain":  "Försök igen",
+                         "emptyMessage":  "Inga jurister har registrerats ännu.",
+                         "columns":  {
+                                         "name":  "Juristens namn",
+                                         "email":  "E-post",
+                                         "specialization":  "Specialområde",
+                                         "availability":  "Tillgänglighet",
+                                         "action":  "Åtgärd"
+                                     },
+                         "filters":  {
+                                         "availability":  "Tillgänglighet"
+                                     },
+                         "availability":  {
+                                              "AVAILABLE":  "Tillgänglig",
+                                              "BUSY":  "Upptagen"
+                                          },
+                         "errors":  {
+                                        "loadFailed":  "Det gick inte att hämta jurister.",
+                                        "connection":  "Det gick inte att ansluta till servern."
+                                    }
+                     },
+    "adminDocuments":  {
+                           "tableTitle":  "Dokumentarkiv",
+                           "emptyMessage":  "Inga ärendedokument har laddats upp till arkivet ännu.",
+                           "opening":  "Öppnar...",
+                           "view":  "Visa",
+                           "processing":  "Bearbetar...",
+                           "download":  "Ladda ner",
+                           "columns":  {
+                                           "caseId":  "Ärende-ID",
+                                           "action":  "Åtgärd"
+                                       },
+                           "filters":  {
+                                           "fileFormat":  "Filformat",
+                                           "allFormats":  "Alla format",
+                                           "caseReference":  "Äendereferens",
+                                           "allCases":  "Alla ärenden"
+                                       },
+                           "errors":  {
+                                          "sessionRequired":  "Administratörssession krävs. Logga in som administratör.",
+                                          "loadFailed":  "Det gick inte att hämta dokument.",
+                                          "connection":  "Det gick inte att ansluta till backend-servern.",
+                                          "unauthorizedDownload":  "Du har inte behörighet att ladda ner detta dokument.",
+                                          "downloadFailed":  "Det gick inte att ladda ner dokumentet.",
+                                          "allowPopups":  "Tillåt popup-fönster för att visa dokumentet.",
+                                          "previewFailed":  "Det gick inte att förhandsgranska dokumentet.",
+                                          "viewFailed":  "Det gick inte att visa dokumentet."
+                                      }
+                       },
+    "adminPayments":  {
+                          "tableTitle":  "Betalningar och fakturering",
+                          "emptyMessage":  "Inga betalningsuppgifter hittades.",
+                          "currencyNotSet":  "Valuta inte angiven",
+                          "notRecorded":  "Inte registrerad",
+                          "refreshing":  "Uppdaterar...",
+                          "tryAgain":  "Försök igen",
+                          "columns":  {
+                                          "paymentReference":  "Betalningsreferens",
+                                          "caseId":  "Ärende-ID",
+                                          "amount":  "Belopp",
+                                          "provider":  "Betalningsleverantör",
+                                          "gatewayOrderId":  "Betalningsgatewayens order-ID",
+                                          "status":  "Status"
+                                      },
+                          "filters":  {
+                                          "paymentStatus":  "Betalningsstatus"
+                                      },
+                          "statuses":  {
+                                           "SUCCESS":  "Genomförd",
+                                           "PENDING":  "Väntande",
+                                           "FAILED":  "Misslyckad",
+                                           "UNKNOWN":  "Okänd"
+                                       },
+                          "errors":  {
+                                         "sessionMissing":  "Administratörssession saknas. Logga in igen.",
+                                         "authorizationFailed":  "Administratörsbehörigheten kunde inte verifieras. Logga in igen.",
+                                         "loadFailed":  "Det gick inte att hämta betalningsuppgifter.",
+                                         "connection":  "Det gick inte att ansluta till servern."
+                                     }
+                      },
+    "adminLayout":  {
+                        "toggleSidebar":  "Visa eller dölj administratörsmenyn",
+                        "portalTitle":  "Administratörsportal",
+                        "administrator":  "Administratör"
+                    },
+    "customerDashboard":  {
+                              "customer":  "Kund",
+                              "loading":  "Laddar din kundportal...",
+                              "title":  "Kundöversikt",
+                              "eyebrow":  "DIN JURIDISKA PLATS",
+                              "welcome":  "Välkommen, {{name}}",
+                              "description":  "Hantera dina juridiska ärenden, dela dokument säkert och följ dina ärendens utveckling på ett och samma ställe.",
+                              "startNewCase":  "Starta ett nytt ärende",
+                              "viewMyCases":  "Visa mina ärenden",
+                              "workspaceTitle":  "Din juridiska arbetsyta",
+                              "workspaceDescription":  "Allt du behöver för att hantera dina juridiska ärenden.",
+                              "myCasesTitle":  "Mina ärenden",
+                              "myCasesDescription":  "Visa dina inskickade ärenden, tilldelade jurister och ärendenas utveckling.",
+                              "viewCases":  "Visa ärenden",
+                              "documentVaultTitle":  "Dokumentarkiv",
+                              "documentVaultDescription":  "Kom åt dina uppladdade avtal, bevis och andra juridiska dokument.",
+                              "viewDocuments":  "Visa dokument",
+                              "activityUpdatesTitle":  "Aktivitetsuppdateringar",
+                              "activityUpdatesDescription":  "Se de senaste uppdateringarna om dina ärenden och din juridiska representation.",
+                              "checkUpdates":  "Visa uppdateringar",
+                              "billingTitle":  "Transparent juridisk fakturering",
+                              "billingDescription":  "Granska ärenderelaterade avgifter och betalningsinformation genom en tydlig faktureringsprocess.",
+                              "securedAccount":  "Säkert konto",
+                              "supportTitle":  "Behöver du hjälp med ditt ärende?",
+                              "supportDescription":  "Vårt kundserviceteam hjälper dig gärna med frågor och krav kring din ansökan.",
+                              "visitHome":  "Besök APPEELs startsida"
+                          },
+    "adminDetailLayout":  {
+                              "back":  "Tillbaka"
+                          },
+    "adminSidebar":  {
+                         "console":  "Administratörspanel",
+                         "closeSidebar":  "Stäng sidofältet",
+                         "home":  "Hem",
+                         "dashboard":  "Översikt",
+                         "casesAllocation":  "Ärenden och tilldelning",
+                         "lawyerManagement":  "Juristhantering",
+                         "documentVault":  "Dokumentarkiv",
+                         "payments":  "Betalningar",
+                         "admin":  "Administratör",
+                         "systemController":  "Systemansvarig",
+                         "signOut":  "Logga ut"
+                     },
+    "customerHeader":  {
+                           "dashboard":  "Översikt",
+                           "cases":  "Mina ärenden",
+                           "documents":  "Dokument",
+                           "updates":  "Uppdateringar"
+                       }
 }
