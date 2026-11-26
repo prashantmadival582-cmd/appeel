@@ -16280,6 +16280,16 @@ html {
    COMMON APPEEL BRAND LOGO - ALL SECTIONS
    ========================================================= */
 
+.appeel-logo,
+.logo {
+  width: 210px !important;
+  height: 55px !important;
+  max-width: none !important;
+  object-fit: contain !important;
+  background: transparent !important;
+  display: block;
+}
+
 .appeel-logo {
   width: 210px !important;
   height: 55px !important;
