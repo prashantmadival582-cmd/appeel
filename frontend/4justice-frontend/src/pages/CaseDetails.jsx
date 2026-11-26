@@ -133,16 +133,16 @@ function DetailItem({ label, children }) {
 
 export default function AdminCaseDetails() {
   const { caseId } = useParams();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
 
   const [caseData, setCaseData] = useState(null);
   const [lawyers, setLawyers] = useState([]);
   const [documents, setDocuments] = useState([]);
 
   // External invoice state
-const [externalInvoices, setExternalInvoices] = useState([]);
-const [expandedInvoiceId, setExpandedInvoiceId] = useState(null);
-const [invoiceAmount, setInvoiceAmount] = useState("");
+  const [externalInvoices, setExternalInvoices] = useState([]);
+  const [expandedInvoiceId, setExpandedInvoiceId] = useState(null);
+  const [invoiceAmount, setInvoiceAmount] = useState("");
   const [invoiceLoading, setInvoiceLoading] = useState(false);
   const [invoiceSending, setInvoiceSending] = useState(false);
   const [invoiceError, setInvoiceError] = useState("");
@@ -237,19 +237,19 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
 
       if (!response.ok) {
         throw new Error(
-          getErrorMessage(data, "Unable to load external invoices.")
+          t("adminCaseDetails.externalInvoices.loadFailed")
         );
       }
 
       setExternalInvoices(Array.isArray(data) ? data : []);
     } catch (err) {
       setInvoiceError(
-        err.message || "Unable to load external invoices."
+        t("adminCaseDetails.externalInvoices.loadFailed")
       );
     } finally {
       setInvoiceLoading(false);
     }
-  }, [caseId]);
+  }, [caseId, t]);
 
   // Fetch lawyers
   const fetchLawyers = useCallback(async () => {
@@ -479,12 +479,16 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
     const amount = Number(invoiceAmount);
 
     if (!invoiceAmount || !Number.isFinite(amount) || amount <= 0) {
-      setInvoiceError("Please enter a valid invoice amount greater than zero.");
+      setInvoiceError(
+        t("adminCaseDetails.externalInvoices.invalidAmount")
+      );
       return;
     }
 
     if (!customerForm.email?.trim()) {
-      setInvoiceError("Customer email address is missing.");
+      setInvoiceError(
+        t("adminCaseDetails.externalInvoices.missingEmail")
+      );
       return;
     }
 
@@ -509,19 +513,24 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
 
       if (!response.ok) {
         throw new Error(
-          getErrorMessage(data, "Unable to send the external invoice.")
+          t("adminCaseDetails.externalInvoices.sendFailed")
         );
       }
 
       setInvoiceAmount("");
+
       setInvoiceMessage(
-        `External invoice ${data.invoiceReference} was created and sent to ${data.customerEmail}.`
+        t("adminCaseDetails.externalInvoices.success", {
+          reference: data.invoiceReference || "",
+          email: data.customerEmail || customerForm.email,
+        })
       );
 
       await fetchExternalInvoices();
     } catch (err) {
       setInvoiceError(
-        err.message || "Unable to send the external invoice."
+        err.message ||
+          t("adminCaseDetails.externalInvoices.sendFailed")
       );
     } finally {
       setInvoiceSending(false);
@@ -663,6 +672,10 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
 
   const customer = caseData.customer || {};
   const assignedLawyer = caseData.lawyer;
+
+  const dateLocale = i18n.resolvedLanguage?.startsWith("sv")
+    ? "sv-SE"
+    : "en-US";
 
   return (
     <AdminDetailLayout
@@ -822,7 +835,7 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                 {/* Optional customer password update */}
                 <div style={styles.detail} className="case-detail-row">
                   <label style={styles.label} htmlFor="customer-password">
-                    New Password
+                    {t("adminCaseDetails.newPassword")}
                   </label>
 
                   <input
@@ -835,7 +848,7 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                     minLength={8}
                     maxLength={100}
                     autoComplete="new-password"
-                    placeholder="Enter new password (optional)"
+                    placeholder={t("adminCaseDetails.newPasswordPlaceholder")}
                   />
 
                   <small
@@ -846,7 +859,7 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                       marginTop: "5px",
                     }}
                   >
-                    Leave blank to keep the current password.
+                    {t("adminCaseDetails.passwordHint")}
                   </small>
                 </div>
 
@@ -1164,11 +1177,17 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
 
           <div style={{ marginTop: "20px" }}>
             <h2 style={styles.sectionTitle}>
-              External Invoices
+              {t("adminCaseDetails.externalInvoices.title")}
             </h2>
 
-            <p style={{ ...styles.value, color: "#71839a", marginBottom: "16px" }}>
-              Create and send additional payment invoices to the customer.
+            <p
+              style={{
+                ...styles.value,
+                color: "#71839a",
+                marginBottom: "16px",
+              }}
+            >
+              {t("adminCaseDetails.externalInvoices.description")}
             </p>
 
             {invoiceMessage && (
@@ -1208,8 +1227,11 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
             >
               <div style={styles.actionGrid}>
                 <div>
-                  <label style={styles.label} htmlFor="external-invoice-amount">
-                    Invoice Amount (SEK)
+                  <label
+                    style={styles.label}
+                    htmlFor="external-invoice-amount"
+                  >
+                    {t("adminCaseDetails.externalInvoices.amount")}
                   </label>
 
                   <input
@@ -1217,7 +1239,9 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                     type="number"
                     min="0.01"
                     step="0.01"
-                    placeholder="Enter invoice amount"
+                    placeholder={t(
+                      "adminCaseDetails.externalInvoices.amountPlaceholder"
+                    )}
                     style={styles.input}
                     value={invoiceAmount}
                     onChange={(event) => {
@@ -1231,11 +1255,14 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
 
                 <div>
                   <label style={styles.label}>
-                    Customer Email
+                    {t("adminCaseDetails.externalInvoices.customerEmail")}
                   </label>
 
                   <div style={{ ...styles.value, padding: "9px 0" }}>
-                    {customerForm.email || "Email address unavailable"}
+                    {customerForm.email ||
+                      t(
+                        "adminCaseDetails.externalInvoices.emailUnavailable"
+                      )}
                   </div>
                 </div>
               </div>
@@ -1248,24 +1275,29 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                   disabled={invoiceSending || !customerForm.email}
                 >
                   {invoiceSending
-                    ? "Creating and Sending..."
-                    : "Send External Invoice"}
+                    ? t("adminCaseDetails.externalInvoices.creating")
+                    : t("adminCaseDetails.externalInvoices.send")}
                 </button>
               </div>
 
-              <p style={{ ...styles.value, color: "#71839a", marginTop: "12px" }}>
-                The customer will receive an email containing a PayPal Sandbox
-                payment link.
+              <p
+                style={{
+                  ...styles.value,
+                  color: "#71839a",
+                  marginTop: "12px",
+                }}
+              >
+                {t("adminCaseDetails.externalInvoices.paymentNotice")}
               </p>
             </form>
 
             {/* Invoice history */}
-
-            {/* Invoice history accordion */}
             <div className="invoice-history-section">
               <div className="invoice-history-heading">
                 <h3 style={{ ...styles.sectionTitle, margin: 0 }}>
-                  Invoice History ({externalInvoices.length})
+                  {t("adminCaseDetails.externalInvoices.history", {
+                    count: externalInvoices.length,
+                  })}
                 </h3>
 
                 <button
@@ -1275,23 +1307,34 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                   onClick={fetchExternalInvoices}
                   disabled={invoiceLoading}
                 >
-                  {invoiceLoading ? "Refreshing..." : "Refresh"}
+                  {invoiceLoading
+                    ? t("adminCaseDetails.externalInvoices.refreshing")
+                    : t("adminCaseDetails.externalInvoices.refresh")}
                 </button>
               </div>
 
               {invoiceLoading ? (
-                <p style={styles.value}>Loading external invoices...</p>
+                <p style={styles.value}>
+                  {t("adminCaseDetails.externalInvoices.loading")}
+                </p>
               ) : externalInvoices.length === 0 ? (
                 <p className="invoice-history-empty">
-                  No external invoices have been created for this case.
+                  {t("adminCaseDetails.externalInvoices.empty")}
                 </p>
               ) : (
                 <div className="invoice-accordion-list">
                   {externalInvoices.map((invoice) => {
-                    const isExpanded = expandedInvoiceId === invoice.id;
+                    const isExpanded =
+                      expandedInvoiceId === invoice.id;
+
+                    const invoiceStatus =
+                      invoice.status || "PENDING";
 
                     return (
-                      <div className="invoice-accordion-item" key={invoice.id}>
+                      <div
+                        className="invoice-accordion-item"
+                        key={invoice.id}
+                      >
                         <button
                           type="button"
                           className="invoice-accordion-trigger"
@@ -1299,7 +1342,9 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                           aria-controls={`invoice-details-${invoice.id}`}
                           onClick={() =>
                             setExpandedInvoiceId((current) =>
-                              current === invoice.id ? null : invoice.id
+                              current === invoice.id
+                                ? null
+                                : invoice.id
                             )
                           }
                         >
@@ -1315,12 +1360,17 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
 
                             <span
                               className={`invoice-status ${
-                                invoice.status === "SUCCESS"
+                                invoiceStatus === "SUCCESS"
                                   ? "invoice-status-success"
                                   : "invoice-status-pending"
                               }`}
                             >
-                              {invoice.status || "PENDING"}
+                              {t(
+                                `adminCaseDetails.externalInvoices.statuses.${invoiceStatus}`,
+                                {
+                                  defaultValue: formatStatus(invoiceStatus),
+                                }
+                              )}
                             </span>
                           </div>
 
@@ -1341,35 +1391,65 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                           >
                             <div style={styles.grid}>
                               <div>
-                                <DetailItem label="Invoice Amount">
+                                <DetailItem
+                                  label={t(
+                                    "adminCaseDetails.externalInvoices.amount"
+                                  )}
+                                >
                                   {invoice.currency}{" "}
                                   {Number(invoice.amount).toFixed(2)}
                                 </DetailItem>
 
-                                <DetailItem label="Customer Email">
+                                <DetailItem
+                                  label={t(
+                                    "adminCaseDetails.externalInvoices.customerEmail"
+                                  )}
+                                >
                                   {invoice.customerEmail}
                                 </DetailItem>
 
-                                <DetailItem label="Created At">
+                                <DetailItem
+                                  label={t(
+                                    "adminCaseDetails.externalInvoices.createdAt"
+                                  )}
+                                >
                                   {invoice.createdAt
-                                    ? new Date(invoice.createdAt).toLocaleString()
+                                    ? new Date(
+                                        invoice.createdAt
+                                      ).toLocaleString(dateLocale)
                                     : "—"}
                                 </DetailItem>
                               </div>
 
                               <div>
-                                <DetailItem label="Case ID">
+                                <DetailItem
+                                  label={t(
+                                    "adminCaseDetails.externalInvoices.caseId"
+                                  )}
+                                >
                                   {invoice.caseId}
                                 </DetailItem>
 
-                                <DetailItem label="Invoice ID">
+                                <DetailItem
+                                  label={t(
+                                    "adminCaseDetails.externalInvoices.invoiceId"
+                                  )}
+                                >
                                   #{invoice.id}
                                 </DetailItem>
 
-                                <DetailItem label="Paid At">
+                                <DetailItem
+                                  label={t(
+                                    "adminCaseDetails.externalInvoices.paidAt"
+                                  )}
+                                >
                                   {invoice.paidAt
-                                    ? new Date(invoice.paidAt).toLocaleString()
-                                    : "Not paid yet"}
+                                    ? new Date(
+                                        invoice.paidAt
+                                      ).toLocaleString(dateLocale)
+                                    : t(
+                                        "adminCaseDetails.externalInvoices.notPaid"
+                                      )}
                                 </DetailItem>
                               </div>
                             </div>
@@ -1381,7 +1461,6 @@ const [invoiceAmount, setInvoiceAmount] = useState("");
                 </div>
               )}
             </div>
-
           </div>
         </div>
       </section>

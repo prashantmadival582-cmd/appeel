@@ -486,6 +486,44 @@
   "assigning": "Tilldelar...",
   "assign": "Tilldela",
   "saveChanges": "Spara ändringar",
+  "newPassword": "Nytt lösenord",
+"newPasswordPlaceholder": "Ange nytt lösenord (valfritt)",
+"passwordHint": "Lämna tomt för att behålla det nuvarande lösenordet.",
+
+"externalInvoices": {
+  "title": "Externa fakturor",
+  "description": "Skapa och skicka ytterligare betalningsfakturor till kunden.",
+  "amount": "Fakturabelopp (SEK)",
+  "amountPlaceholder": "Ange fakturabelopp",
+  "customerEmail": "Kundens e-postadress",
+  "emailUnavailable": "E-postadress saknas",
+  "creating": "Skapar och skickar...",
+  "send": "Skicka extern faktura",
+  "paymentNotice": "Kunden får ett e-postmeddelande med en PayPal Sandbox-betalningslänk.",
+  "history": "Fakturahistorik ({{count}})",
+  "refreshing": "Uppdaterar...",
+  "refresh": "Uppdatera",
+  "loading": "Läser in externa fakturor...",
+  "empty": "Inga externa fakturor har skapats för detta ärende.",
+  "createdAt": "Skapad",
+  "caseId": "Ärende-ID",
+  "invoiceId": "Faktura-ID",
+  "paidAt": "Betald",
+  "notPaid": "Inte betald ännu",
+  "invalidAmount": "Ange ett giltigt fakturabelopp som är större än noll.",
+  "missingEmail": "Kundens e-postadress saknas.",
+  "loadFailed": "Det gick inte att läsa in externa fakturor.",
+  "sendFailed": "Det gick inte att skicka den externa fakturan.",
+  "success": "Den externa fakturan {{reference}} skapades och skickades till {{email}}.",
+  "statuses": {
+    "SUCCESS": "Betald",
+    "PENDING": "Väntande",
+    "FAILED": "Misslyckad",
+    "CANCELLED": "Avbruten"
+  }
+},
+
+
   "success": {
     "customerUpdated": "Kunduppgifterna har uppdaterats.",
     "statusUpdated": "Ärendestatusen har uppdaterats.",
