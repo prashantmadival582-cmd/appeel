@@ -1,11 +1,25 @@
+
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 
 import { CustomerPageHeader } from "./CustomerCases";
+import {
+    customerRequest,
+    isCustomerAuthError,
+} from "../api/customerApi";
 
-// const API_BASE_URL = "http://localhost:8081";
-import API_BASE_URL from "../api/api";
+const PENDING_PAYMENT_KEY = "appeelPendingPayment";
+const PENDING_SUBMISSION_KEY = "appeelPendingSubmission";
+
+function readPendingPayment() {
+    try {
+        const saved = sessionStorage.getItem(PENDING_PAYMENT_KEY);
+        return saved ? JSON.parse(saved) : null;
+    } catch {
+        return null;
+    }
+}
 
 export default function Payment() {
     const navigate = useNavigate();
@@ -16,135 +30,136 @@ export default function Payment() {
     const paypalOrderId = params.get("token");
     const paypalCancelled = params.get("paypal") === "cancel";
 
-    const caseId =
-        location.state?.caseId ||
-        sessionStorage.getItem("currentCaseId");
-
-    const customerEmail =
-        location.state?.customerEmail ||
-        sessionStorage.getItem("customerEmail") ||
-        "";
+    const [paymentDetails, setPaymentDetails] = useState(
+        () => location.state || readPendingPayment()
+    );
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [message, setMessage] = useState("");
 
-    // Prevent duplicate capture calls during this component's lifetime.
+    // Prevent duplicate capture requests during this component's lifetime.
     const captureStarted = useRef(false);
 
-    function authHeaders() {
-        const token =
-            localStorage.getItem("customerToken") ||
-            localStorage.getItem("token");
-
-        return {
-            "Content-Type": "application/json",
-            ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        };
-    }
-
-    // Capture when PayPal returns an order token.
+    // Save payment details when arriving from StartCase.
     useEffect(() => {
-        if (paypalCancelled) {
-            setError("");
-            setMessage(t("payment.messages.cancelled"));
+        if (location.state?.paymentId) {
+            setPaymentDetails(location.state);
+
+            sessionStorage.setItem(
+                PENDING_PAYMENT_KEY,
+                JSON.stringify(location.state)
+            );
+        }
+    }, [location.state]);
+
+    // Verify the PayPal payment and create the case only after backend verification.
+    async function confirmPayment() {
+        if (captureStarted.current) {
             return;
         }
 
-        if (!paypalOrderId || captureStarted.current) {
+        if (!paymentDetails?.paymentId || !paypalOrderId) {
+            setError(t("payment.errors.missingPaymentDetails"));
             return;
         }
 
         captureStarted.current = true;
+        setLoading(true);
+        setError("");
+        setMessage(t("payment.messages.confirming"));
 
-        async function capturePayment() {
-            const paymentId =
-                sessionStorage.getItem("paypalPaymentId");
-
-            const savedCaseId =
-                sessionStorage.getItem("currentCaseId");
-
-            if (!paymentId || !savedCaseId) {
-                setError(t("payment.errors.missingPaymentDetails"));
-                captureStarted.current = false;
-                return;
-            }
-
-            setLoading(true);
-            setError("");
-            setMessage(t("payment.messages.confirming"));
-
-            try {
-                const response = await fetch(
-                    `${API_BASE_URL}/api/payments/capture`,
-                    {
-                        method: "POST",
-                        headers: authHeaders(),
-                        body: JSON.stringify({
-                            paymentId,
-                            paypalOrderId,
-                        }),
-                    }
-                );
-
-                const data = await response.json().catch(() => ({}));
-
-                if (!response.ok) {
-                    throw new Error(
-                        data.message ||
-                        data.error ||
-                        t("payment.errors.confirmationFailed", {
-                            status: response.status,
-                        })
-                    );
-                }
-
-                if (
-                    !["SUCCESS", "COMPLETED"].includes(
-                        String(data.status || "").toUpperCase()
-                    )
-                ) {
-                    throw new Error(
-                        t("payment.errors.notCompleted")
-                    );
-                }
-
-                sessionStorage.removeItem("paypalPaymentId");
-
-                navigate(`/customer/my-cases/${savedCaseId}`, {
-                    replace: true,
-                    state: {
-                        paymentVerified: true,
-                        caseId: savedCaseId,
-                        paymentId,
+        try {
+            const response = await customerRequest(
+                "/api/payments/capture",
+                {
+                    method: "POST",
+                    body: JSON.stringify({
+                        paymentId: paymentDetails.paymentId,
                         paypalOrderId,
-                        paypalCaptureId: data.paypalCaptureId || null,
-                    },
-                });
-            } catch (err) {
-                setError(
-                    err.message ||
-                    t("payment.errors.confirmationUnavailable")
+                    }),
+                }
+            );
+
+            const data = await response.json();
+
+            if (
+                !["SUCCESS", "COMPLETED"].includes(
+                    String(data.status || "").toUpperCase()
+                )
+            ) {
+                throw new Error(
+                    t("payment.errors.notCompleted")
                 );
-                setMessage("");
-                captureStarted.current = false;
-            } finally {
-                setLoading(false);
             }
+
+            // The backend returns caseId only after verified payment.
+            if (!data.caseId) {
+                throw new Error(
+                    t("payment.errors.missingPaymentDetails")
+                );
+            }
+
+            // Clear temporary submission details after successful verification.
+            sessionStorage.removeItem(PENDING_PAYMENT_KEY);
+            sessionStorage.removeItem(PENDING_SUBMISSION_KEY);
+
+            navigate(`/customer/my-cases/${data.caseId}`, {
+                replace: true,
+                state: {
+                    paymentVerified: true,
+                    caseId: data.caseId,
+                    paymentId: paymentDetails.paymentId,
+                    paypalOrderId,
+                    paypalCaptureId: data.paypalCaptureId || null,
+                },
+            });
+        } catch (err) {
+            setError(
+                err.message ||
+                    t("payment.errors.confirmationUnavailable")
+            );
+
+            setMessage("");
+
+            if (isCustomerAuthError(err)) {
+                navigate("/customer/login", {
+                    replace: true,
+                });
+            }
+
+            // Allow the customer to retry verification.
+            captureStarted.current = false;
+        } finally {
+            setLoading(false);
         }
+    }
 
-        capturePayment();
-    }, [paypalOrderId, paypalCancelled, navigate, t]);
-
-    async function handlePayment() {
-        if (!caseId) {
-            setError(t("payment.errors.missingCaseId"));
+    // Automatically verify when PayPal redirects back with its order token.
+    useEffect(() => {
+        if (paypalCancelled || !paypalOrderId) {
             return;
         }
 
-        // Don't create another order while handling a PayPal return.
-        if (paypalOrderId && !paypalCancelled) {
-            setError(t("payment.errors.orderProcessing"));
+        confirmPayment();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+        paypalOrderId,
+        paypalCancelled,
+        paymentDetails?.paymentId,
+    ]);
+
+    // Retry or retrieve the pending PayPal order using the same submission key.
+    async function retryPayment() {
+        if (
+            !paymentDetails?.caseType ||
+            !paymentDetails?.description ||
+            !paymentDetails?.submissionKey
+        ) {
+            setError(
+                t("payment.errors.missingPaymentDetails")
+            );
             return;
         }
 
@@ -153,56 +168,80 @@ export default function Payment() {
         setMessage("");
 
         try {
-            const response = await fetch(
-                `${API_BASE_URL}/api/payments/create`,
+            const response = await customerRequest(
+                "/api/payments/create",
                 {
                     method: "POST",
-                    headers: authHeaders(),
-                    body: JSON.stringify({ caseId }),
+                    body: JSON.stringify({
+                        caseType: paymentDetails.caseType,
+                        description: paymentDetails.description,
+                        submissionKey: paymentDetails.submissionKey,
+                    }),
                 }
             );
 
-            const data = await response.json().catch(() => ({}));
-
-            if (!response.ok) {
-                throw new Error(
-                    data.message ||
-                    data.error ||
-                    t("payment.errors.checkoutFailed", {
-                        status: response.status,
-                    })
-                );
-            }
+            const data = await response.json();
 
             if (
-                !data.approvalUrl ||
+                !data.paymentId ||
                 !data.paypalOrderId ||
-                !data.paymentId
+                !data.approvalUrl
             ) {
                 throw new Error(
                     t("payment.errors.missingOrderDetails")
                 );
             }
 
-            sessionStorage.setItem("currentCaseId", caseId);
-            sessionStorage.setItem("paypalPaymentId", data.paymentId);
+            const updatedDetails = {
+                ...paymentDetails,
+                paymentId: data.paymentId,
+                paypalOrderId: data.paypalOrderId,
+                approvalUrl: data.approvalUrl,
+            };
 
-            if (customerEmail) {
-                sessionStorage.setItem("customerEmail", customerEmail);
-            }
+            setPaymentDetails(updatedDetails);
 
-            // Redirect to the approval URL returned by the backend.
+            sessionStorage.setItem(
+                PENDING_PAYMENT_KEY,
+                JSON.stringify(updatedDetails)
+            );
+
+            // Continue to the PayPal approval page.
             window.location.assign(data.approvalUrl);
         } catch (err) {
             setError(
                 err.message ||
-                t("payment.errors.startFailed")
+                    t("payment.errors.startFailed")
             );
+
+            if (isCustomerAuthError(err)) {
+                navigate("/customer/login", {
+                    replace: true,
+                });
+            }
+
             setLoading(false);
         }
     }
 
-    const isReturningFromPayPal = Boolean(paypalOrderId);
+    function continueToPayPal() {
+        if (paypalCancelled) {
+            retryPayment();
+            return;
+        }
+
+        if (paymentDetails?.approvalUrl) {
+            window.location.assign(paymentDetails.approvalUrl);
+            return;
+        }
+
+        setError(
+            t("payment.errors.missingOrderDetails")
+        );
+    }
+
+    const isReturningFromPayPal =
+        Boolean(paypalOrderId) && !paypalCancelled;
 
     return (
         <>
@@ -233,13 +272,9 @@ export default function Payment() {
                         <strong>SEK 99.00</strong>
                     </div>
 
-                    {caseId ? (
-                        <p className="payment-case-id">
-                            {t("payment.caseId")}: <strong>{caseId}</strong>
-                        </p>
-                    ) : (
-                        <p className="payment-error">
-                            {t("payment.errors.missingCaseIdDescription")}
+                    {paypalCancelled && (
+                        <p className="payment-note" role="status">
+                            {t("payment.messages.cancelled")}
                         </p>
                     )}
 
@@ -259,21 +294,30 @@ export default function Payment() {
                         <p className="payment-note">
                             {t("payment.pleaseWait")}
                         </p>
+                    ) : isReturningFromPayPal ? (
+                        error ? (
+                            <button
+                                type="button"
+                                className="payment-button"
+                                onClick={confirmPayment}
+                            >
+                                {t("payment.tryAgain")}
+                            </button>
+                        ) : (
+                            <p className="payment-note">
+                                {t("payment.confirmationInProgress")}
+                            </p>
+                        )
                     ) : (
                         <button
                             type="button"
                             className="payment-button"
-                            onClick={handlePayment}
-                            disabled={
-                                !caseId ||
-                                (isReturningFromPayPal && !paypalCancelled)
-                            }
+                            onClick={continueToPayPal}
+                            disabled={!paymentDetails?.paymentId}
                         >
-                            {isReturningFromPayPal && !paypalCancelled
-                                ? t("payment.confirmationInProgress")
-                                : paypalCancelled || error
-                                    ? t("payment.tryAgain")
-                                    : t("payment.payButton")}
+                            {paypalCancelled || error
+                                ? t("payment.tryAgain")
+                                : t("payment.payButton")}
                         </button>
                     )}
 

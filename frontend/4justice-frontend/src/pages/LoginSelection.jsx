@@ -165,7 +165,7 @@ export default function LoginSelection() {
           </div>
 
           <div className="universal-login-heading">
-            <h2>{t("login.accountTitle")}</h2>
+            {/* <h2>{t("login.accountTitle")}</h2> */}
             <p>{t("login.accountSubtitle")}</p>
           </div>
 

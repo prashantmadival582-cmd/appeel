@@ -151,6 +151,24 @@ export default function AdminCaseDetails() {
   const [selectedStatus, setSelectedStatus] = useState("PENDING");
   const [selectedLawyer, setSelectedLawyer] = useState("");
 
+  // Case workflow rules
+  const hasAssignedLawyer = Boolean(caseData?.lawyer?.id);
+
+  const isCompleted =
+    String(caseData?.status || "").toUpperCase() === "COMPLETED";
+
+  const availableStatuses = hasAssignedLawyer
+    ? [
+        "IN_PROGRESS",
+        "ASSIGNED",
+        "COMPLETED",
+        "RESOLVED",
+        "CLOSED",
+        "REJECTED",
+        "CANCELLED",
+      ]
+    : ["PENDING"];
+
   const [editingCustomer, setEditingCustomer] = useState(false);
   const [customerForm, setCustomerForm] = useState({
     name: "",
@@ -386,6 +404,26 @@ export default function AdminCaseDetails() {
   // Update case status
   const handleStatusUpdate = async (event) => {
     event.preventDefault();
+
+    if (isCompleted) {
+      setError("A completed case cannot be changed.");
+      return;
+    }
+
+    if (!hasAssignedLawyer) {
+      setError(
+        "A lawyer must be assigned before changing the case status."
+      );
+      return;
+    }
+
+    if (selectedStatus === "PENDING") {
+      setError(
+        "A case cannot be changed back to PENDING after a lawyer is assigned."
+      );
+      return;
+    }
+
     setStatusSaving(true);
     setMessage("");
     setError("");
@@ -427,9 +465,23 @@ export default function AdminCaseDetails() {
     }
   };
 
-  // Assign lawyer
+  // Assign lawyer only once. Reassignment is not allowed.
   const handleAssignLawyer = async (event) => {
     event.preventDefault();
+
+    if (isCompleted) {
+      setError(
+        "A completed case cannot have its lawyer assignment changed."
+      );
+      return;
+    }
+
+    if (hasAssignedLawyer) {
+      setError(
+        "A lawyer is already assigned to this case. Reassignment is not allowed."
+      );
+      return;
+    }
 
     if (!selectedLawyer) {
       setError(t("adminCaseDetails.errors.selectLawyer"));
@@ -1067,6 +1119,7 @@ export default function AdminCaseDetails() {
           </h2>
 
           <div style={styles.actionGrid}>
+            {/* Status update */}
             <form onSubmit={handleStatusUpdate}>
               <label style={styles.label} htmlFor="case-status">
                 {t("adminCaseDetails.updateStatus")}
@@ -1083,20 +1136,12 @@ export default function AdminCaseDetails() {
                   id="case-status"
                   style={{ ...styles.select, flex: "1 1 140px" }}
                   value={selectedStatus}
+                  disabled={!hasAssignedLawyer || isCompleted}
                   onChange={(event) =>
                     setSelectedStatus(event.target.value)
                   }
                 >
-                  {[
-                    "PENDING",
-                    "IN_PROGRESS",
-                    "ASSIGNED",
-                    "COMPLETED",
-                    "RESOLVED",
-                    "CLOSED",
-                    "REJECTED",
-                    "CANCELLED",
-                  ].map((status) => (
+                  {availableStatuses.map((status) => (
                     <option key={status} value={status}>
                       {getTranslatedStatus(status, t)}
                     </option>
@@ -1108,7 +1153,11 @@ export default function AdminCaseDetails() {
                   style={styles.button}
                   className="case-action-button"
                   disabled={
-                    statusSaving || selectedStatus === caseData.status
+                    statusSaving ||
+                    !hasAssignedLawyer ||
+                    isCompleted ||
+                    selectedStatus === caseData.status ||
+                    selectedStatus === "PENDING"
                   }
                 >
                   {statusSaving
@@ -1116,8 +1165,36 @@ export default function AdminCaseDetails() {
                     : t("adminCaseDetails.saveStatus")}
                 </button>
               </div>
+
+              {!hasAssignedLawyer && !isCompleted && (
+                <small
+                  style={{
+                    display: "block",
+                    color: "#71839a",
+                    marginTop: "8px",
+                    fontSize: "11px",
+                  }}
+                >
+                  Assign a lawyer before updating the case status. The case
+                  remains PENDING until then.
+                </small>
+              )}
+
+              {hasAssignedLawyer && !isCompleted && (
+                <small
+                  style={{
+                    display: "block",
+                    color: "#71839a",
+                    marginTop: "8px",
+                    fontSize: "11px",
+                  }}
+                >
+                  PENDING is no longer available after lawyer assignment.
+                </small>
+              )}
             </form>
 
+            {/* One-time lawyer assignment */}
             <form onSubmit={handleAssignLawyer}>
               <label style={styles.label} htmlFor="assign-lawyer">
                 {t("adminCaseDetails.assignLawyer")}
@@ -1134,6 +1211,7 @@ export default function AdminCaseDetails() {
                   id="assign-lawyer"
                   style={{ ...styles.select, flex: "1 1 140px" }}
                   value={selectedLawyer}
+                  disabled={hasAssignedLawyer || isCompleted}
                   onChange={(event) =>
                     setSelectedLawyer(event.target.value)
                   }
@@ -1162,15 +1240,47 @@ export default function AdminCaseDetails() {
                   type="submit"
                   style={styles.button}
                   className="case-action-button"
-                  disabled={lawyerSaving || !selectedLawyer}
+                  disabled={
+                    lawyerSaving ||
+                    hasAssignedLawyer ||
+                    isCompleted ||
+                    !selectedLawyer
+                  }
                 >
                   {lawyerSaving
                     ? t("adminCaseDetails.assigning")
                     : t("adminCaseDetails.assign")}
                 </button>
               </div>
+
+              {hasAssignedLawyer && !isCompleted && (
+                <small
+                  style={{
+                    display: "block",
+                    color: "#71839a",
+                    marginTop: "8px",
+                    fontSize: "11px",
+                  }}
+                >
+                  A lawyer is already assigned. Reassignment is not allowed.
+                </small>
+              )}
             </form>
           </div>
+
+          {isCompleted && (
+            <p
+              style={{
+                color: "#a52632",
+                fontSize: "12px",
+                marginTop: "14px",
+                marginBottom: 0,
+              }}
+            >
+              This case is completed. Its status and lawyer assignment are
+              locked.
+            </p>
+          )}
 
           {/* External Invoices */}
           <div className="admin-detail-section-divider" />

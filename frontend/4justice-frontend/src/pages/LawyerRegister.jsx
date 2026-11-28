@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -22,14 +23,37 @@ export default function LawyerRegister() {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
+    const { name, value } = event.target;
+
+    let updatedValue = value;
+
+    if (name === "phone") {
+      // Allow only 10 digits
+      updatedValue = value.replace(/\D/g, "").slice(0, 10);
+    }
+
+    if (name === "name") {
+      // Allow only alphabets and spaces
+      updatedValue = value.replace(/[^a-zA-Z\s]/g, "");
+    }
+
+    setFormData((previous) => ({
+      ...previous,
+      [name]: updatedValue,
+    }));
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const phone = formData.phone.trim();
+
+    // Validate exactly 10 digits
+    if (!/^\d{10}$/.test(phone)) {
+      setError("Please enter a valid 10-digit phone number.");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
@@ -39,7 +63,11 @@ export default function LawyerRegister() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          name: formData.name.trim(),
+          phone,
+        }),
       });
 
       const data = await response.json().catch(() => null);
@@ -77,7 +105,6 @@ export default function LawyerRegister() {
               alt="APPEEL"
               className="auth-page-logo appeel-logo"
             />
-
           </Link>
 
           <h1>{t("lawyerRegister.title")}</h1>
@@ -92,13 +119,14 @@ export default function LawyerRegister() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <div className="form-group">
-            <label htmlFor="name">
+            <label htmlFor="lawyer-name">
               {t("lawyerRegister.fullName")}
             </label>
             <input
-              id="name"
+              id="lawyer-name"
               name="name"
               type="text"
+              autoComplete="name"
               placeholder={t("lawyerRegister.fullNamePlaceholder")}
               value={formData.name}
               onChange={handleChange}
@@ -144,6 +172,9 @@ export default function LawyerRegister() {
               id="phone"
               name="phone"
               type="tel"
+              inputMode="numeric"
+              autoComplete="tel"
+              maxLength={10}
               placeholder={t("lawyerRegister.phonePlaceholder")}
               value={formData.phone}
               onChange={handleChange}

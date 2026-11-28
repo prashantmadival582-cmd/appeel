@@ -953,41 +953,47 @@
                                          "resetFailed":  "Unable to reset your password."
                                      }
                       },
-    "startCase":  {
-                      "pageTitle":  "Start a New Case",
-                      "eyebrow":  "INTAKE FORM",
-                      "heading":  "Start a New Legal Case",
-                      "description":  "Complete the details below so our legal team can assess your requirements and connect you with the appropriate attorney.",
-                      "clientSectionTitle":  "1. Client Information",
-                      "clientSectionDescription":  "Verified from your customer profile",
-                      "fullName":  "Full Name",
-                      "registeredEmail":  "Registered Email",
-                      "caseSectionTitle":  "2. Case Information",
-                      "caseSectionDescription":  "Specify the category and scope of your matter",
-                      "caseCategory":  "Legal Case Category",
-                      "selectCategory":  "Select a category...",
-                      "categories":  {
-                                         "familyLaw":  "Family Law (Divorce, Custody, Estates)",
-                                         "propertyDispute":  "Property Dispute (Real Estate, Leases, Tenancy)",
-                                         "criminalLaw":  "Criminal Law \u0026 Defense",
-                                         "employmentLaw":  "Employment Law (Contracts, Disputes, Severance)",
-                                         "businessLaw":  "Business \u0026 Corporate Law",
-                                         "consumerComplaint":  "Consumer Rights \u0026 Claims",
-                                         "other":  "Other Legal Assistance"
-                                     },
-                      "caseDescription":  "Case Description \u0026 Background",
-                      "descriptionPlaceholder":  "Describe your situation in detail. Include dates, opposing parties, current status, and the outcome you are seeking...",
-                      "confidentialityNote":  "All communications and case details are securely handled under strict confidentiality.",
-                      "checkingSession":  "Checking Session...",
-                      "creatingCase":  "Creating Case...",
-                      "submit":  "Submit Case \u0026 Continue to Payment →",
-                      "cancel":  "Cancel",
-                      "errors":  {
-                                     "verifySession":  "Unable to verify your session.",
-                                     "missingCaseId":  "The case ID was not returned by the server. Please check your cases before submitting again.",
-                                     "submitFailed":  "Unable to submit your case."
-                                 }
-                  },
+   "startCase": {
+    "pageTitle": "Start a New Case",
+    "eyebrow": "INTAKE FORM",
+    "heading": "Start a New Legal Case",
+    "description": "Complete the details below so our legal team can assess your requirements and connect you with the appropriate attorney.",
+    "clientSectionTitle": "1. Client Information",
+    "clientSectionDescription": "Verified from your customer profile",
+    "fullName": "Full Name",
+    "registeredEmail": "Registered Email",
+    "caseSectionTitle": "2. Case Information",
+    "caseSectionDescription": "Specify the category and scope of your matter",
+    "caseCategory": "Legal Case Category",
+    "selectCategory": "Select a category...",
+    "verified": "Verified",
+    "descriptionGuidance": "Tell us what happened and how we can help.",
+    "paymentTitle": "One-time consultation fee",
+    "paymentSubtitle": "Secure payment through PayPal",
+    "continueToPayment": "Continue to secure payment",
+    "paymentTrust": "Your case is created only after successful payment verification.",
+    "categories": {
+        "familyLaw": "Family Law (Divorce, Custody, Estates)",
+        "propertyDispute": "Property Dispute (Real Estate, Leases, Tenancy)",
+        "criminalLaw": "Criminal Law & Defense",
+        "employmentLaw": "Employment Law (Contracts, Disputes, Severance)",
+        "businessLaw": "Business & Corporate Law",
+        "consumerComplaint": "Consumer Rights & Claims",
+        "other": "Other Legal Assistance"
+    },
+    "caseDescription": "Case Description & Background",
+    "descriptionPlaceholder": "Describe your situation in detail. Include dates, opposing parties, current status, and the outcome you are seeking...",
+    "confidentialityNote": "All communications and case details are securely handled under strict confidentiality.",
+    "checkingSession": "Checking Session...",
+    "creatingCase": "Creating Case...",
+    "submit": "Submit Case & Continue to Payment →",
+    "cancel": "Cancel",
+    "errors": {
+        "verifySession": "Unable to verify your session.",
+        "missingCaseId": "The case ID was not returned by the server. Please check your cases before submitting again.",
+        "submitFailed": "Unable to submit your case."
+    }
+},
     "adminDashboard":  {
                            "eyebrow":  "SYSTEM OVERVIEW",
                            "description":  "Real-time statistics across active legal matters, lawyers, and customer workflows.",

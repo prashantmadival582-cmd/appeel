@@ -136,6 +136,9 @@ public CorsConfigurationSource corsConfigurationSource() {
                 .requestMatchers("/api/customers/**")
                 .hasRole("CUSTOMER")
 
+                // Initial case payments are customer-only
+                .requestMatchers("/api/payments/**")
+                .hasRole("CUSTOMER")
                 .requestMatchers("/api/cases/**")
                 .hasAnyRole("ADMIN", "CUSTOMER", "LAWYER")
 

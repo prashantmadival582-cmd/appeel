@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -20,15 +21,49 @@ export default function CustomerRegister() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleChange = (event) => {
-    setFormData({
-      ...formData,
-      [event.target.name]: event.target.value,
-    });
-  };
+const handleChange = (event) => {
+  const { name, value } = event.target;
+
+  let updatedValue = value;
+
+  if (name === "phone") {
+    // Allow only 10 digits
+    updatedValue = value.replace(/\D/g, "").slice(0, 10);
+  }
+
+  if (name === "name") {
+    // Allow only alphabets and spaces
+    updatedValue = value.replace(/[^a-zA-Z\s]/g, "");
+  }
+
+  setFormData((previous) => ({
+    ...previous,
+    [name]: updatedValue,
+  }));
+};
+
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+   const phone = formData.phone.trim();
+
+if (!/^\d{10}$/.test(phone)) {
+  setError("Please enter a valid 10-digit phone number.");
+  return;
+}
+    const phoneDigits = phone.replace(/\D/g, "");
+
+    // Validate phone number before submitting
+    if (
+      !/^\+?[0-9\s()-]+$/.test(phone) ||
+      phoneDigits.length < 7 ||
+      phoneDigits.length > 15
+    ) {
+      setError("Please enter a valid phone number (7–15 digits).");
+      return;
+    }
+
     setError("");
     setLoading(true);
 
@@ -39,13 +74,13 @@ export default function CustomerRegister() {
           ...formData,
           name: formData.name.trim(),
           email: formData.email.trim(),
-          phone: formData.phone.trim(),
+          phone,
         }),
       });
 
       localStorage.setItem("customerName", data.name || formData.name.trim());
       localStorage.setItem("customerEmail", data.email || formData.email.trim());
-      localStorage.setItem("customerPhone", data.phone || formData.phone.trim());
+      localStorage.setItem("customerPhone", data.phone || phone);
 
       setError("");
       navigate("/customer/login");
@@ -72,7 +107,6 @@ export default function CustomerRegister() {
               alt="APPEEL"
               className="auth-page-logo appeel-logo"
             />
-
           </Link>
 
           <h1>{t("customerRegister.title")}</h1>
@@ -90,16 +124,16 @@ export default function CustomerRegister() {
             <label htmlFor="customer-name">
               {t("customerRegister.fullName")}
             </label>
-            <input
-              id="customer-name"
-              name="name"
-              type="text"
-              autoComplete="name"
-              placeholder={t("customerRegister.fullNamePlaceholder")}
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
+          <input
+  id="customer-name"
+  name="name"
+  type="text"
+  autoComplete="name"
+  placeholder={t("customerRegister.fullNamePlaceholder")}
+  value={formData.name}
+  onChange={handleChange}
+  required
+/>
           </div>
 
           <div className="form-group">
@@ -122,16 +156,18 @@ export default function CustomerRegister() {
             <label htmlFor="customer-phone">
               {t("customerRegister.phone")}
             </label>
-            <input
-              id="customer-phone"
-              name="phone"
-              type="tel"
-              autoComplete="tel"
-              placeholder={t("customerRegister.phonePlaceholder")}
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
+           <input
+  id="customer-phone"
+  name="phone"
+  type="tel"
+  inputMode="numeric"
+  autoComplete="tel"
+  maxLength={10}
+  placeholder={t("customerRegister.phonePlaceholder")}
+  value={formData.phone}
+  onChange={handleChange}
+  required
+/>
           </div>
 
           <div className="form-group">

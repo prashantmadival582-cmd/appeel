@@ -951,43 +951,50 @@
                                          "passwordLength":  "Lösenordet måste innehålla mellan 8 och 100 tecken.",
                                          "passwordMismatch":  "Lösenorden stämmer inte överens.",
                                          "resetFailed":  "Det gick inte att återställa lösenordet."
-                                     }
-                      },
-    "startCase":  {
-                      "pageTitle":  "Starta ett nytt ärende",
-                      "eyebrow":  "ÄRENDEFORMULÄR",
-                      "heading":  "Starta ett nytt juridiskt ärende",
-                      "description":  "Fyll i uppgifterna nedan så att vårt juridiska team kan bedöma dina behov och hjälpa dig att komma i kontakt med rätt jurist.",
-                      "clientSectionTitle":  "1. Klientinformation",
-                      "clientSectionDescription":  "Verifierad från din kundprofil",
-                      "fullName":  "Fullständigt namn",
-                      "registeredEmail":  "Registrerad e-postadress",
-                      "caseSectionTitle":  "2. Ärendeinformation",
-                      "caseSectionDescription":  "Ange ärendets kategori och omfattning",
-                      "caseCategory":  "Juridisk ärendekategori",
-                      "selectCategory":  "Välj en kategori...",
-                      "categories":  {
-                                         "familyLaw":  "Familjerätt (Skilsmässa, vårdnad, arv)",
-                                         "propertyDispute":  "Fastighetstvist (Fastigheter, hyresavtal, hyresförhållanden)",
-                                         "criminalLaw":  "Straffrätt och försvar",
-                                         "employmentLaw":  "Arbetsrätt (Avtal, tvister, avgångsvederlag)",
-                                         "businessLaw":  "Affärs- och bolagsrätt",
-                                         "consumerComplaint":  "Konsumenträtt och krav",
-                                         "other":  "Annan juridisk hjälp"
-                                     },
-                      "caseDescription":  "Ärendebeskrivning och bakgrund",
-                      "descriptionPlaceholder":  "Beskriv din situation i detalj. Ange datum, motparter, nuvarande status och vilket resultat du önskar...",
-                      "confidentialityNote":  "All kommunikation och ärendeinformation hanteras säkert och under strikt sekretess.",
-                      "checkingSession":  "Kontrollerar sessionen...",
-                      "creatingCase":  "Skapar ärende...",
-                      "submit":  "Skicka ärende och fortsätt till betalning →",
-                      "cancel":  "Avbryt",
-                      "errors":  {
-                                     "verifySession":  "Det gick inte att verifiera din session.",
-                                     "missingCaseId":  "Servern returnerade inget ärende-ID. Kontrollera dina ärenden innan du skickar in igen.",
-                                     "submitFailed":  "Det gick inte att skicka in ditt ärende."
-                                 }
-                  },
+                          }
+                                        },
+                                       "startCase": {
+    "pageTitle": "Starta ett nytt ärende",
+    "eyebrow": "ÄRENDEFORMULÄR",
+    "heading": "Starta ett nytt juridiskt ärende",
+    "description": "Fyll i uppgifterna nedan så att vårt juridiska team kan bedöma dina behov och hjälpa dig att komma i kontakt med rätt jurist.",
+    "clientSectionTitle": "1. Klientinformation",
+    "clientSectionDescription": "Verifierad från din kundprofil",
+    "fullName": "Fullständigt namn",
+    "registeredEmail": "Registrerad e-postadress",
+    "verified": "Verifierad",
+    "caseSectionTitle": "2. Ärendeinformation",
+    "caseSectionDescription": "Ange ärendets kategori och omfattning",
+    "caseCategory": "Juridisk ärendekategori",
+    "selectCategory": "Välj en kategori...",
+    "categories": {
+        "familyLaw": "Familjerätt (Skilsmässa, vårdnad, arv)",
+        "propertyDispute": "Fastighetstvist (Fastigheter, hyresavtal, hyresförhållanden)",
+        "criminalLaw": "Straffrätt och försvar",
+        "employmentLaw": "Arbetsrätt (Avtal, tvister, avgångsvederlag)",
+        "businessLaw": "Affärs- och bolagsrätt",
+        "consumerComplaint": "Konsumenträtt och krav",
+        "other": "Annan juridisk hjälp"
+    },
+    "caseDescription": "Ärendebeskrivning och bakgrund",
+    "descriptionGuidance": "Berätta vad som har hänt och hur vi kan hjälpa dig.",
+    "descriptionPlaceholder": "Beskriv din situation i detalj. Ange datum, motparter, nuvarande status och vilket resultat du önskar...",
+    "confidentialityNote": "All kommunikation och ärendeinformation hanteras säkert och under strikt sekretess.",
+    "paymentTitle": "Engångsavgift för juridisk rådgivning",
+    "paymentSubtitle": "Säker betalning via PayPal",
+    "continueToPayment": "Fortsätt till säker betalning",
+    "paymentTrust": "Ditt ärende skapas först efter att betalningen har verifierats.",
+    "checkingSession": "Kontrollerar sessionen...",
+    "creatingCase": "Förbereder betalningen...",
+    "submit": "Skicka ärende och fortsätt till betalning",
+    "cancel": "Avbryt",
+    "errors": {
+        "verifySession": "Det gick inte att verifiera din session.",
+        "missingCaseId": "Servern returnerade inget ärende-ID. Kontrollera dina ärenden innan du skickar in igen.",
+        "submitFailed": "Det gick inte att skicka in ditt ärende."
+    }
+},
+
     "adminDashboard":  {
                            "eyebrow":  "SYSTEMÖVERSIKT",
                            "description":  "Aktuell statistik över juridiska ärenden, jurister och kundärenden.",

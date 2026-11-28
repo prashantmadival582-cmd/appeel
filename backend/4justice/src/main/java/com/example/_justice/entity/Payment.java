@@ -1,4 +1,3 @@
-
 package com.example._justice.entity;
 
 import jakarta.persistence.*;
@@ -19,7 +18,8 @@ public class Payment {
     @Column(nullable = false, unique = true)
     private String paymentId;
 
-    @Column(nullable = false)
+    // NULL until PayPal payment is successfully verified
+    @Column(name = "case_id")
     private String caseId;
 
     @Column(nullable = false)
@@ -31,7 +31,6 @@ public class Payment {
     @Column(nullable = false)
     private String status;
 
-    // Currency for this payment
     @Builder.Default
     @Column(nullable = false, length = 3)
     private String currency = "SEK";
@@ -39,11 +38,30 @@ public class Payment {
     // Payment provider: PAYPAL or RAZORPAY
     private String provider;
 
-    // Retain Razorpay identifiers for historical records
+    // Existing Razorpay identifiers
     private String razorpayOrderId;
     private String razorpayPaymentId;
 
-    // PayPal identifiers
+    // Existing PayPal identifiers
     private String paypalOrderId;
     private String paypalCaptureId;
+
+    // Customer who initiated the initial case payment
+    @Column(name = "customer_id")
+    private Long customerId;
+
+    // Case details stored before successful payment
+    @Column(name = "case_type")
+    private String caseType;
+
+    @Column(name = "case_description", columnDefinition = "TEXT")
+    private String caseDescription;
+
+    // Example: INITIAL_CASE
+    @Column(name = "payment_purpose", length = 50)
+    private String paymentPurpose;
+
+    // Unique key used to prevent duplicate payment attempts
+    @Column(name = "submission_key", length = 64)
+    private String submissionKey;
 }

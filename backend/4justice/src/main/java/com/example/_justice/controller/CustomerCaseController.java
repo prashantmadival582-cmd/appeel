@@ -28,27 +28,12 @@ public class CustomerCaseController {
     }
 
     @PostMapping
-    public ResponseEntity<?> submitCase(
-            @Valid @RequestBody CustomerCaseRequest request,
-            @AuthenticationPrincipal Jwt jwt) {
-
-        if (jwt == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Map.of("message", "Authentication required"));
-        }
-
-        Long customerId = jwt.getClaim("userId");
-
-        try {
-            Case savedCase = caseService.submitCase(request, customerId);
-
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(CustomerCaseResponse.from(savedCase));
-
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest()
-                    .body(Map.of("message", e.getMessage()));
-        }
+    public ResponseEntity<?> submitCase() {
+        return ResponseEntity.status(HttpStatus.GONE)
+                .body(Map.of(
+                        "message",
+                        "Direct case submission is disabled. Please complete payment to create a case."
+                ));
     }
 
     @GetMapping("/mine")
