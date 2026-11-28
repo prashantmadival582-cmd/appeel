@@ -2,13 +2,15 @@
 package com.example._justice.service;
 
 import com.example._justice.entity.ExternalInvoice;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClient;
+
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExternalInvoiceEmailService {
@@ -16,13 +18,61 @@ public class ExternalInvoiceEmailService {
     private static final Logger log =
             LoggerFactory.getLogger(ExternalInvoiceEmailService.class);
 
-    private final JavaMailSender mailSender;
+    private final RestClient resendClient;
+    private final String apiKey;
+    private final String senderEmail;
+    private final String adminEmail;
 
-    @Value("${spring.mail.username}")
-    private String senderEmail;
+    public ExternalInvoiceEmailService(
+            @Value("${app.resend.api-key:}") String apiKey,
+            @Value("${app.resend.from:}") String senderEmail,
+            @Value("${app.resend.admin-email:appeel.support@gmail.com}") String adminEmail) {
 
-    public ExternalInvoiceEmailService(JavaMailSender mailSender) {
-        this.mailSender = mailSender;
+        this.apiKey = apiKey;
+        this.senderEmail = senderEmail;
+        this.adminEmail = adminEmail;
+
+        this.resendClient = RestClient.builder()
+                .baseUrl("https://api.resend.com")
+                .defaultHeader("Authorization", "Bearer " + apiKey)
+                .defaultHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
+                .build();
+    }
+
+    private void sendEmail(
+            String recipient,
+            String subject,
+            String content) {
+
+        if (apiKey == null || apiKey.isBlank()) {
+            throw new IllegalStateException(
+                    "Resend API key is not configured."
+            );
+        }
+
+        if (senderEmail == null || senderEmail.isBlank()) {
+            throw new IllegalStateException(
+                    "Resend sender email is not configured."
+            );
+        }
+
+        if (recipient == null || recipient.isBlank()) {
+            throw new IllegalArgumentException(
+                    "Email recipient is not configured."
+            );
+        }
+
+        resendClient.post()
+                .uri("/emails")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(Map.of(
+                        "from", senderEmail,
+                        "to", List.of(recipient),
+                        "subject", subject,
+                        "text", content
+                ))
+                .retrieve()
+                .toBodilessEntity();
     }
 
     // Send the initial external invoice email
@@ -30,118 +80,102 @@ public class ExternalInvoiceEmailService {
             ExternalInvoice invoice,
             String approvalUrl) {
 
-        SimpleMailMessage message = new SimpleMailMessage();
+        String subject =
+                "APPEEL - External Invoice " +
+                invoice.getInvoiceReference();
 
-        message.setFrom(senderEmail);
-        message.setTo(invoice.getCustomerEmail());
-
-        message.setSubject(
-                "APPEEL - External Invoice " + invoice.getInvoiceReference()
-        );
-
-        message.setText(
+        String content =
                 "Hello,\n\n" +
                 "APPEEL has issued an external invoice for your legal matter.\n\n" +
                 "Invoice Reference: " + invoice.getInvoiceReference() + "\n" +
-                "Case ID: " + invoice.getCaseId() + "\n" +
-                "Amount: " + invoice.getAmount().toPlainString() + " " +
-                        invoice.getCurrency() + "\n\n" +
-                "To complete your payment securely using PayPal, click the link below:\n\n" +
+                "Amount: " + invoice.getAmount() + " SEK\n\n" +
+                "Please review and approve your invoice using the link below:\n\n" +
                 approvalUrl + "\n\n" +
                 "Please complete the payment using the PayPal checkout page.\n\n" +
                 "If you have questions, please contact APPEEL Support.\n\n" +
-                "Regards,\nAPPEEL Support Team"
-        );
+                "Regards,\nAPPEEL Support Team";
 
-        mailSender.send(message);
+        sendEmail(invoice.getCustomerEmail(), subject, content);
+
+        log.info(
+                "External invoice email sent to customer: {}",
+                invoice.getCustomerEmail()
+        );
     }
 
     // Send payment confirmation to customer and admin
-    public void sendPaymentConfirmationEmails(
-            ExternalInvoice invoice) {
+   public void sendPaymentConfirmationEmails(
+        ExternalInvoice invoice) {
 
         // Customer confirmation
         try {
-            SimpleMailMessage customerMessage = new SimpleMailMessage();
-
-            customerMessage.setFrom(senderEmail);
-            customerMessage.setTo(invoice.getCustomerEmail());
-
-            customerMessage.setSubject(
+            String customerSubject =
                     "APPEEL - Payment Successful - " +
-                            invoice.getInvoiceReference()
-            );
+                    invoice.getInvoiceReference();
 
-            customerMessage.setText(
+            String customerContent =
                     "Hello,\n\n" +
                     "Your payment has been successfully received by APPEEL.\n\n" +
                     "PAYMENT CONFIRMATION\n\n" +
                     "Invoice Reference: " + invoice.getInvoiceReference() + "\n" +
-                    "Case ID: " + invoice.getCaseId() + "\n" +
-                    "Amount Paid: " + invoice.getAmount().toPlainString() +
-                            " " + invoice.getCurrency() + "\n" +
-                    "Payment Status: SUCCESS\n" +
+                    "Amount Paid: " + invoice.getAmount() + " SEK\n" +
+                    "Payment Method: PayPal\n" +
                     "PayPal Transaction ID: " + invoice.getPaypalCaptureId() + "\n" +
                     "Payment Date: " + invoice.getPaidAt() + "\n\n" +
                     "Thank you for your payment. Your external invoice is now paid.\n\n" +
                     "If you have any questions, please contact APPEEL Support.\n\n" +
-                    "Regards,\nAPPEEL Support Team"
-            );
+                    "Regards,\nAPPEEL Support Team";
 
-            mailSender.send(customerMessage);
+            sendEmail(
+                    invoice.getCustomerEmail(),
+                    customerSubject,
+                    customerContent
+            );
 
             log.info(
                     "Payment confirmation email sent to customer: {}",
                     invoice.getCustomerEmail()
             );
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
             log.error(
-                    "Could not send payment confirmation to customer: {}",
+                    "Failed to send payment confirmation email to customer: {}",
                     invoice.getCustomerEmail(),
-                    ex
+                    e
             );
         }
 
         // Admin notification
         try {
-            SimpleMailMessage adminMessage = new SimpleMailMessage();
-
-            adminMessage.setFrom(senderEmail);
-            adminMessage.setTo(senderEmail);
-
-            adminMessage.setSubject(
+            String adminSubject =
                     "APPEEL - External Invoice Payment Received - " +
-                            invoice.getInvoiceReference()
-            );
+                    invoice.getInvoiceReference();
 
-            adminMessage.setText(
+            String adminContent =
                     "Hello APPEEL Admin,\n\n" +
                     "A customer has successfully completed an external invoice payment.\n\n" +
                     "PAYMENT RECEIVED\n\n" +
                     "Invoice Reference: " + invoice.getInvoiceReference() + "\n" +
-                    "Case ID: " + invoice.getCaseId() + "\n" +
                     "Customer Email: " + invoice.getCustomerEmail() + "\n" +
-                    "Amount Received: " + invoice.getAmount().toPlainString() +
-                            " " + invoice.getCurrency() + "\n" +
-                    "Payment Status: SUCCESS\n" +
+                    "Amount Paid: " + invoice.getAmount() + " SEK\n" +
+                    "Payment Method: PayPal\n" +
                     "PayPal Transaction ID: " + invoice.getPaypalCaptureId() + "\n" +
                     "Payment Date: " + invoice.getPaidAt() + "\n\n" +
                     "The external invoice has been marked as paid in APPEEL.\n\n" +
-                    "Regards,\nAPPEEL Payment Notification"
-            );
+                    "Regards,\nAPPEEL Payment Notification";
 
-            mailSender.send(adminMessage);
+            sendEmail(adminEmail, adminSubject, adminContent);
 
             log.info(
                     "Payment notification email sent to admin: {}",
-                    senderEmail
+                    adminEmail
             );
 
-        } catch (Exception ex) {
+        } catch (Exception e) {
             log.error(
-                    "Could not send external invoice payment notification to admin",
-                    ex
+                    "Failed to send payment notification email to admin: {}",
+                    adminEmail,
+                    e
             );
         }
     }
